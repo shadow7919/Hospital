@@ -61,28 +61,6 @@ public class Doctor {
                 System.out.println("Pick another day");
             }
             handleSHift(choose,inputId,chosenDay,hospital);
-//            System.out.println("--------- pick a shift ---------");
-//            System.out.println("1 -> Morning");
-//            System.out.println("2 -> AfterNoon");
-//            System.out.println("3 -> Night");
-//            choose = scanner.nextInt();
-//            switch (choose) {
-//                case 1:
-//                    temp.put("Morning", inputId);
-//                    chosenDay.add(temp);
-//                    findDoctor(hospital, inputId).shifts.put("Morning", chosenDay.get(0).keySet());
-//                    break;
-//                case 2:
-//                    temp.put("AfterNoon", inputId);
-//                    chosenDay.add(temp);
-//                    break;
-//                case 3:
-//                    temp.put("Night", inputId);
-//                    chosenDay.add(temp);
-//                    break;
-//                default:
-//                    break;
-//            }
         } else {
             System.out.println("can't find this ID");
         }
