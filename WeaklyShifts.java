@@ -1,14 +1,10 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 public class WeaklyShifts {
-    private final String[] days = new String[]{
-            "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-    private int[] daysShiftNumber = new int[]{0, 0, 0, 0, 0, 0, 0};
     private ArrayList<Map> saturdayShift = new ArrayList<Map>();
     private ArrayList<Map> sundayShift = new ArrayList<Map>();
     private ArrayList<Map> mondayShift = new ArrayList<Map>();
@@ -16,13 +12,6 @@ public class WeaklyShifts {
     private ArrayList<Map> wednesdayShift = new ArrayList<Map>();
     private ArrayList<Map> thursdayShift = new ArrayList<Map>();
     private ArrayList<Map> fridayShift = new ArrayList<Map>();
-    //    public List<List<String>> week = new ArrayList<List<String>>();
-    private Shifts shifts;
-//    {
-//        for (int i = 0; i < 7; i++) {
-//            week.add(new ArrayList<String>());
-//        }
-//    }
 
     public ArrayList<Map> getSaturdayShift() {
         return saturdayShift;
@@ -51,14 +40,15 @@ public class WeaklyShifts {
     public ArrayList<Map> getFridayShift() {
         return fridayShift;
     }
-    public void showShift(Scanner scanner){
+
+    public void showShift(Scanner scanner) {
         System.out.println("Pick a day ");
         Doctor.showDay();
         Week week = Week.WEDNESDAY;
         String whatDay = scanner.nextLine();
-        if(week.valueOf(whatDay)!=null){
-            week=week.valueOf(whatDay);
-            switch (week){
+        if (week.valueOf(whatDay) != null) {
+            week = week.valueOf(whatDay);
+            switch (week) {
                 case SATURDAY:
                     printDayShift(saturdayShift);
                     System.out.println("Saturday");
@@ -90,20 +80,23 @@ public class WeaklyShifts {
                 default:
                     break;
             }
-        }
-        else{
+        } else {
             System.out.println("Wrong day");
         }
     }
-    private void printDayShift(ArrayList<Map> day){
+
+    private void printDayShift(ArrayList<Map> day) {
         for (int i = 0; i < day.size(); i++) {
-            System.out.print(day.get(i).keySet()+" of ");
+            System.out.print(day.get(i).keySet() + " and");
         }
+        System.out.print("\b\b\b Of");
     }
 }
+
 enum Shifts {
     MORNING, AFTER_NOON, NIGHT;
 }
+
 enum Week {
-    SATURDAY,SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY;
+    SATURDAY, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY;
 }
