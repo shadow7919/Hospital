@@ -23,23 +23,23 @@ public class Doctor {
 
     public void showDoctor(Scanner scanner, Hospital hospital, WeaklyShifts weaklyShifts) {
         System.out.println("Enter the id");
-            System.out.println("For Quite press 0 ");
-            int inputId = scanner.nextInt();
-            if (inputId == 0) {
-                return;
-            }
-            if (findDoctor(hospital, inputId) != null) {
-                doctorInfo(findDoctor(hospital, inputId), weaklyShifts);
-            } else {
-                System.out.println("wrong Id");
-            }
+        System.out.println("For Quite press 0 ");
+        int inputId = scanner.nextInt();
+        if (inputId == 0) {
+            return;
+        }
+        if (findDoctor(hospital, inputId) != null) {
+            doctorInfo(findDoctor(hospital, inputId), weaklyShifts);
+        } else {
+            System.out.println("wrong Id");
+        }
     }
 
     public void doctorInfo(Doctor doctor, WeaklyShifts weaklyShifts) {
         System.out.println("Name : " + doctor.getName() + "   Id : " + doctor.getId());
-        if(doctor.shifts.size()!=0) {
-            System.out.println("shifts --->" + doctor.shifts.keySet() + " of " + doctor.shifts.entrySet());
-        }else {
+        if (doctor.shifts.size() != 0) {
+            System.out.println("shifts --->" + doctor.shifts.keySet() + " of " + doctor.shifts.values());
+        } else {
             System.out.println("No shift is added .");
         }
     }
@@ -47,7 +47,6 @@ public class Doctor {
     public void addShift(Scanner scanner, Hospital hospital, WeaklyShifts weaklyShifts) {
         int choose = 0, inputId;
         ArrayList<Map> chosenDay;
-//        Map<String, Integer> temp = new HashMap<String, Integer>();
         System.out.println("Enter the doctor ID");
         inputId = scanner.nextInt();
         if (findDoctor(hospital, inputId) != null) {
@@ -60,37 +59,41 @@ public class Doctor {
                 System.out.println("This day shifts are all taken");
                 System.out.println("Pick another day");
             }
-            handleSHift(choose,inputId,chosenDay,hospital);
+            handleSHift(choose, inputId, chosenDay, hospital);
         } else {
             System.out.println("can't find this ID");
         }
         System.out.println("--------------------------------------");
     }
-    private void handleSHift(int choose,int inputId,ArrayList<Map> chosenDay,Hospital hospital){
+
+    private void handleSHift(int choose, int inputId, ArrayList<Map> chosenDay, Hospital hospital) {
         Map<String, Integer> temp = new HashMap<String, Integer>();
         System.out.println("--------- pick a shift ---------");
-            System.out.println("1 -> Morning");
-            System.out.println("2 -> AfterNoon");
-            System.out.println("3 -> Night");
-            choose = scanner.nextInt();
-            switch (choose) {
-                case 1:
-                    temp.put("Morning", inputId);
-                    chosenDay.add(temp);
-                    findDoctor(hospital, inputId).shifts.put("Morning", chosenDay.get(0).keySet());
-                    break;
-                case 2:
-                    temp.put("AfterNoon", inputId);
-                    chosenDay.add(temp);
-                    break;
-                case 3:
-                    temp.put("Night", inputId);
-                    chosenDay.add(temp);
-                    break;
-                default:
-                    break;
-            }
+        System.out.println("1 -> Morning");
+        System.out.println("2 -> AfterNoon");
+        System.out.println("3 -> Night");
+        choose = scanner.nextInt();
+        switch (choose) {
+            case 1:
+                temp.put("Morning", inputId);
+                chosenDay.add(temp);
+                findDoctor(hospital, inputId).shifts.put("Morning", chosenDay.get(0).entrySet());
+                break;
+            case 2:
+                temp.put("AfterNoon", inputId);
+                chosenDay.add(temp);
+                findDoctor(hospital, inputId).shifts.put("AfterNoon", chosenDay.get(0).entrySet());
+                break;
+            case 3:
+                temp.put("Night", inputId);
+                chosenDay.add(temp);
+                findDoctor(hospital, inputId).shifts.put("Night", chosenDay.get(0).entrySet());
+                break;
+            default:
+                break;
+        }
     }
+
     private Doctor findDoctor(Hospital hospital, int inputId) {
         for (int i = 0; i < hospital.getDoctors().size(); i++) {
             System.out.println(hospital.getDoctors().size());
@@ -111,13 +114,7 @@ public class Doctor {
     }
 
     private ArrayList<Map> whichDay(int choose, WeaklyShifts weaklyShifts) {
-        System.out.println("1 --> Saturday");
-        System.out.println("2 --> Sunday");
-        System.out.println("3 --> Monday");
-        System.out.println("4 --> Tuesday");
-        System.out.println("5 --> Wednesday");
-        System.out.println("6 --> Thursday");
-        System.out.println("7 --> Friday");
+        showDay();
         choose = scanner.nextInt();
         while (true) {
             switch (choose) {
@@ -139,5 +136,14 @@ public class Doctor {
                     System.out.println("Wrong input");
             }
         }
+    }
+    public static void showDay(){
+        System.out.println("1 --> Saturday");
+        System.out.println("2 --> Sunday");
+        System.out.println("3 --> Monday");
+        System.out.println("4 --> Tuesday");
+        System.out.println("5 --> Wednesday");
+        System.out.println("6 --> Thursday");
+        System.out.println("7 --> Friday");
     }
 }

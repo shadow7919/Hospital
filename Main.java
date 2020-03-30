@@ -69,6 +69,7 @@ public class Main {
                         break;
                     case "Patient":
                     case "patient":
+                        weaklyShifts.showShift(scanner);
                         break;
                     case "Room":
                     case "room":

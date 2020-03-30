@@ -61,24 +61,31 @@ public class WeaklyShifts {
             switch (week){
                 case SATURDAY:
                     printDayShift(saturdayShift);
+                    System.out.println("Saturday");
                     break;
                 case SUNDAY:
                     printDayShift(sundayShift);
+                    System.out.println("Sunday");
                     break;
                 case MONDAY:
                     printDayShift(mondayShift);
+                    System.out.println("Monday");
                     break;
                 case TUESDAY:
                     printDayShift(tuesdayShift);
+                    System.out.println("Tuesday");
                     break;
                 case WEDNESDAY:
                     printDayShift(wednesdayShift);
+                    System.out.println("Wednesday");
                     break;
                 case THURSDAY:
                     printDayShift(thursdayShift);
+                    System.out.println("Thursday");
                     break;
                 case FRIDAY:
                     printDayShift(fridayShift);
+                    System.out.println("Friday");
                     break;
                 default:
                     break;
@@ -90,7 +97,7 @@ public class WeaklyShifts {
     }
     private void printDayShift(ArrayList<Map> day){
         for (int i = 0; i < day.size(); i++) {
-            System.out.println(day.get(i).keySet()+" of "+day.get(i).entrySet());
+            System.out.print(day.get(i).keySet()+" of ");
         }
     }
 }
