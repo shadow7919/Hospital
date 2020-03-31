@@ -10,7 +10,6 @@ public class Doctor {
     private int id;
     private Nurse nurseOne;
     private Nurse nurseTwo;
-    //    private ArrayList<Shifts> shifts;
     private Map<String, Set> shifts = new HashMap<>();
 
     public void addDoctor(Hospital hospital) {
@@ -23,15 +22,11 @@ public class Doctor {
 
     public void showDoctor(Scanner scanner, Hospital hospital, WeaklyShifts weaklyShifts) {
         System.out.println("Enter the id");
-        System.out.println("For Quite press 0 ");
         int inputId = scanner.nextInt();
-        if (inputId == 0) {
-            return;
-        }
         if (findDoctor(hospital, inputId) != null) {
             doctorInfo(findDoctor(hospital, inputId), weaklyShifts);
         } else {
-            System.out.println("wrong Id");
+            System.out.println("Can't find any doctor with this Id");
         }
     }
 
@@ -105,14 +100,6 @@ public class Doctor {
         return null;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     private ArrayList<Map> whichDay(int choose, WeaklyShifts weaklyShifts) {
         showDay();
         choose = scanner.nextInt();
@@ -137,7 +124,8 @@ public class Doctor {
             }
         }
     }
-    public static void showDay(){
+
+    public static void showDay() {
         System.out.println("1 --> Saturday");
         System.out.println("2 --> Sunday");
         System.out.println("3 --> Monday");
@@ -145,5 +133,13 @@ public class Doctor {
         System.out.println("5 --> Wednesday");
         System.out.println("6 --> Thursday");
         System.out.println("7 --> Friday");
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
     }
 }
