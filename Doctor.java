@@ -1,6 +1,5 @@
 package ir.ac.kntu;
 
-
 import java.util.*;
 
 public class Doctor {
@@ -10,7 +9,8 @@ public class Doctor {
     private int id;
     private Nurse nurseOne;
     private Nurse nurseTwo;
-    private Map<String, Set> shifts = new HashMap<>();
+    private Map<String, String> shifts = new HashMap<>();
+    private Week daysShift;
 
     public void addDoctor(Hospital hospital) {
         Doctor tempDoctor = new Doctor();
@@ -54,35 +54,47 @@ public class Doctor {
                 System.out.println("This day shifts are all taken");
                 System.out.println("Pick another day");
             }
-            handleSHift(choose, inputId, chosenDay, hospital);
+            handleSHift(choose, inputId, chosenDay, hospital, weaklyShifts);
         } else {
             System.out.println("can't find this ID");
         }
         System.out.println("--------------------------------------");
     }
 
-    private void handleSHift(int choose, int inputId, ArrayList<Map> chosenDay, Hospital hospital) {
+    private void handleSHift(int choose, int inputId, ArrayList<Map> chosenDay, Hospital hospital, WeaklyShifts weaklyShifts) {
         Map<String, Integer> temp = new HashMap<String, Integer>();
         System.out.println("--------- pick a shift ---------");
-        System.out.println("1 -> Morning");
-        System.out.println("2 -> AfterNoon");
-        System.out.println("3 -> Night");
+        System.out.println("1 -> "+ ShiftsTime.MORNING);
+        System.out.println("2 -> "+ ShiftsTime.AFTER_NOON);
+        System.out.println("3 -> "+ ShiftsTime.NIGHT);
         choose = scanner.nextInt();
         switch (choose) {
             case 1:
-                temp.put("Morning", inputId);
-                chosenDay.add(temp);
-                findDoctor(hospital, inputId).shifts.put("Morning", chosenDay.get(0).entrySet());
+                if(isTaken(ShiftsTime.MORNING,findDoctor(hospital,inputId),weaklyShifts) == false) {
+                    temp.put(ShiftsTime.MORNING.name(), inputId);
+                    chosenDay.add(temp);
+                    findDoctor(hospital, inputId).shifts.put(ShiftsTime.MORNING.name(), daysShift.name());
+                }else {
+                    System.out.println("This shift is already taken ");
+                }
                 break;
             case 2:
-                temp.put("AfterNoon", inputId);
-                chosenDay.add(temp);
-                findDoctor(hospital, inputId).shifts.put("AfterNoon", chosenDay.get(0).entrySet());
+                if(isTaken(ShiftsTime.AFTER_NOON,findDoctor(hospital,inputId),weaklyShifts) == false) {
+                    temp.put(ShiftsTime.AFTER_NOON.name(), inputId);
+                    chosenDay.add(temp);
+                    findDoctor(hospital, inputId).shifts.put(ShiftsTime.AFTER_NOON.name(), daysShift.name());
+                }else{
+                    System.out.println("This shift is already taken");
+                }
                 break;
             case 3:
-                temp.put("Night", inputId);
-                chosenDay.add(temp);
-                findDoctor(hospital, inputId).shifts.put("Night", chosenDay.get(0).entrySet());
+                if(isTaken(ShiftsTime.NIGHT,findDoctor(hospital,inputId),weaklyShifts) == false) {
+                    temp.put(ShiftsTime.NIGHT.name(), inputId);
+                    chosenDay.add(temp);
+                    findDoctor(hospital, inputId).shifts.put(ShiftsTime.NIGHT.name(), daysShift.name());
+                }else {
+                    System.out.println("This shift is already taken ");
+                }
                 break;
             default:
                 break;
@@ -106,18 +118,25 @@ public class Doctor {
         while (true) {
             switch (choose) {
                 case 1:
+                    daysShift = Week.SATURDAY;
                     return weaklyShifts.getSaturdayShift();
                 case 2:
+                    daysShift = Week.SUNDAY;
                     return weaklyShifts.getSundayShift();
                 case 3:
+                    daysShift = Week.MONDAY;
                     return weaklyShifts.getMondayShift();
                 case 4:
+                    daysShift = Week.TUESDAY;
                     return weaklyShifts.getTuesdayShift();
                 case 5:
+                    daysShift = Week.WEDNESDAY;
                     return weaklyShifts.getWednesdayShift();
                 case 6:
+                    daysShift = Week.THURSDAY;
                     return weaklyShifts.getThursdayShift();
                 case 7:
+                    daysShift = Week.FRIDAY;
                     return weaklyShifts.getFridayShift();
                 default:
                     System.out.println("Wrong input");
@@ -126,13 +145,13 @@ public class Doctor {
     }
 
     public static void showDay() {
-        System.out.println("1 --> Saturday");
-        System.out.println("2 --> Sunday");
-        System.out.println("3 --> Monday");
-        System.out.println("4 --> Tuesday");
-        System.out.println("5 --> Wednesday");
-        System.out.println("6 --> Thursday");
-        System.out.println("7 --> Friday");
+        System.out.println("1 --> "+ Week.SATURDAY);
+        System.out.println("2 --> "+ Week.SUNDAY);
+        System.out.println("3 --> "+ Week.MONDAY);
+        System.out.println("4 --> "+ Week.TUESDAY);
+        System.out.println("5 --> "+ Week.WEDNESDAY);
+        System.out.println("6 --> "+ Week.THURSDAY);
+        System.out.println("7 --> "+ Week.FRIDAY);
     }
 
     public String getName() {
@@ -142,4 +161,35 @@ public class Doctor {
     public int getId() {
         return id;
     }
+
+    private boolean isTaken(ShiftsTime shiftsTime, Doctor doctor, WeaklyShifts weaklyShifts) {
+        switch (daysShift) {
+            case SATURDAY:
+                if(weaklyShifts.doctorHaveShiftThisDay(doctor,weaklyShifts.getSaturdayShift(),shiftsTime))
+                    return true;
+            case SUNDAY:
+                if(weaklyShifts.doctorHaveShiftThisDay(doctor,weaklyShifts.getSundayShift(),shiftsTime))
+                    return true;
+            case MONDAY:
+                if(weaklyShifts.doctorHaveShiftThisDay(doctor,weaklyShifts.getMondayShift(),shiftsTime))
+                    return true;
+            case TUESDAY:
+                if(weaklyShifts.doctorHaveShiftThisDay(doctor,weaklyShifts.getTuesdayShift(),shiftsTime))
+                    return true;
+            case WEDNESDAY:
+                if(weaklyShifts.doctorHaveShiftThisDay(doctor,weaklyShifts.getWednesdayShift(),shiftsTime))
+                    return true;
+            case THURSDAY:
+                if(weaklyShifts.doctorHaveShiftThisDay(doctor,weaklyShifts.getThursdayShift(),shiftsTime))
+                    return true;
+            case FRIDAY:
+                if(weaklyShifts.doctorHaveShiftThisDay(doctor,weaklyShifts.getFridayShift(),shiftsTime))
+                    return true;
+            default:
+        }
+        return false;
+    }
+}
+enum ShiftsTime {
+    MORNING, AFTER_NOON, NIGHT;
 }
