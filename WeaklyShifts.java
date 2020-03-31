@@ -3,6 +3,7 @@ package ir.ac.kntu;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class WeaklyShifts {
     private ArrayList<Map> saturdayShift = new ArrayList<Map>();
@@ -91,10 +92,21 @@ public class WeaklyShifts {
         }
         System.out.print("\b\b\b Of");
     }
-}
 
-enum Shifts {
-    MORNING, AFTER_NOON, NIGHT;
+    public boolean doctorHaveShiftThisDay(Doctor doctor, ArrayList<Map> getDayShift, ShiftsTime shiftsTime) {
+        ArrayList<Set<Map.Entry<String, Integer>>> temp = new ArrayList<>();
+        for (int i = 0; i < getDayShift.size(); i++) {
+            temp.add(getDayShift.get(i).entrySet());
+        }
+        for (int i = 0; i < getDayShift.size(); i++) {
+            if (doctor.getId() == temp.get(i).stream().iterator().next().getValue() &&
+                    shiftsTime.name() == temp.get(i).stream().iterator().next().getKey()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
 enum Week {
