@@ -1,8 +1,6 @@
 package ir.ac.kntu;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,9 +9,10 @@ public class Main {
         Address address = new Address();
         Part part = new Part();
         Doctor doctor = new Doctor();
+        Patient patient = new Patient();
         WeaklyShifts weaklyShifts = new WeaklyShifts();
 //        welcome(scanner, hospital, address, part);
-        chooseMenu(scanner, doctor, hospital,weaklyShifts);
+        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient);
     }
 
     public static void welcome(Scanner scanner, Hospital hospital, Address address, Part part) {
@@ -31,12 +30,12 @@ public class Main {
         scanner.nextLine();
         while (true) {
             String tempPartKind = scanner.nextLine();
-            if (tempPartKind.equals(PartKind.main.name())) {
-                part.setPartKind(PartKind.main);
+            if (tempPartKind.equals(PartKind.NORMAL.name())) {
+                part.setPartKind(PartKind.NORMAL);
                 hospital.setPart(part);
                 break;
-            } else if (tempPartKind.equals(PartKind.emergency.name())) {
-                part.setPartKind(PartKind.emergency);
+            } else if (tempPartKind.equals(PartKind.EMERGENY.name())) {
+                part.setPartKind(PartKind.EMERGENY);
                 hospital.setPart(part);
                 break;
             } else {
@@ -47,55 +46,52 @@ public class Main {
 
     public static void menu() {
         System.out.println("choose what to do");
-        System.out.println("1 --> Doctor");
-        System.out.println("2 --> Patient");
-        System.out.println("3 --> Room");
-        System.out.println("4 --> Hospital");
-        System.out.println("5 --> Quite");
+        System.out.println("1 --> " + MenuOptions.DOCTOR);
+        System.out.println("2 --> " + MenuOptions.PATIENT);
+        System.out.println("3 --> " + MenuOptions.ROOM);
+        System.out.println("4 --> " + MenuOptions.HOSPITAL);
+        System.out.println("5 --> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts) {
-        String choose = "";
-        MenuOptions menuOptions;
-        while (MenuOptions.Quite.name() != choose) {
-            try {
-                menu();
-                choose = scanner.nextLine();
-                menuOptions = MenuOptions.valueOf(choose);
-                switch (menuOptions.name()) {
-                    case "Doctor":
-                    case "doctor":
-                        doctorMenu(scanner, doctor, hospital,weaklyShifts);
+    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient) {
+        MenuOptions menuOptions = MenuOptions.DOCTOR;
+        String choose;
+        while (true) {
+            menu();
+            choose = scanner.nextLine();
+            if (menuOptions.valueOf(choose) != null) {
+                menuOptions = menuOptions.valueOf(choose);
+                switch (menuOptions) {
+                    case DOCTOR:
+                        doctorMenu(scanner, doctor, hospital, weaklyShifts);
                         break;
-                    case "Patient":
-                    case "patient":
-                        weaklyShifts.showShift(scanner);
+                    case PATIENT:
+                        patient.printMenu(hospital);
                         break;
-                    case "Room":
-                    case "room":
+                    case ROOM:
+                        weaklyShifts.showShift();
                         break;
-                    case "Hospital":
-                    case "hospital":
+                    case HOSPITAL:
                         break;
-                    case "Quite":
-                    case "quite":
+                    case QUITE:
                         return;
                     default:
                 }
-            } catch (IllegalArgumentException e) {
-                System.out.println("Wrong input");
+            } else {
+                System.out.println("Wrong input ");
             }
         }
     }
 
-    public static void doctorMenu(Scanner scanner, Doctor doctor, Hospital hospital,WeaklyShifts weaklyShifts) {
+    public static void doctorMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts) {
         int option = 0;
-        while (option != 4) {
+        while (option != 5) {
             System.out.println("----------- Doctor's Menu -----------");
             System.out.println("1. Add doctor");
             System.out.println("2. Choose doctor's shift");
             System.out.println("3. Doctor information");
-            System.out.println("4. Back to previous menu");
+            System.out.println("4. Remove doctor");
+            System.out.println("5. Back to previous menu");
             System.out.println("---------------------------------------");
             option = scanner.nextInt();
             switch (option) {
@@ -103,19 +99,23 @@ public class Main {
                     doctor.addDoctor(hospital);
                     break;
                 case 2:
-                    doctor.addShift(scanner,hospital,weaklyShifts);
+                    doctor.addShift(hospital, weaklyShifts);
                     break;
                 case 3:
-                    doctor.showDoctor(scanner, hospital,weaklyShifts);
+                    doctor.showDoctor(hospital, weaklyShifts);
                     break;
                 case 4:
+                    doctor.remove(hospital);
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println("Wrong input");
             }
         }
     }
+
     enum MenuOptions {
-        Doctor, Patient, Rooms, Hospital, Quite;
+        DOCTOR, PATIENT, ROOM, HOSPITAL, QUITE;
     }
 }
