@@ -1,5 +1,6 @@
 package ir. ac.kntu;
 
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.*;
 
 public class Room {
@@ -12,22 +13,41 @@ public class Room {
     public void addRoom(PartKind partKind,Hospital hospital){
         System.out.println("Enter the room number and beds Number");
         System.out.println("What's the main price of room");
-        ArrayList<Map> rooms= new ArrayList<>();
-        Map <Integer,Integer> tempRoom = new HashMap();
+        HashMap<Integer,Integer> rooms= new HashMap();
+        HashMap <Integer,Integer> tempRoom = new HashMap();
         if(partKind == PartKind.NORMAL){
-            hospital.getNormalRooms().add(tempRoom);
+//            hospital.getNormalRooms().put();
         }else{
-            hospital.getEmergencyRooms().add(tempRoom);
+//            hospital.getEmergencyRooms().put();
         }
     }
 
-    public int getBedsNumber() {
-        return roomNumber;
-    }
     public void setBedsNumber(int bedsNumber){
         this.bedsNumber = bedsNumber;
     }
 
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+    public void pickRoom(Hospital hospital,PartKind partKind){
+        if(partKind == PartKind.NORMAL){
+            showRoom(hospital,partKind);
+        }
+    }
+    public void showRoom(Hospital hospital,PartKind partKind){
+        if(partKind == PartKind.NORMAL){
+            for (Map.Entry<Integer, Integer> i : hospital.getNormalRooms().entrySet()) {
+                System.out.print("Room number :"+i.getKey());
+                System.out.println("  and it's beds number "+i.getValue());
+            }
+        }else{
+            for (Map.Entry<Integer, Integer> j :hospital.getEmergencyRooms().entrySet()) {
+                System.out.print("Room number :"+j.getKey());
+                System.out.println("  and it's beds number "+j.getValue());
+            }
+        }
+        System.out.println(hospital.getNormalRooms());
+    }
     public void setNormalPrice(int normalPrice) {
         this.normalPrice = normalPrice;
     }
