@@ -1,14 +1,15 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Hospital {
     private String name;
     private Address address;
-    private int beds = 12;
-    private Part part = new Part();
     private ArrayList<Doctor> doctors = new ArrayList<>();
     private ArrayList<Patient> patients = new ArrayList<>();
+    private HashMap<Integer, Integer> normalRooms = new HashMap();
+    private HashMap<Integer, Integer> emergencyRooms = new HashMap();
 
 
     public boolean sameId(Doctor doctor) {
@@ -19,37 +20,32 @@ public class Hospital {
         }
         return false;
     }
-
-    public void setPart(Part part) {
-        this.part = part;
-    }
-
-    public void setDoctors(Doctor doctor) {
-        this.doctors.add(doctor);
-    }
-
     public ArrayList<Doctor> getDoctors() {
         return doctors;
     }
-
+    public void setDoctors(Doctor doctor) {
+        this.doctors.add(doctor);
+    }
     public void setName(String name) {
         this.name = name;
     }
-
-    public void setBeds(int beds) {
-        this.beds = beds;
-    }
-
     public void setAddress(Address address) {
         this.address = address;
     }
-
     public String toString() {
-        return name + " " + address + " " + beds + " " + part.getPartKind();
+        return name + " " + address;
     }
-
     public ArrayList<Patient> getPatients() {
         return patients;
+    }
+    public HashMap<Integer, Integer> getNormalRooms() {
+        return normalRooms;
+    }
+    public HashMap<Integer, Integer> getEmergencyRooms() {
+        return emergencyRooms;
+    }
+    public void hospitalMenu(){
+        System.out.println("---------- Hospital ----------");
     }
 }
 

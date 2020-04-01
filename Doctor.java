@@ -205,6 +205,37 @@ public class Doctor {
         }
         return false;
     }
+    public static void doctorMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts) {
+        int option = 0;
+        while (option != 5) {
+            System.out.println("----------- Doctor's Menu -----------");
+            System.out.println("1. Add doctor");
+            System.out.println("2. Choose doctor's shift");
+            System.out.println("3. Doctor information");
+            System.out.println("4. Remove doctor");
+            System.out.println("5. Back to previous menu");
+            System.out.println("---------------------------------------");
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    doctor.addDoctor(hospital);
+                    break;
+                case 2:
+                    doctor.addShift(hospital, weaklyShifts);
+                    break;
+                case 3:
+                    doctor.showDoctor(hospital, weaklyShifts);
+                    break;
+                case 4:
+                    doctor.remove(hospital);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Wrong input");
+            }
+        }
+    }
 }
 enum ShiftsTime {
     MORNING, AFTER_NOON, NIGHT;

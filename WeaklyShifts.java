@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class WeaklyShifts {
+    Scanner scanner = new Scanner(System.in);
     private ArrayList<Map> saturdayShift = new ArrayList<Map>();
     private ArrayList<Map> sundayShift = new ArrayList<Map>();
     private ArrayList<Map> mondayShift = new ArrayList<Map>();
@@ -13,6 +14,7 @@ public class WeaklyShifts {
     private ArrayList<Map> wednesdayShift = new ArrayList<Map>();
     private ArrayList<Map> thursdayShift = new ArrayList<Map>();
     private ArrayList<Map> fridayShift = new ArrayList<Map>();
+//    private Map[] days = new Map[7];
 
     public ArrayList<Map> getSaturdayShift() {
         return saturdayShift;
@@ -42,7 +44,7 @@ public class WeaklyShifts {
         return fridayShift;
     }
 
-    public void showShift(Scanner scanner) {
+    public void showShift() {
         System.out.println("Pick a day ");
         Doctor.showDay();
         Week week = Week.WEDNESDAY;
@@ -94,19 +96,18 @@ public class WeaklyShifts {
     }
 
     public boolean doctorHaveShiftThisDay(Doctor doctor, ArrayList<Map> getDayShift, ShiftsTime shiftsTime) {
-        ArrayList<Set<Map.Entry<String, Integer>>> temp = new ArrayList<>();
+        ArrayList<Set<Map.Entry<String, Doctor>>> temp = new ArrayList<>();
         for (int i = 0; i < getDayShift.size(); i++) {
             temp.add(getDayShift.get(i).entrySet());
         }
         for (int i = 0; i < getDayShift.size(); i++) {
-            if (doctor.getId() == temp.get(i).stream().iterator().next().getValue() &&
+            if (doctor.getId() == temp.get(i).stream().iterator().next().getValue().getId() &&
                     shiftsTime.name() == temp.get(i).stream().iterator().next().getKey()) {
                 return true;
             }
         }
         return false;
     }
-
 }
 
 enum Week {

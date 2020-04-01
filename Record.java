@@ -18,7 +18,7 @@ public class Record {
 }
 
 enum Disease {
-    burn, strike, accident, somethingElse;
+    BURN,STRIKE,ACCIDENT,SOMETHING_ELSE
 }
 
 enum Insurance {
