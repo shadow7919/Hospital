@@ -1,17 +1,17 @@
 package ir.ac.kntu;
 
-import javax.print.Doc;
 import java.util.*;
 
 public class Doctor {
     Scanner scanner = new Scanner(System.in);
     private String name;
-    private int PatientNumber;
+    private int patientId = 0 ;
     private int id;
     private Nurse nurseOne;
     private Nurse nurseTwo;
     private Map<String, String> shifts = new HashMap<>();
     private Week daysShift;
+    private ArrayList <Patient> patients = new ArrayList<>();
 
     public void addDoctor(Hospital hospital) {
         Doctor tempDoctor = new Doctor();
@@ -235,6 +235,14 @@ public class Doctor {
                     System.out.println("Wrong input");
             }
         }
+    }
+
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
+    }
+
+    public ArrayList<Patient> getPatients() {
+        return patients;
     }
 }
 enum ShiftsTime {
