@@ -1,6 +1,5 @@
 package ir.ac.kntu;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,10 +9,10 @@ public class Nurse {
     private int id;
     private ArrayList<Doctor> doctors = new ArrayList<>();
     private boolean isPartSource;
-    private WeaklyShifts weaklyShifts = new WeaklyShifts();
+    private ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
     public void NurseMenu(Hospital hospital) {
-        int option = 0;
+        int option;
         while (true) {
             printMenu();
             option = scanner.nextInt();
@@ -25,7 +24,7 @@ public class Nurse {
                     showNurses(hospital);
                     break;
                 case 3:
-                    //nurses shiift
+                    showNurseShifts(hospital);
                     break;
                 case 4:
                     return;
@@ -91,24 +90,43 @@ public class Nurse {
         if (nurse.isPartSource) {
             System.out.println(name + " work in part source ");
         } else {
-            for (Doctor doctor : nurse.doctors){
+            for (Doctor doctor : nurse.doctors) {
                 System.out.println("The doctor of " + nurse.name + " is");
-                System.out.println(doctor.getName()+"   "+doctor.getId());
+                System.out.println(doctor.getName() + "   " + doctor.getId());
             }
+        }
+    }
+
+    public void showNurseShifts(Hospital hospital) {
+        System.out.println("Enter id for Nurse");
+        int inputId = scanner.nextInt();
+        while (sameId(hospital, inputId) == null) {
+            System.out.println("we cant find someone with this id");
+            inputId = scanner.nextInt();
+        }
+        Nurse nurse = sameId(hospital, inputId);
+        if (nurse.nurseShift.size() != 0) {
+            for (ShiftTimeClass shiftTimeClass : nurse.nurseShift) {
+                System.out.println(shiftTimeClass.shiftsTime + " OF " + shiftTimeClass.week);
+            }
+        } else {
+            System.out.println("no shift is added for this nurse");
         }
     }
 
     private void chooseNurseDoctor(Hospital hospital) {
         if (hospital.getDoctors().size() > 0) {
-                for (Doctor doctor : hospital.getDoctors()){
-                    if (doctor.getNurses().size() < 2) {
-                        doctors.add(doctor);
-                    }
-                    if(doctors.size()==2){
-                        break;
-                    }
+            for (Doctor doctor : hospital.getDoctors()) {
+                if (doctor.getNurses().size() < 2) {
+                    doctors.add(doctor);
+                    this.nurseShift.addAll(doctor.getDoctorShift());
+                }
+                if (doctors.size() == 2) {
+                    break;
+                }
             }
-        }else{
+
+        } else {
             System.out.println("There is no doctor to add");
         }
     }
