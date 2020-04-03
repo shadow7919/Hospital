@@ -66,9 +66,9 @@ public class WeaklyShifts {
     }
 
     public boolean doctorHaveShiftThisDay(Doctor doctor, ShiftsTime shiftsTime, HashMap<Doctor, Nurse> dayShifts) {
-        ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.getDaysShift(),shiftsTime);
+        ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.getDaysShift(), shiftsTime);
         for (Doctor myDoctor : dayShifts.keySet()) {
-            if (doctor.getId() == myDoctor.getId() && doctor.getDoctorShift().contains(shiftTimeClass)) {
+            if (doctor.getId() == myDoctor.getId() && doctor.getDoctorShift().iterator().next().shiftsTime.equals(shiftTimeClass.shiftsTime)) {
                 return true;
             }
         }
