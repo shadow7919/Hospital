@@ -2,6 +2,19 @@ package ir.ac.kntu;
 
 import java.util.Scanner;
 
+enum Gender {
+    M("his"), F("her");
+    private String gender;
+
+    private Gender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+}
+
 public class Patient {
     Scanner scanner = new Scanner(System.in);
     private String name;
@@ -10,7 +23,11 @@ public class Patient {
     private Room room = new Room();
     private Doctor doctor;
     private Disease disease;
-    private MyDate entry = new MyDate();
+    private Insurance insurance;
+    private MyDate entry;
+    private MyDate departure;
+    private int howManyDays;
+    private int totalPrice;
 
     public void addPatient(Hospital hospital) {
         System.out.println("----------- Add Patient -----------");
@@ -30,12 +47,13 @@ public class Patient {
                     System.out.println("Wrong gender");
                 }
             }
-            System.out.print("enter "+gender.getGender() +" name : ");
+            System.out.print("enter " + gender.getGender() + " name : ");
             name = scanner.nextLine();
             System.out.print("entry date ( day / month / year ) :");
-            entry.setDay(scanner.nextInt());
-            entry.setMonth(scanner.nextInt());
-            entry.setYear(scanner.nextInt());
+            int entryDay = scanner.nextInt();
+            int entryMonth = scanner.nextInt();
+            int entryYear = scanner.nextInt();
+            entry = new MyDate(entryYear, entryMonth, entryDay);
             choosePart();
             whichDisease();
             room.pickRoom(hospital, part.getPartKind(), this, part);
@@ -94,7 +112,7 @@ public class Patient {
                     patient = hospital.getPatients().get(i);
                     System.out.println(patient.name + " is  in " + patient.part.getPartKind() + " PART");
                     System.out.println("entry date is : " + entry.getDay() + " / " + entry.getMonth() + " / " + entry.getYear());
-                    if(patient.doctor != null) {
+                    if (patient.doctor != null) {
                         System.out.println("Doctor of " + patient.name + " is " + patient.doctor.getName() + " ( doctors id : " + patient.doctor.getId() + " )");
                     }
                     System.out.println(patient.name + " is in room " + room.getRoomNumber());
@@ -131,7 +149,7 @@ public class Patient {
                     patientShow(hospital);
                     break;
                 case 4:
-//                    dischargePatient();
+                    dischargePatient(hospital);
                     break;
                 case 5:
                     return;
@@ -162,21 +180,83 @@ public class Patient {
         patient.doctor = doctor;
         doctor.setPatientId(patient.id);
     }
-    public Doctor whichDoctorHavePatient(Hospital hospital){
+
+    public Doctor whichDoctorHavePatient(Hospital hospital) {
         int minPatientNumber = Integer.MAX_VALUE;
         Doctor chosenDoctor = new Doctor();
-        for (Doctor doctor : hospital.getDoctors()){
-            if(doctor.getPatients().size() < minPatientNumber){
+        for (Doctor doctor : hospital.getDoctors()) {
+            if (doctor.getPatients().size() < minPatientNumber) {
                 minPatientNumber = doctor.getPatients().size();
-                chosenDoctor = doctor ;
+                chosenDoctor = doctor;
             }
         }
-        if(chosenDoctor.getPatients().size()<5){
+        if (chosenDoctor.getPatients().size() < 5) {
             return doctor;
-        }else{
+        } else {
             return null;
         }
     }
+
+    public void dischargePatient(Hospital hospital) {
+        Patient patient;
+        System.out.println("---------- DISCHARGE ----------");
+        System.out.println("enter the id");
+        int inputId = scanner.nextInt();
+        if (checkId(hospital, inputId) != null) {
+            patient = checkId(hospital, inputId);
+            System.out.println("Enter the date of departure (day , month,year)");
+            int day = scanner.nextInt();
+            int month = scanner.nextInt();
+            int year = scanner.nextInt();
+            patient.departure = new MyDate(year, month, day);
+            patient.howManyDays = howLong(entry, departure);
+            patient.room.discountForRoom(patient.room);
+            patient.totalPrice = patient.room.getPrice() * patient.howManyDays;
+            haveInsurance(patient);
+            System.out.println(patient.totalPrice);
+        } else {
+            System.out.println("No patient saved with this id ");
+        }
+        System.out.println("-----------------------------------");
+    }
+
+    private void haveInsurance(Patient patient) {
+        System.out.println("Does " + patient.name + " have insurance ");
+        System.out.println("1 --> " + Insurance.armedForces);
+        System.out.println("2 --> " + Insurance.socialInsurance);
+        System.out.println("3 --> " + Insurance.healthService);
+        System.out.println("if you don't have Insurance enter another Integer ");
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1:
+                patient.totalPrice *= Insurance.armedForces.getDiscount();
+                break;
+            case 2:
+                patient.totalPrice *= Insurance.socialInsurance.getDiscount();
+                break;
+            case 3:
+                patient.totalPrice *= Insurance.healthService.getDiscount();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public int howLong(MyDate entry, MyDate departure) {
+        int differenceYear = departure.getYear() - entry.getYear();
+        int differenceMonthToDay = monthToDay(departure.getMonth()) - monthToDay(entry.getMonth());
+        int differenceDay = departure.getDay() - entry.getDay();
+        return differenceYear * 365 + differenceMonthToDay + differenceDay;
+    }
+
+    private int monthToDay(int month) {
+        if (month < 7) {
+            return month * 31;
+        } else {
+            return 6 * 31 + (month - 6) * 30;
+        }
+    }
+
     public int getId() {
         return id;
     }
@@ -185,24 +265,6 @@ public class Patient {
         this.room = room;
     }
 }
-enum Gender{
-    M("his"),F("her");
-    private String gender;
-    private Gender(String gender){
-        this.gender = gender;
-    }
-    public String getGender(){
-        return gender;
-    }
-}
 /*
-1--> add patient{
-enter the name
-enter the id
-enter the room
-enter gender
-enter the age
-enter entry date
-pick doctor
-}
+enter the age for patient
  */

@@ -21,16 +21,16 @@ enum Disease {
 }
 
 enum Insurance {
-    socialInsurance(10),
-    armedForces(50),
-    healthService(25);
-    private int discount;
+    socialInsurance(.9),
+    armedForces(.5),
+    healthService(.75);
+    private double discount;
 
-    Insurance(int num) {
+    Insurance(double num) {
         discount = num;
     }
 
-    public int getDiscount() {
+    public double getDiscount() {
         return discount;
     }
 }
