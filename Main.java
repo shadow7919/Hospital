@@ -1,6 +1,9 @@
 package ir.ac.kntu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 import java.util.Scanner;
 
 public class Main {
@@ -10,16 +13,11 @@ public class Main {
         Address address = new Address();
         Part part = new Part();
         Doctor doctor = new Doctor();
-        Room room = new Room();
         Patient patient = new Patient();
         WeaklyShifts weaklyShifts = new WeaklyShifts();
-        HashMap<Integer, Integer> rooms = new HashMap();
+        Nurse nurse = new Nurse();
 //        welcome(scanner, hospital, address, part);
-//        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient);
-        part.makeRooms(hospital);
-//        System.out.println(hospital.getNormalRooms());
-//        System.out.println(hospital.getEmergencyRooms());
-        room.pickRoom(hospital,PartKind.NORMAL);
+        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient,nurse);
     }
 
     public static void welcome(Scanner scanner, Hospital hospital, Address address, Part part) {
@@ -45,7 +43,7 @@ public class Main {
         System.out.println("5 --> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient) {
+    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient,Nurse nurse) {
         MenuOptions menuOptions = MenuOptions.DOCTOR;
         String choose;
         while (true) {
@@ -55,7 +53,7 @@ public class Main {
                 menuOptions = menuOptions.valueOf(choose);
                 switch (menuOptions) {
                     case DOCTOR:
-                        doctor.doctorMenu(scanner, doctor, hospital, weaklyShifts);
+                        doctor.doctorMenu(scanner, doctor, hospital, weaklyShifts,nurse);
                         break;
                     case PATIENT:
                         patient.printMenu(hospital);
@@ -74,7 +72,6 @@ public class Main {
             }
         }
     }
-
 
     enum MenuOptions {
         DOCTOR, PATIENT, ROOM, HOSPITAL, QUITE;

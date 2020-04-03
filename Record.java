@@ -16,7 +16,6 @@ public class Record {
     private char gender;
     private int age;
 }
-
 enum Disease {
     BURN,STRIKE,ACCIDENT,SOMETHING_ELSE
 }

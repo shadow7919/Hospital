@@ -10,8 +10,6 @@ public class Patient {
     private Room room = new Room();
     private Doctor doctor;
     private Disease disease;
-    //    private int age;
-//    private int caseId;
     private MyDate entry = new MyDate();
 
     public void addPatient(Hospital hospital) {
@@ -133,6 +131,7 @@ public class Patient {
                     patientShow(hospital);
                     break;
                 case 4:
+//                    dischargePatient();
                     break;
                 case 5:
                     return;
@@ -184,12 +183,6 @@ public class Patient {
 
     public void setRoom(Room room) {
         this.room = room;
-    }
-    public void setDoctor(Doctor doctor){
-        this.doctor = doctor;
-    }
-    public void setId(int id){
-        this.id = id ;
     }
 }
 enum Gender{
