@@ -36,11 +36,12 @@ public class Main {
 
     public static void menu() {
         System.out.println("choose what to do");
-        System.out.println("1 --> " + MenuOptions.DOCTOR);
-        System.out.println("2 --> " + MenuOptions.PATIENT);
-        System.out.println("3 --> " + MenuOptions.ROOM);
-        System.out.println("4 --> " + MenuOptions.HOSPITAL);
-        System.out.println("5 --> " + MenuOptions.QUITE);
+        System.out.println("---> " + MenuOptions.DOCTOR);
+        System.out.println("---> "+ MenuOptions.NURSE);
+        System.out.println("---> " + MenuOptions.PATIENT);
+        System.out.println("---> " + MenuOptions.ROOM);
+        System.out.println("---> " + MenuOptions.HOSPITAL);
+        System.out.println("---> " + MenuOptions.QUITE);
     }
 
     public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient,Nurse nurse) {
@@ -55,6 +56,9 @@ public class Main {
                     case DOCTOR:
                         doctor.doctorMenu(scanner, doctor, hospital, weaklyShifts,nurse);
                         break;
+                    case NURSE:
+                        nurse.NurseMenu(hospital);
+                        break;
                     case PATIENT:
                         patient.printMenu(hospital);
                         break;
@@ -68,12 +72,12 @@ public class Main {
                     default:
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("Wrong input ");
+                System.out.println("Wrong input");
             }
         }
     }
 
     enum MenuOptions {
-        DOCTOR, PATIENT, ROOM, HOSPITAL, QUITE;
+        DOCTOR, PATIENT,NURSE,ROOM, HOSPITAL, QUITE;
     }
 }

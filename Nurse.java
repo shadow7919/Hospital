@@ -1,5 +1,6 @@
 package ir.ac.kntu;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,9 +8,42 @@ public class Nurse {
     Scanner scanner = new Scanner(System.in);
     private String name;
     private int id;
-    private ArrayList<Doctor> doctors;
+    private ArrayList<Doctor> doctors = new ArrayList<>();
     private boolean isPartSource;
     private WeaklyShifts weaklyShifts = new WeaklyShifts();
+
+    public void NurseMenu(Hospital hospital) {
+        int option = 0;
+        while (true) {
+            printMenu();
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    addNurses(hospital);
+                    break;
+                case 2:
+                    showNurses(hospital);
+                    break;
+                case 3:
+                    //nurses shiift
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Wrong input ");
+                    break;
+            }
+        }
+    }
+
+    private void printMenu() {
+        System.out.println("---------- NURSE ---------");
+        System.out.println("1 --> add nurse");
+        System.out.println("2 --> show nurse");
+        System.out.println("3 --> show nurse shifts");
+        System.out.println("4 -- > Back to previous menu");
+        System.out.println("---------------------------");
+    }
 
     public void addNurses(Hospital hospital) {
         System.out.println("-------- Add Nurse --------");
@@ -37,6 +71,9 @@ public class Nurse {
             input = scanner.next();
         }
         isPartSource = yesOrNo.isInside();
+        if (!isPartSource) {
+            chooseNurseDoctor(hospital);
+        }
         hospital.getAllNurses().add(this);
     }
 
@@ -50,18 +87,29 @@ public class Nurse {
             inputId = scanner.nextInt();
         }
         nurse = sameId(hospital, inputId);
-        System.out.println("ID : " + nurse.id + " Name : " + nurse.name);
+        System.out.println("ID : " + nurse.id + "       Name : " + nurse.name);
         if (nurse.isPartSource) {
             System.out.println(name + " work in part source ");
         } else {
-            if (nurse.doctors.get(0) != null) {
-                System.out.println("The doctor of " + nurse.name);
-                System.out.println(nurse.doctors.get(0).getId());
+            for (Doctor doctor : nurse.doctors){
+                System.out.println("The doctor of " + nurse.name + " is");
+                System.out.println(doctor.getName()+"   "+doctor.getId());
             }
-            if (nurse.doctors.get(1) != null) {
-                System.out.println("The doctor of " + nurse.name);
-                System.out.println(nurse.doctors.get(0).getId());
+        }
+    }
+
+    private void chooseNurseDoctor(Hospital hospital) {
+        if (hospital.getDoctors().size() > 0) {
+                for (Doctor doctor : hospital.getDoctors()){
+                    if (doctor.getNurses().size() < 2) {
+                        doctors.add(doctor);
+                    }
+                    if(doctors.size()==2){
+                        break;
+                    }
             }
+        }else{
+            System.out.println("There is no doctor to add");
         }
     }
 
