@@ -6,7 +6,7 @@ enum Gender {
     M("his"), F("her");
     private String gender;
 
-    private Gender(String gender) {
+    Gender(String gender) {
         this.gender = gender;
     }
 
@@ -56,7 +56,7 @@ public class Patient {
             entry = new MyDate(entryYear, entryMonth, entryDay);
             choosePart();
             whichDisease();
-            room.pickRoom(hospital, part.getPartKind(), this, part);
+            room.pickRoom(hospital, part.getPartKind(), this);
             // age , insurance,case id,
             hospital.getPatients().add(this);
         } else {
@@ -263,6 +263,10 @@ public class Patient {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public String getName() {
+        return name;
     }
 }
 /*

@@ -12,14 +12,12 @@ public class Main {
         Patient patient = new Patient();
         WeaklyShifts weaklyShifts = new WeaklyShifts();
         Nurse nurse = new Nurse();
-//        MyDate first = new MyDate(96,1,2);
-//        MyDate second = new MyDate(98,8,7);
-//        System.out.println(patient.howLong(first,second));
-//        welcome(scanner, hospital, address, part);
-        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse);
+        Room room = new Room();
+        welcome(scanner, hospital, address, part,room);
+        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse,room);
     }
 
-    public static void welcome(Scanner scanner, Hospital hospital, Address address, Part part) {
+    public static void welcome(Scanner scanner, Hospital hospital, Address address, Part part,Room room) {
         System.out.println("welcome\nlet's begin ...");
         System.out.println("please give us name ");
         hospital.setName(scanner.nextLine());
@@ -29,7 +27,7 @@ public class Main {
         address.setOther(scanner.nextLine());
         hospital.setAddress(address);
         System.out.println("--------- Rooms and Price ---------");
-        part.makeRooms(hospital);
+        part.makeRooms(hospital,room);
         System.out.println("------------------------------------");
     }
 
@@ -43,7 +41,7 @@ public class Main {
         System.out.println("---> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse) {
+    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse,Room room) {
         MenuOptions menuOptions = MenuOptions.DOCTOR;
         String choose;
         while (true) {
@@ -62,7 +60,8 @@ public class Main {
                         patient.printMenu(hospital);
                         break;
                     case ROOM:
-                        weaklyShifts.showShift();
+                        room.menu(hospital);
+//                        weaklyShifts.showShift();
                         break;
                     case HOSPITAL:
                         hospital.hospitalMenu();
