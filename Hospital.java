@@ -8,8 +8,9 @@ public class Hospital {
     private Address address;
     private ArrayList<Doctor> doctors = new ArrayList<>();
     private ArrayList<Patient> patients = new ArrayList<>();
-    private HashMap<Integer, Integer> normalRooms = new HashMap();
-    private HashMap<Integer, Integer> emergencyRooms = new HashMap();
+    private ArrayList<Room> normalRooms = new ArrayList<>();
+    private ArrayList<Room> emergencyRooms = new ArrayList<>();
+    private ArrayList<Nurse> allNurses = new ArrayList<>();
 
 
     public boolean sameId(Doctor doctor) {
@@ -26,6 +27,11 @@ public class Hospital {
     public void setDoctors(Doctor doctor) {
         this.doctors.add(doctor);
     }
+
+    public ArrayList<Nurse> getAllNurses() {
+        return allNurses;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -38,12 +44,15 @@ public class Hospital {
     public ArrayList<Patient> getPatients() {
         return patients;
     }
-    public HashMap<Integer, Integer> getNormalRooms() {
+
+    public ArrayList<Room> getNormalRooms() {
         return normalRooms;
     }
-    public HashMap<Integer, Integer> getEmergencyRooms() {
+
+    public ArrayList<Room> getEmergencyRooms() {
         return emergencyRooms;
     }
+
     public void hospitalMenu(){
         System.out.println("---------- Hospital ----------");
     }
