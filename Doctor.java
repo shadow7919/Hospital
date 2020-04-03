@@ -14,8 +14,7 @@ public class Doctor {
     private int patientId = 0;
     private int id;
     private ArrayList<Nurse> nurses = new ArrayList<>();
-//    private HashMap<ShiftsTime, Week> doctorShift = new HashMap<ShiftsTime, Week>(); // first one is time and second one is day
-    private ArrayList<ShiftTimeClass> doctorShift= new ArrayList<>();
+    private ArrayList<ShiftTimeClass> doctorShift = new ArrayList<>();
     private Week daysShift;
     private ArrayList<Patient> patients = new ArrayList<>();
 
@@ -108,8 +107,8 @@ public class Doctor {
     private void doctorInfo(Doctor doctor) {
         System.out.println("Name : " + doctor.name + "   Id : " + doctor.id);
         if (doctor.doctorShift.size() != 0) {
-            for(ShiftTimeClass shift : doctor.doctorShift){
-                System.out.println(shift.shiftsTime + " of "+ shift.week);
+            for (ShiftTimeClass shift : doctor.doctorShift) {
+                System.out.println(shift.shiftsTime + " of " + shift.week);
             }
         } else {
             System.out.println("No shift is added ");
@@ -122,13 +121,24 @@ public class Doctor {
         System.out.println("Enter the doctor ID");
         inputId = scanner.nextInt();
         if (findDoctor(hospital, inputId) != null) {
-            System.out.println("Pick a day ");
-            chosenDay = whichDay(weaklyShifts,findDoctor(hospital,inputId));
-            handleSHift(findDoctor(hospital, inputId),chosenDay,weaklyShifts, nurse);
+            if (checkDoctorShift(findDoctor(hospital, inputId))) {
+                System.out.println("Pick a day ");
+                chosenDay = whichDay(weaklyShifts, findDoctor(hospital, inputId));
+                handleSHift(findDoctor(hospital, inputId), chosenDay, weaklyShifts, nurse);
+            }
         } else {
             System.out.println("can't find this ID");
         }
         System.out.println("--------------------------------------");
+    }
+
+    private boolean checkDoctorShift(Doctor doctor) {
+        if (doctor.doctorShift.size() == 5) {
+            System.out.println(doctor.name +" already have 5 shifts");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void handleSHift(Doctor doctor, HashMap<Doctor, Nurse> chosenDay, WeaklyShifts weaklyShifts, Nurse nurse) {
@@ -140,7 +150,7 @@ public class Doctor {
         switch (choose) {
             case 1:
                 if (!isTaken(ShiftsTime.MORNING, doctor, weaklyShifts)) {
-                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift,ShiftsTime.MORNING);
+                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.MORNING);
                     doctor.doctorShift.add(shiftTimeClass);
                     chosenDay.put(doctor, nurse);
                 } else {
@@ -148,8 +158,8 @@ public class Doctor {
                 }
                 break;
             case 2:
-                if (!isTaken(ShiftsTime.AFTER_NOON, doctor, weaklyShifts)){
-                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift,ShiftsTime.AFTER_NOON);
+                if (!isTaken(ShiftsTime.AFTER_NOON, doctor, weaklyShifts)) {
+                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.AFTER_NOON);
                     doctor.doctorShift.add(shiftTimeClass);
                     chosenDay.put(doctor, nurse);
                 } else {
@@ -158,7 +168,7 @@ public class Doctor {
                 break;
             case 3:
                 if (!isTaken(ShiftsTime.NIGHT, doctor, weaklyShifts)) {
-                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift,ShiftsTime.NIGHT);
+                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.NIGHT);
                     doctor.doctorShift.add(shiftTimeClass);
                     chosenDay.put(doctor, nurse);
                 } else {
@@ -170,7 +180,7 @@ public class Doctor {
         }
     }
 
-    private HashMap<Doctor, Nurse> whichDay(WeaklyShifts weaklyShifts, Doctor doctor){
+    private HashMap<Doctor, Nurse> whichDay(WeaklyShifts weaklyShifts, Doctor doctor) {
         showDay();
         int choose = scanner.nextInt();
         while (true) {
