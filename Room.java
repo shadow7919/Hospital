@@ -19,20 +19,21 @@ public class Room {
     public Room() {
     }
 
+    public void discountForRoom(Room room) {
+        int extraBeds = room.bedsNumber - 1;
+        double discount = ((double) (extraBeds * 10)) / 100;
+        if (discount != 0) {
+            discount = 1 - discount;
+            room.price *= discount;
+        }
+    }
+
     public void addRoom(Hospital hospital) {
         System.out.println("Enter the room number and beds Number");
         int roomNumber = scanner.nextInt();
         int bedsNumber = scanner.nextInt();
         Room room = new Room(roomNumber, bedsNumber, 0);
         hospital.getNormalRooms().add(room);
-    }
-
-    public void setBedsNumber(int bedsNumber) {
-        this.bedsNumber = bedsNumber;
-    }
-
-    public int getRoomNumber() {
-        return roomNumber;
     }
 
     public void pickRoom(Hospital hospital, PartKind partKind, Patient patient, Part part) {
@@ -104,5 +105,17 @@ public class Room {
             }
         }
         System.out.println("Can't find that room");
+    }
+
+    public void setBedsNumber(int bedsNumber) {
+        this.bedsNumber = bedsNumber;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }
