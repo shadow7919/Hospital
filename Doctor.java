@@ -11,7 +11,6 @@ enum ShiftsTime {
 public class Doctor {
     Scanner scanner = new Scanner(System.in);
     private String name;
-    private int patientId = 0;
     private int id;
     private ArrayList<Nurse> nurses = new ArrayList<>();
     private ArrayList<ShiftTimeClass> doctorShift = new ArrayList<>();
@@ -135,7 +134,7 @@ public class Doctor {
 
     private boolean checkDoctorShift(Doctor doctor) {
         if (doctor.doctorShift.size() == 5) {
-            System.out.println(doctor.name + " already have 5 shifts");
+            System.out.println(doctor.name +" already have 5 shifts");
             return false;
         } else {
             return true;
@@ -241,11 +240,6 @@ public class Doctor {
         return false;
     }
 
-
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
-    }
-
     public ArrayList<Patient> getPatients() {
         return patients;
     }
@@ -253,7 +247,6 @@ public class Doctor {
     public ArrayList<ShiftTimeClass> getDoctorShift() {
         return doctorShift;
     }
-
     public int getId() {
         return id;
     }
