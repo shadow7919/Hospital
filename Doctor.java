@@ -53,6 +53,7 @@ public class Doctor {
                     doctor.remove(hospital);
                     break;
                 case 5:
+                    scanner.nextLine();
                     return;
                 default:
                     System.out.println("Wrong input");
@@ -134,7 +135,7 @@ public class Doctor {
 
     private boolean checkDoctorShift(Doctor doctor) {
         if (doctor.doctorShift.size() == 5) {
-            System.out.println(doctor.name +" already have 5 shifts");
+            System.out.println(doctor.name + " already have 5 shifts");
             return false;
         } else {
             return true;
@@ -263,5 +264,9 @@ public class Doctor {
 
     public Week getDaysShift() {
         return daysShift;
+    }
+
+    public ArrayList<Nurse> getNurses() {
+        return nurses;
     }
 }

@@ -1,7 +1,6 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Hospital {
     private String name;
@@ -21,9 +20,11 @@ public class Hospital {
         }
         return false;
     }
+
     public ArrayList<Doctor> getDoctors() {
         return doctors;
     }
+
     public void setDoctors(Doctor doctor) {
         this.doctors.add(doctor);
     }
@@ -35,12 +36,15 @@ public class Hospital {
     public void setName(String name) {
         this.name = name;
     }
+
     public void setAddress(Address address) {
         this.address = address;
     }
+
     public String toString() {
         return name + " " + address;
     }
+
     public ArrayList<Patient> getPatients() {
         return patients;
     }
@@ -53,7 +57,7 @@ public class Hospital {
         return emergencyRooms;
     }
 
-    public void hospitalMenu(){
+    public void hospitalMenu() {
         System.out.println("---------- Hospital ----------");
     }
 }

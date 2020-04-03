@@ -1,9 +1,5 @@
 package ir.ac.kntu;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import java.util.Scanner;
 
 public class Main {
@@ -16,8 +12,11 @@ public class Main {
         Patient patient = new Patient();
         WeaklyShifts weaklyShifts = new WeaklyShifts();
         Nurse nurse = new Nurse();
+//        MyDate first = new MyDate(96,1,2);
+//        MyDate second = new MyDate(98,8,7);
+//        System.out.println(patient.howLong(first,second));
 //        welcome(scanner, hospital, address, part);
-        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient,nurse);
+        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse);
     }
 
     public static void welcome(Scanner scanner, Hospital hospital, Address address, Part part) {
@@ -37,14 +36,14 @@ public class Main {
     public static void menu() {
         System.out.println("choose what to do");
         System.out.println("---> " + MenuOptions.DOCTOR);
-        System.out.println("---> "+ MenuOptions.NURSE);
+        System.out.println("---> " + MenuOptions.NURSE);
         System.out.println("---> " + MenuOptions.PATIENT);
         System.out.println("---> " + MenuOptions.ROOM);
         System.out.println("---> " + MenuOptions.HOSPITAL);
         System.out.println("---> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient,Nurse nurse) {
+    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse) {
         MenuOptions menuOptions = MenuOptions.DOCTOR;
         String choose;
         while (true) {
@@ -54,7 +53,7 @@ public class Main {
                 menuOptions = menuOptions.valueOf(choose);
                 switch (menuOptions) {
                     case DOCTOR:
-                        doctor.doctorMenu(scanner, doctor, hospital, weaklyShifts,nurse);
+                        doctor.doctorMenu(scanner, doctor, hospital, weaklyShifts, nurse);
                         break;
                     case NURSE:
                         nurse.NurseMenu(hospital);
@@ -78,6 +77,6 @@ public class Main {
     }
 
     enum MenuOptions {
-        DOCTOR, PATIENT,NURSE,ROOM, HOSPITAL, QUITE;
+        DOCTOR, PATIENT, NURSE, ROOM, HOSPITAL, QUITE;
     }
 }

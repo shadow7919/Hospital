@@ -1,6 +1,6 @@
 package ir.ac.kntu;
 
-public class ShiftTimeClass{
+public class ShiftTimeClass {
     public Week week;
     public ShiftsTime shiftsTime;
 
