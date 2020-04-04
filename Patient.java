@@ -45,7 +45,7 @@ public class Patient {
                     getDoctor(hospital);
                     break;
                 case 5:
-//                    change()
+                    change(hospital);
                     break;
                 case 6:
                     return;
@@ -100,14 +100,16 @@ public class Patient {
                 setAge(patient);
                 break;
             case 3:
+                chooseGender(patient);
                 break;
             case 4:
+                entryDateSet(patient);
                 break;
             case 5:
+                whichDisease(patient);
                 break;
             case 6:
-                break;
-            case 7:
+                room.pickRoom(hospital, this);
                 break;
             default:
                 System.out.println("out");
@@ -124,7 +126,6 @@ public class Patient {
         System.out.println("4 --> entryDate");
         System.out.println("5 --> Disease");
         System.out.println("6 --> Room ");
-        System.out.println("7 --> Doctor");
         System.out.println("Any thing else out ");
     }
 
@@ -136,13 +137,12 @@ public class Patient {
         scanner.nextLine();
         if (checkId(hospital, inputId) == null) {
             id = inputId;
-            System.out.println("What is the gender of patient M or F");
-            chooseGender();
+            chooseGender(this);
             System.out.print("enter " + gender.getGender() + " name : ");
             name = scanner.nextLine();
             setAge(this);
-            entryDateSet();
-            whichDisease();
+            entryDateSet(this);
+            whichDisease(this);
             room.pickRoom(hospital, this);
             caseId = random.nextInt(100000) + age + id % 100000;
             doctor = whichDoctorHavePatient(hospital);
@@ -170,13 +170,13 @@ public class Patient {
         }
     }
 
-    private void entryDateSet() {
+    private void entryDateSet(Patient patient) {
         while (true) {
             System.out.print("Enter entry date ( day / month / year ) :");
             int entryDay = scanner.nextInt();
             int entryMonth = scanner.nextInt();
             int entryYear = scanner.nextInt();
-            entry = new MyDate(entryYear, entryMonth, entryDay);
+            patient.entry = new MyDate(entryYear, entryMonth, entryDay);
             if (entry.getYear() != 0) {
                 break;
             }
@@ -184,11 +184,12 @@ public class Patient {
         }
     }
 
-    private void chooseGender() {
+    private void chooseGender(Patient patient) {
+        System.out.println("What is the gender of patient M or F");
         while (true) {
             String chooseGender = scanner.nextLine();
             try {
-                gender = Gender.valueOf(chooseGender);
+                patient.gender = Gender.valueOf(chooseGender);
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("Wrong gender");
@@ -196,18 +197,15 @@ public class Patient {
         }
     }
 
-    private void whichDisease() {
-        System.out.println("Which disease does" + name + "have ?");
+    private void whichDisease(Patient patient) {
         while (true) {
             System.out.println("---> " + Disease.ACCIDENT);
             System.out.println("---> " + Disease.BURN);
             System.out.println("---> " + Disease.STRIKE);
             System.out.println("---> " + Disease.SOMETHING_ELSE);
             String choose = scanner.next();
-            Disease disease;
             try {
-                disease = Disease.valueOf(choose);
-                this.disease = disease;
+                patient.disease = Disease.valueOf(choose);
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("Wrong input");
@@ -362,6 +360,3 @@ public class Patient {
     }
 
 }
-/*
-enter the age for patient
- */
