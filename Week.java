@@ -1,0 +1,5 @@
+package ir.ac.kntu;
+
+enum Week {
+    SATURDAY, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
+}

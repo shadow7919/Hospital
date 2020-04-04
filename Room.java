@@ -1,5 +1,4 @@
 package ir.ac.kntu;
-// availabe room , patients in room
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -116,13 +115,14 @@ public class Room {
         availableHandle(room);
         hospital.getNormalRooms().add(room);
     }
-    private void availableHandle(Room room){
+
+    private void availableHandle(Room room) {
         YesOrNo yesOrNo;
         System.out.println("Is this room available ?\t" + YesOrNo.YES + " OR " + YesOrNo.NO);
         String choose = scanner.next();
         while (true) {
             try {
-                 yesOrNo = YesOrNo.valueOf(choose);
+                yesOrNo = YesOrNo.valueOf(choose);
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("Wrong input ");
@@ -132,6 +132,7 @@ public class Room {
             room.isAvailable = true;
         }
     }
+
     public void pickRoom(Hospital hospital, Patient patient) {
         Room room;
         room = findRoom(hospital, patient);
@@ -177,6 +178,7 @@ public class Room {
         }
         room.setBedsNumber(bedsNumber);
     }
+
     public void patientsInRoom(Hospital hospital) {
         Room room;
         System.out.println("Patient in Room : ");
@@ -214,6 +216,7 @@ public class Room {
         }
         return null;
     }
+
     public boolean check(int defaultBedNumber) {
         return defaultBedNumber <= 0 || defaultBedNumber > 6;
     }

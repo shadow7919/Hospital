@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-enum ShiftsTime {
-    MORNING, AFTER_NOON, NIGHT;
-}
-
 public class Doctor {
     Scanner scanner = new Scanner(System.in);
     private String name;
@@ -134,7 +130,7 @@ public class Doctor {
 
     private boolean checkDoctorShift(Doctor doctor) {
         if (doctor.doctorShift.size() == 5) {
-            System.out.println(doctor.name +" already have 5 shifts");
+            System.out.println(doctor.name + " already have 5 shifts");
             return false;
         } else {
             return true;
@@ -247,6 +243,7 @@ public class Doctor {
     public ArrayList<ShiftTimeClass> getDoctorShift() {
         return doctorShift;
     }
+
     public int getId() {
         return id;
     }

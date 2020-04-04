@@ -15,6 +15,8 @@ public class Main {
         Room room = new Room();
         welcome(scanner, hospital, address, part,room);
         chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse,room);
+//        room.menu(hospital);
+//        room.findRoom(hospital);
     }
 
     public static void welcome(Scanner scanner, Hospital hospital, Address address, Part part,Room room) {

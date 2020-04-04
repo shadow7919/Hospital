@@ -2,10 +2,6 @@ package ir.ac.kntu;
 
 import java.util.Scanner;
 
-enum PartKind {
-    EMERGENCY, NORMAL;
-}
-
 public class Part {
     Scanner scanner = new Scanner(System.in);
     private int normalRoomsNumber;
@@ -27,7 +23,7 @@ public class Part {
         emergencyRoomsNumber = scanner.nextInt();
         System.out.println("enter the default number of beds for all rooms");
         int defaultBedNumber = scanner.nextInt();
-        while (!room.check(defaultBedNumber)) {
+        while (room.check(defaultBedNumber)) {
             System.out.println("The Max bed each room can have is 6");
             defaultBedNumber = scanner.nextInt();
         }

@@ -2,19 +2,6 @@ package ir.ac.kntu;
 
 import java.util.Scanner;
 
-enum Gender {
-    M("his"), F("her");
-    private String gender;
-
-    Gender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-}
-
 public class Patient {
     Scanner scanner = new Scanner(System.in);
     private String name;
@@ -55,7 +42,7 @@ public class Patient {
             int entryYear = scanner.nextInt();
             entry = new MyDate(entryYear, entryMonth, entryDay);
             whichDisease();
-            room.pickRoom(hospital,this);
+            room.pickRoom(hospital, this);
             // age , insurance,case id,
             hospital.getPatients().add(this);
         } else {
@@ -271,6 +258,20 @@ public class Patient {
     public String getName() {
         return name;
     }
+
+    private enum Gender {
+        M("his"), F("her");
+        private String gender;
+
+        Gender(String gender) {
+            this.gender = gender;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+    }
+
 }
 /*
 enter the age for patient

@@ -3,10 +3,6 @@ package ir.ac.kntu;
 import java.util.HashMap;
 import java.util.Scanner;
 
-enum Week {
-    SATURDAY, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY;
-}
-
 public class WeaklyShifts {
     Scanner scanner = new Scanner(System.in);
     private HashMap<Doctor, Nurse> saturdayShift = new HashMap<>();
