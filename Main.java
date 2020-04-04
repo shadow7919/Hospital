@@ -6,22 +6,21 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Hospital hospital = new Hospital();
-        Part part = new Part();
         Doctor doctor = new Doctor();
         Patient patient = new Patient();
         WeaklyShifts weaklyShifts = new WeaklyShifts();
         Nurse nurse = new Nurse();
         Room room = new Room();
-        welcome(scanner, hospital, part,room);
+        welcome(scanner, hospital,room);
         chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse,room);
     }
 
-    public static void welcome(Scanner scanner, Hospital hospital, Part part,Room room) {
-        System.out.println("welcome\nlet's begin ...");
-        System.out.println("please give us name ");
+    public static void welcome(Scanner scanner, Hospital hospital,Room room) {
+        System.out.println("------------ WELCOME ------------");
+        System.out.print("Hospital name :");
         hospital.setName(scanner.nextLine());
         System.out.println("--------- Rooms and Price ---------");
-        part.makeRooms(hospital,room);
+        room.makeRooms(hospital,room);
         System.out.println("------------------------------------");
     }
 

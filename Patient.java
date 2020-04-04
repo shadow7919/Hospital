@@ -6,7 +6,7 @@ public class Patient {
     Scanner scanner = new Scanner(System.in);
     private String name;
     private int id;
-    private Part part = new Part();
+    private PartKind partKind;
     private Room room = new Room();
     private Doctor doctor;
     private Disease disease;
@@ -57,10 +57,10 @@ public class Patient {
             whichPart = scanner.nextInt();
             switch (whichPart) {
                 case 1:
-                    part.setPartKind(PartKind.NORMAL);
+                    partKind = PartKind.NORMAL;
                     break;
                 case 2:
-                    part.setPartKind(PartKind.EMERGENCY);
+                    partKind = PartKind.EMERGENCY;
                     break;
                 default:
                     System.out.println("Wrong input");
@@ -96,7 +96,7 @@ public class Patient {
             for (int i = 0; i < hospital.getPatients().size(); i++) {
                 if (inputId == hospital.getPatients().get(i).id) {
                     patient = hospital.getPatients().get(i);
-                    System.out.println(patient.name + " is in " + patient.part.getPartKind() + " PART");
+                    System.out.println(patient.name + " is in " + patient.partKind + " PART");
                     System.out.println("entry date is : " + entry.getDay() + " / " + entry.getMonth() + " / " + entry.getYear());
                     if (patient.doctor != null) {
                         System.out.println("Doctor of " + patient.name + " is " + patient.doctor.getName() + " ( doctors id : " + patient.doctor.getId() + " )");
@@ -251,8 +251,8 @@ public class Patient {
         this.room = room;
     }
 
-    public Part getPart() {
-        return part;
+    public void setPartKind(PartKind partKind) {
+        this.partKind = partKind;
     }
 
     public String getName() {
