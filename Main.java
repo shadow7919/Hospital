@@ -11,16 +11,16 @@ public class Main {
         WeaklyShifts weaklyShifts = new WeaklyShifts();
         Nurse nurse = new Nurse();
         Room room = new Room();
-        welcome(scanner, hospital,room);
-        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse,room);
+        welcome(scanner, hospital, room);
+        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse, room);
     }
 
-    public static void welcome(Scanner scanner, Hospital hospital,Room room) {
+    public static void welcome(Scanner scanner, Hospital hospital, Room room) {
         System.out.println("------------ WELCOME ------------");
         System.out.print("Hospital name :");
         hospital.setName(scanner.nextLine());
         System.out.println("--------- Rooms and Price ---------");
-        room.makeRooms(hospital,room);
+        room.makeRooms(hospital, room);
         System.out.println("------------------------------------");
     }
 
@@ -34,7 +34,7 @@ public class Main {
         System.out.println("---> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner,Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse,Room room) {
+    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse, Room room) {
         MenuOptions menuOptions = MenuOptions.DOCTOR;
         String choose;
         while (true) {
@@ -47,7 +47,7 @@ public class Main {
                         doctor.doctorMenu(doctor, hospital, weaklyShifts, nurse);
                         break;
                     case NURSE:
-                        nurse.NurseMenu(hospital);
+                        nurse.nurseMenu(hospital);
                         break;
                     case PATIENT:
                         patient.printMenu(hospital);

@@ -11,7 +11,7 @@ public class Nurse {
     private boolean isPartSource;
     private ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
-    public void NurseMenu(Hospital hospital) {
+    public void nurseMenu(Hospital hospital) {
         int option;
         while (true) {
             printMenu();
@@ -49,7 +49,7 @@ public class Nurse {
         System.out.println("Enter id for new Nurse");
         int inputId = scanner.nextInt();
         while (sameId(hospital, inputId) != null) {
-            System.out.println("we have same id saved");
+            System.out.println("we have same id Registered");
             inputId = scanner.nextInt();
         }
         id = inputId;
