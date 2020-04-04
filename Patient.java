@@ -54,9 +54,8 @@ public class Patient {
             int entryMonth = scanner.nextInt();
             int entryYear = scanner.nextInt();
             entry = new MyDate(entryYear, entryMonth, entryDay);
-            choosePart();
             whichDisease();
-            room.pickRoom(hospital, part.getPartKind(), this);
+            room.pickRoom(hospital,this);
             // age , insurance,case id,
             hospital.getPatients().add(this);
         } else {
@@ -110,7 +109,7 @@ public class Patient {
             for (int i = 0; i < hospital.getPatients().size(); i++) {
                 if (inputId == hospital.getPatients().get(i).id) {
                     patient = hospital.getPatients().get(i);
-                    System.out.println(patient.name + " is  in " + patient.part.getPartKind() + " PART");
+                    System.out.println(patient.name + " is in " + patient.part.getPartKind() + " PART");
                     System.out.println("entry date is : " + entry.getDay() + " / " + entry.getMonth() + " / " + entry.getYear());
                     if (patient.doctor != null) {
                         System.out.println("Doctor of " + patient.name + " is " + patient.doctor.getName() + " ( doctors id : " + patient.doctor.getId() + " )");
@@ -178,7 +177,7 @@ public class Patient {
         Patient patient = checkId(hospital, inputId);
         Doctor doctor = whichDoctorHavePatient(hospital);
         patient.doctor = doctor;
-        doctor.setPatientId(patient.id);
+        doctor.getPatients().add(patient);
     }
 
     public Doctor whichDoctorHavePatient(Hospital hospital) {
@@ -263,6 +262,10 @@ public class Patient {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public Part getPart() {
+        return part;
     }
 
     public String getName() {
