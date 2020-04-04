@@ -27,7 +27,8 @@ public class Patient {
             System.out.println("1--> Add Patient");
             System.out.println("2--> Patient information");
             System.out.println("3--> discharge Patient");
-            System.out.println("4--> Back to previous menu");
+            System.out.println("4--> Get a doctor");
+            System.out.println("5--> Back to previous menu");
             System.out.println("---------------------------------------");
             option = scanner.nextInt();
             switch (option) {
@@ -41,10 +42,35 @@ public class Patient {
                     dischargePatient(hospital);
                     break;
                 case 4:
+                    getDoctor(hospital);
+                    break;
+                case 5:
+//                    change()
+                    break;
+                case 6:
                     return;
                 default:
                     System.out.println("Wrong input");
             }
+        }
+    }
+    public void change(){
+
+    }
+    public void getDoctor(Hospital hospital) {
+        Patient patient;
+        System.out.print("enter the id : ");
+        int inputId = scanner.nextInt();
+        scanner.nextLine();
+        if (checkId(hospital, inputId) != null) {
+            patient = checkId(hospital, id);
+            if (whichDoctorHavePatient(hospital) == null) {
+                System.out.println("There is no doctor");
+            } else {
+                patient.doctor = whichDoctorHavePatient(hospital);
+            }
+        } else {
+            System.out.println("id is not Registered");
         }
     }
 
