@@ -23,8 +23,8 @@ public class Doctor {
         System.out.println("7 --> " + Week.FRIDAY);
     }
 
-    public static void doctorMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Nurse nurse) {
-        int option = 0;
+    public void doctorMenu(Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Nurse nurse) {
+        int option ;
         while (true) {
             System.out.println("----------- Doctor's Menu -----------");
             System.out.println("1. Add doctor");
