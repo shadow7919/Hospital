@@ -6,28 +6,20 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Hospital hospital = new Hospital();
-        Address address = new Address();
         Part part = new Part();
         Doctor doctor = new Doctor();
         Patient patient = new Patient();
         WeaklyShifts weaklyShifts = new WeaklyShifts();
         Nurse nurse = new Nurse();
         Room room = new Room();
-        welcome(scanner, hospital, address, part,room);
+        welcome(scanner, hospital, part,room);
         chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse,room);
-//        room.menu(hospital);
-//        room.findRoom(hospital);
     }
 
-    public static void welcome(Scanner scanner, Hospital hospital, Address address, Part part,Room room) {
+    public static void welcome(Scanner scanner, Hospital hospital, Part part,Room room) {
         System.out.println("welcome\nlet's begin ...");
         System.out.println("please give us name ");
         hospital.setName(scanner.nextLine());
-        System.out.println("What's the address ? ( city , street , others ... )");
-        address.setCity(scanner.nextLine());
-        address.setStreet(scanner.nextLine());
-        address.setOther(scanner.nextLine());
-        hospital.setAddress(address);
         System.out.println("--------- Rooms and Price ---------");
         part.makeRooms(hospital,room);
         System.out.println("------------------------------------");
@@ -43,7 +35,7 @@ public class Main {
         System.out.println("---> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse,Room room) {
+    public static void chooseMenu(Scanner scanner,Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse,Room room) {
         MenuOptions menuOptions = MenuOptions.DOCTOR;
         String choose;
         while (true) {
@@ -53,7 +45,7 @@ public class Main {
                 menuOptions = menuOptions.valueOf(choose);
                 switch (menuOptions) {
                     case DOCTOR:
-                        doctor.doctorMenu(scanner, doctor, hospital, weaklyShifts, nurse);
+                        doctor.doctorMenu(doctor, hospital, weaklyShifts, nurse);
                         break;
                     case NURSE:
                         nurse.NurseMenu(hospital);
@@ -75,9 +67,5 @@ public class Main {
                 System.out.println("Wrong input");
             }
         }
-    }
-
-    enum MenuOptions {
-        DOCTOR, PATIENT, NURSE, ROOM, HOSPITAL, QUITE;
     }
 }
