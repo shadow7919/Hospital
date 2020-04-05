@@ -1,29 +1,27 @@
 package ir.ac.kntu;
 
-import java.util.HashMap;
+import javax.print.Doc;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class WeaklyShifts {
     Scanner scanner = new Scanner(System.in);
-    private HashMap<Doctor, Nurse> saturdayShift = new HashMap<>();
-    private HashMap<Doctor, Nurse> sundayShift = new HashMap<>();
-    private HashMap<Doctor, Nurse> mondayShift = new HashMap<>();
-    private HashMap<Doctor, Nurse> tuesdayShift = new HashMap<>();
-    private HashMap<Doctor, Nurse> wednesdayShift = new HashMap<>();
-    private HashMap<Doctor, Nurse> thursdayShift = new HashMap<>();
-    private HashMap<Doctor, Nurse> fridayShift = new HashMap<>();
+    private ArrayList<Doctor> saturdayShift = new ArrayList<>();
+    private ArrayList<Doctor> sundayShift = new ArrayList<>();
+    private ArrayList<Doctor> mondayShift = new ArrayList<>();
+    private ArrayList<Doctor> tuesdayShift = new ArrayList<>();
+    private ArrayList<Doctor> wednesdayShift = new ArrayList<>();
+    private ArrayList<Doctor> thursdayShift = new ArrayList<>();
+    private ArrayList<Doctor> fridayShift = new ArrayList<>();
 
-    public HashMap<Doctor, Nurse> getSaturdayShift() {
-        return saturdayShift;
-    }
 
     public void showShift() {
         System.out.println("Pick a day ");
         Doctor.showDay();
-        Week week = Week.WEDNESDAY;
+        Week week;
         String whatDay = scanner.nextLine();
         try {
-            week = week.valueOf(whatDay);
+            week = Week.valueOf(whatDay);
             switch (week) {
                 case SATURDAY:
                     printDayShift(saturdayShift);
@@ -54,18 +52,18 @@ public class WeaklyShifts {
         }
     }
 
-    private void printDayShift(HashMap<Doctor, Nurse> day) {
-        for (Doctor doctor : day.keySet()) {
+    private void printDayShift(ArrayList<Doctor> day) {
+        for (Doctor doctor : day) {
             System.out.print(doctor.getDoctorShift().iterator().next().shiftsTime + " of ");
             System.out.println(doctor.getDoctorShift().iterator().next().week);
         }
     }
 
-    public boolean doctorHaveShiftThisDay(Doctor doctor, ShiftsTime shiftsTime, HashMap<Doctor, Nurse> dayShifts) {
-        for (Doctor myDoctor : dayShifts.keySet()) {
+    public boolean doctorHaveShiftThisDay(Doctor doctor, ShiftsTime shiftsTime, ArrayList<Doctor> dayShifts) {
+        for (Doctor myDoctor : dayShifts) {
             if (doctor.getId() == myDoctor.getId()) {
-                for (ShiftTimeClass shiftTimeClass1 : doctor.getDoctorShift()) {
-                    if (shiftTimeClass1.shiftsTime.equals(shiftsTime)) {
+                for (ShiftTimeClass shiftTimeClass : doctor.getDoctorShift()) {
+                    if (shiftTimeClass.shiftsTime.equals(shiftsTime)) {
                         return true;
                     }
                 }
@@ -74,28 +72,31 @@ public class WeaklyShifts {
         return false;
     }
 
-    public HashMap<Doctor, Nurse> getSundayShift() {
+    public ArrayList<Doctor> getSaturdayShift() {
+        return saturdayShift;
+    }
+
+    public ArrayList<Doctor> getSundayShift() {
         return sundayShift;
     }
 
-    public HashMap<Doctor, Nurse> getMondayShift() {
+    public ArrayList<Doctor> getMondayShift() {
         return mondayShift;
     }
 
-    public HashMap<Doctor, Nurse> getTuesdayShift() {
+    public ArrayList<Doctor> getTuesdayShift() {
         return tuesdayShift;
     }
 
-    public HashMap<Doctor, Nurse> getWednesdayShift() {
+    public ArrayList<Doctor> getWednesdayShift() {
         return wednesdayShift;
     }
 
-    public HashMap<Doctor, Nurse> getThursdayShift() {
+    public ArrayList<Doctor> getThursdayShift() {
         return thursdayShift;
     }
 
-    public HashMap<Doctor, Nurse> getFridayShift() {
+    public ArrayList<Doctor> getFridayShift() {
         return fridayShift;
     }
-
 }

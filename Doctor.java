@@ -1,7 +1,6 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class Doctor {
@@ -24,35 +23,53 @@ public class Doctor {
     }
 
     public void doctorMenu(Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Nurse nurse) {
-        int option ;
+        int option;
         while (true) {
             System.out.println("----------- Doctor's Menu -----------");
-            System.out.println("1. Add doctor");
-            System.out.println("2. Choose doctor's shift");
-            System.out.println("3. Doctor information");
-            System.out.println("4. Remove doctor");
-            System.out.println("5. Back to previous menu");
+            System.out.println("1--> Add doctor");
+            System.out.println("2--> Choose doctor's shift");
+            System.out.println("3--> Doctor information");
+            System.out.println("4--> Remove doctor");
+            System.out.println("5--> change information");
+            System.out.println("6. Back to previous menu");
             System.out.println("---------------------------------------");
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    doctor.addDoctor(hospital);
+                    addDoctor(hospital);
                     break;
                 case 2:
-                    doctor.addShift(hospital, weaklyShifts, nurse);
+                    addShift(hospital, weaklyShifts, nurse);
                     break;
                 case 3:
-                    doctor.showDoctor(hospital);
+                    showDoctor(hospital);
                     break;
                 case 4:
-                    doctor.remove(hospital);
+                    remove(hospital);
                     break;
                 case 5:
+                    change(hospital);
+                    break;
+                case 6:
                     scanner.nextLine();
                     return;
                 default:
                     System.out.println("Wrong input");
             }
+        }
+    }
+
+    public void change(Hospital hospital) {
+        Doctor doctor;
+        System.out.print("Enter the id : ");
+        doctor = findDoctor(hospital, scanner.nextInt());
+        if (doctor == null) {
+            System.out.println("No doctor with this id");
+        } else {
+            System.out.println("------- CHANGE --------");
+            System.out.println("1 --> Name");
+            System.out.println("2 --> Shift ");
+            System.out.println("-----------------------");
         }
     }
 
@@ -113,14 +130,15 @@ public class Doctor {
 
     public void addShift(Hospital hospital, WeaklyShifts weaklyShifts, Nurse nurse) {
         int inputId;
-        HashMap<Doctor, Nurse> chosenDay;
+        ArrayList<Doctor> chosenDay;
         System.out.println("Enter the doctor ID");
         inputId = scanner.nextInt();
-        if (findDoctor(hospital, inputId) != null) {
-            if (checkDoctorShift(findDoctor(hospital, inputId))) {
+        Doctor doctor = findDoctor(hospital, inputId);
+        if (doctor != null) {
+            if (checkDoctorShift(doctor)) {
                 System.out.println("Pick a day ");
-                chosenDay = whichDay(weaklyShifts, findDoctor(hospital, inputId));
-                handleSHift(findDoctor(hospital, inputId), chosenDay, weaklyShifts, nurse);
+                chosenDay = whichDay(weaklyShifts, doctor);
+                handleSHift(doctor, chosenDay, weaklyShifts, nurse);
             }
         } else {
             System.out.println("can't find this ID");
@@ -137,7 +155,7 @@ public class Doctor {
         }
     }
 
-    private void handleSHift(Doctor doctor, HashMap<Doctor, Nurse> chosenDay, WeaklyShifts weaklyShifts, Nurse nurse) {
+    private void handleSHift(Doctor doctor, ArrayList<Doctor> chosenDay, WeaklyShifts weaklyShifts, Nurse nurse) {
         System.out.println("--------- pick a shift ---------");
         System.out.println("1 -> " + ShiftsTime.MORNING);
         System.out.println("2 -> " + ShiftsTime.AFTER_NOON);
@@ -148,7 +166,7 @@ public class Doctor {
                 if (!isTaken(ShiftsTime.MORNING, doctor, weaklyShifts)) {
                     ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.MORNING);
                     doctor.doctorShift.add(shiftTimeClass);
-                    chosenDay.put(doctor, nurse);
+                    chosenDay.add(doctor);
                 } else {
                     System.out.println("This shift is already taken ");
                 }
@@ -157,7 +175,7 @@ public class Doctor {
                 if (!isTaken(ShiftsTime.AFTER_NOON, doctor, weaklyShifts)) {
                     ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.AFTER_NOON);
                     doctor.doctorShift.add(shiftTimeClass);
-                    chosenDay.put(doctor, nurse);
+                    chosenDay.add(doctor);
                 } else {
                     System.out.println("This shift is already taken");
                 }
@@ -166,17 +184,18 @@ public class Doctor {
                 if (!isTaken(ShiftsTime.NIGHT, doctor, weaklyShifts)) {
                     ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.NIGHT);
                     doctor.doctorShift.add(shiftTimeClass);
-                    chosenDay.put(doctor, nurse);
+                    chosenDay.add(doctor);
                 } else {
                     System.out.println("This shift is already taken ");
                 }
                 break;
             default:
+                System.out.println("Wrong input ");
                 break;
         }
     }
 
-    private HashMap<Doctor, Nurse> whichDay(WeaklyShifts weaklyShifts, Doctor doctor) {
+    private ArrayList<Doctor> whichDay(WeaklyShifts weaklyShifts, Doctor doctor) {
         showDay();
         int choose = scanner.nextInt();
         while (true) {
@@ -250,10 +269,6 @@ public class Doctor {
 
     public String getName() {
         return name;
-    }
-
-    public Week getDaysShift() {
-        return daysShift;
     }
 
     public ArrayList<Nurse> getNurses() {
