@@ -52,9 +52,9 @@ public class Nurse {
             System.out.println("we have same id Registered");
             inputId = scanner.nextInt();
         }
+        scanner.nextLine();
         id = inputId;
         System.out.print("Enter Name : ");
-        scanner.nextLine();
         name = scanner.nextLine();
         System.out.println(name + " serve in part source ?");
         System.out.print(YesOrNo.YES + " OR " + YesOrNo.NO + "  ");
@@ -124,8 +124,10 @@ public class Nurse {
             if (doctor.getNurses().size() < 2) {
                 doctors.add(doctor);
                 nurseShift.addAll(doctor.getDoctorShift());
-                if (doctor.getPatients() != null) {
-                    patients.addAll(doctor.getPatients());
+                patients.addAll(doctor.getPatients());
+                doctor.getNurses().add(this);
+                for(Patient patient:doctor.getPatients()){
+                    patient.getNurses().add(this);
                 }
             }
         }
@@ -154,5 +156,9 @@ public class Nurse {
 
     public String getName() {
         return name;
+    }
+
+    public ArrayList<Patient> getPatients() {
+        return patients;
     }
 }

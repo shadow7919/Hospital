@@ -1,5 +1,6 @@
 package ir.ac.kntu;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ public class Patient {
     private int totalPrice;
     private int age;
     private Gender gender;
+    private ArrayList<Nurse> nurses = new ArrayList<>();
 
     public void printMenu(Hospital hospital) {
         int option;
@@ -43,7 +45,7 @@ public class Patient {
                     change(hospital);
                     break;
                 case 4:
-                    getDoctor(hospital);
+                    chooseDoctor(hospital);
                     break;
                 case 5:
                     dischargePatient(hospital);
@@ -56,7 +58,7 @@ public class Patient {
         }
     }
 
-    public void getDoctor(Hospital hospital) {
+    public void chooseDoctor(Hospital hospital) {
         Patient patient = findPatient(hospital);
         if (patient == null) {
             return;
@@ -146,16 +148,24 @@ public class Patient {
             whichDisease(this);
             room.pickRoom(hospital, this);
             caseId = random.nextInt(100000) + age + id % 100000;
-            doctor = whichDoctorHavePatient(hospital);
-            if (doctor != null) {
-                doctor.getPatients().add(this);
-            } else {
-                System.out.println("No doctor, Go back and add one");
-            }
+            addDoctorNurse(this, hospital);
             hospital.getPatients().add(this);
         } else {
             System.out.println("id is already Registered");
         }
+    }
+
+    public void addDoctorNurse(Patient patient, Hospital hospital) {
+        Doctor doctor = whichDoctorHavePatient(hospital);
+        if(doctor == null){
+            return;
+        }
+        patient.doctor = doctor;
+        doctor.getPatients().add(patient);
+        for (Nurse nurse : doctor.getNurses()) {
+            nurse.getPatients().add(this);
+        }
+
     }
 
     private void setAge(Patient patient) {
@@ -345,6 +355,18 @@ public class Patient {
 
     public String getName() {
         return name;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public ArrayList<Nurse> getNurses() {
+        return nurses;
     }
 
     private enum Gender {
