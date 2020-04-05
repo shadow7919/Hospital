@@ -157,16 +157,20 @@ public class Doctor {
     }
 
     public void addDoctor(Hospital hospital) {
-        Doctor tempDoctor = new Doctor();
-        System.out.println("Enter the name and id");
-        tempDoctor.name = scanner.next();
-        tempDoctor.id = scanner.nextInt();
-        if (hospital.sameId(tempDoctor)) {
+        System.out.print("Enter id : ");
+        int inputId = scanner.nextInt();
+        while (findDoctor(hospital, inputId) != null) {
+            inputId = scanner.nextInt();
+            System.out.println("Same id registered");
+        }
+        id = inputId;
+        System.out.print("Enter name : ");
+        name = scanner.nextLine();
+        if (hospital.sameId(this)) {
             System.out.println("We have the same Id added");
             return;
         }
-        hospital.setDoctors(tempDoctor);
-//        chooseNurse();
+        hospital.setDoctors(this);
     }
 
     public void remove(Hospital hospital, Doctor doctor) {
