@@ -157,7 +157,7 @@ public class Patient {
 
     public void addDoctorNurse(Patient patient, Hospital hospital) {
         Doctor doctor = whichDoctorHavePatient(hospital);
-        if(doctor == null){
+        if (doctor == null) {
             return;
         }
         patient.doctor = doctor;

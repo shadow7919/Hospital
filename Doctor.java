@@ -255,6 +255,7 @@ public class Doctor {
             System.out.println("No patient is registered");
             return;
         }
+        System.out.println("------- Patient -------");
         for (Patient patient : doctor.getPatients()) {
             System.out.println("ID : " + patient.getId() + "\tName : " + patient.getName());
         }
@@ -265,6 +266,7 @@ public class Doctor {
             System.out.println("No nurse is registered");
             return;
         }
+        System.out.println("------- Nurse -------");
         for (Nurse nurse : doctor.nurses) {
             System.out.println("ID : " + nurse.getId() + "\tName : " + nurse.getName());
         }
