@@ -9,6 +9,7 @@ public class Nurse {
     private int id;
     private ArrayList<Doctor> doctors = new ArrayList<>();
     private boolean isPartSource;
+    private ArrayList<Patient> patients = new ArrayList<>();
     private ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
     public void nurseMenu(Hospital hospital) {
@@ -30,23 +31,22 @@ public class Nurse {
                     return;
                 default:
                     System.out.println("Wrong input ");
-                    break;
             }
         }
     }
 
     private void printMenu() {
         System.out.println("---------- NURSE ---------");
-        System.out.println("1 --> add nurse");
-        System.out.println("2 --> show nurse");
-        System.out.println("3 --> show nurse shifts");
+        System.out.println("1 --> Add nurse");
+        System.out.println("2 --> Show nurse");
+        System.out.println("3 --> Show nurse shifts");
         System.out.println("4 -- > Back to previous menu");
         System.out.println("---------------------------");
     }
 
     public void addNurses(Hospital hospital) {
         System.out.println("-------- Add Nurse --------");
-        System.out.println("Enter id for new Nurse");
+        System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
         while (sameId(hospital, inputId) != null) {
             System.out.println("we have same id Registered");
@@ -81,19 +81,21 @@ public class Nurse {
         System.out.println("-------- SHOW NURSE --------");
         System.out.print("Enter the id : ");
         int inputId = scanner.nextInt();
-        while (sameId(hospital, inputId) == null && inputId != 0) {
-            System.out.println("Either enter the write id or 0");
+        while (sameId(hospital, inputId) == null) {
+            System.out.print("Enter the write id : ");
             inputId = scanner.nextInt();
         }
         nurse = sameId(hospital, inputId);
-        System.out.println("ID : " + nurse.id + "       Name : " + nurse.name);
+        System.out.println("ID : " + nurse.id + "\tName : " + nurse.name);
         if (nurse.isPartSource) {
             System.out.println(name + " work in part source ");
-        } else {
-            for (Doctor doctor : nurse.doctors) {
-                System.out.println("The doctor of " + nurse.name + " is");
-                System.out.println(doctor.getName() + "   " + doctor.getId());
-            }
+            return;
+        }
+        for (Doctor doctor : nurse.doctors) {
+            System.out.println("ID : " + doctor.getId() + "\tName : " + doctor.getName());
+        }
+        for (Patient patient : patients) {
+            System.out.println("ID : " + patient.getId() + "\tName : " + patient.getName());
         }
     }
 
@@ -115,19 +117,17 @@ public class Nurse {
     }
 
     private void chooseNurseDoctor(Hospital hospital) {
-        if (hospital.getDoctors().size() > 0) {
-            for (Doctor doctor : hospital.getDoctors()) {
-                if (doctor.getNurses().size() < 2) {
-                    doctors.add(doctor);
-                    this.nurseShift.addAll(doctor.getDoctorShift());
-                }
-                if (doctors.size() == 2) {
-                    break;
+        for (Doctor doctor : hospital.getDoctors()) {
+            if (doctors.size() == 2) {
+                break;
+            }
+            if (doctor.getNurses().size() < 2) {
+                doctors.add(doctor);
+                nurseShift.addAll(doctor.getDoctorShift());
+                if (doctor.getPatients() != null) {
+                    patients.addAll(doctor.getPatients());
                 }
             }
-
-        } else {
-            System.out.println("There is no doctor to add");
         }
     }
 
@@ -138,5 +138,21 @@ public class Nurse {
             }
         }
         return null;
+    }
+
+    public boolean isPartSource() {
+        return isPartSource;
+    }
+
+    public ArrayList<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
