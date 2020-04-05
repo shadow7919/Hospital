@@ -26,9 +26,10 @@ public class Patient {
             System.out.println("----------- Patient Menu -----------");
             System.out.println("1--> Add Patient");
             System.out.println("2--> Patient information");
-            System.out.println("3--> discharge Patient");
+            System.out.println("3--> Change information");
             System.out.println("4--> Get a doctor");
-            System.out.println("5--> Back to previous menu");
+            System.out.println("5--> discharge Patient");
+            System.out.println("6--> Back to previous menu");
             System.out.println("---------------------------------------");
             option = scanner.nextInt();
             switch (option) {
@@ -39,13 +40,13 @@ public class Patient {
                     patientShow(hospital);
                     break;
                 case 3:
-                    dischargePatient(hospital);
+                    change(hospital);
                     break;
                 case 4:
                     getDoctor(hospital);
                     break;
                 case 5:
-                    change(hospital);
+                    dischargePatient(hospital);
                     break;
                 case 6:
                     return;
@@ -60,8 +61,7 @@ public class Patient {
         if (patient == null) {
             return;
         }
-        patient = checkId(hospital, id);
-        if (patient.doctor != null) {
+        if (patient.doctor == null) {
             if (whichDoctorHavePatient(hospital) == null) {
                 System.out.println("There is no doctor");
             } else {
@@ -88,6 +88,7 @@ public class Patient {
         System.out.println("-------- CHANGE --------");
         Patient patient = findPatient(hospital);
         patientShow(hospital);
+        changePrint();
         if (patient == null) {
             return;
         }
@@ -149,7 +150,7 @@ public class Patient {
             if (doctor != null) {
                 doctor.getPatients().add(this);
             } else {
-                System.out.println("There is no doctor to take care of this patient ");
+                System.out.println("No doctor, Go back and add one");
             }
             hospital.getPatients().add(this);
         } else {
@@ -237,9 +238,9 @@ public class Patient {
     }
 
     public Patient checkId(Hospital hospital, int id) {
-        for (int i = 0; i < hospital.getPatients().size(); i++) {
-            if (id == hospital.getPatients().get(i).getId()) {
-                return hospital.getPatients().get(i);
+        for (Patient patient : hospital.getPatients()) {
+            if (id == patient.id) {
+                return patient;
             }
         }
         return null;
@@ -268,7 +269,8 @@ public class Patient {
         int inputId = scanner.nextInt();
         if (checkId(hospital, inputId) != null) {
             patient = checkId(hospital, inputId);
-            patient.howManyDays = howLong(entry, departure);
+            departureDateSet(patient);
+            patient.howManyDays = howLong(patient.entry, patient.departure);
             patient.room.discountForRoom(patient.room);
             patient.totalPrice = patient.room.getPrice() * patient.howManyDays;
             haveInsurance(patient);
@@ -294,7 +296,7 @@ public class Patient {
     }
 
     private void haveInsurance(Patient patient) {
-        System.out.println("Does " + patient.name + " have insurance ");
+        System.out.println(patient.name + " Insurance :");
         System.out.println("1 --> " + Insurance.armedForces);
         System.out.println("2 --> " + Insurance.socialInsurance);
         System.out.println("3 --> " + Insurance.healthService);
@@ -311,7 +313,6 @@ public class Patient {
                 patient.totalPrice *= Insurance.healthService.getDiscount();
                 break;
             default:
-                break;
         }
     }
 
