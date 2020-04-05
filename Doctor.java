@@ -170,6 +170,14 @@ public class Doctor {
             System.out.println("We have the same Id added");
             return;
         }
+        for (Nurse nurse : hospital.getAllNurses()) {
+            if (nurses.size() == 2) {
+                break;
+            }
+            if (!nurse.isPartSource() && nurse.getDoctors().size() < 2) {
+                nurses.add(nurse);
+            }
+        }
         hospital.setDoctors(this);
     }
 
@@ -199,6 +207,56 @@ public class Doctor {
         }
     }
 
+    private void doctorInfo(Doctor doctor) {
+        System.out.println("1 --> Nurses");
+        System.out.println("2 --> Patients");
+        System.out.println("3 --> Shifts");
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1:
+                showDoctorNurses(doctor);
+                break;
+            case 2:
+                showDoctorPatients(doctor);
+                break;
+            case 3:
+                showDoctorShifts(doctor);
+                break;
+            default:
+                System.out.println("Wrong input");
+        }
+    }
+
+    public void showDoctorPatients(Doctor doctor) {
+        if (doctor.patients.size() == 0) {
+            System.out.println("No patient is registered");
+            return;
+        }
+        for (Patient patient : doctor.getPatients()) {
+            System.out.println("ID : " + patient.getId() + "\tName : " + patient.getName());
+        }
+    }
+
+    private void showDoctorNurses(Doctor doctor) {
+        if (doctor.nurses.size() == 0) {
+            System.out.println("No nurse is registered");
+            return;
+        }
+        for (Nurse nurse : doctor.nurses) {
+            System.out.println("ID : " + nurse.getId() + "\tName : " + nurse.getName());
+        }
+    }
+
+    private void showDoctorShifts(Doctor doctor) {
+        if (doctor.doctorShift.size() == 0) {
+            System.out.println("No shift is added ");
+            return;
+        }
+        for (ShiftTimeClass shift : doctor.doctorShift) {
+            System.out.println(shift.shiftsTime + " of " + shift.week);
+        }
+    }
+
     private Doctor findDoctor(Hospital hospital, int inputId) {
         for (Doctor doctor : hospital.getDoctors()) {
             if (inputId == doctor.id) {
@@ -206,16 +264,6 @@ public class Doctor {
             }
         }
         return null;
-    }
-
-    private void doctorInfo(Doctor doctor) {
-        if (doctor.doctorShift.size() != 0) {
-            for (ShiftTimeClass shift : doctor.doctorShift) {
-                System.out.println(shift.shiftsTime + " of " + shift.week);
-            }
-        } else {
-            System.out.println("No shift is added ");
-        }
     }
 
     public void addShift(Hospital hospital, WeaklyShifts weaklyShifts, Nurse nurse) {
