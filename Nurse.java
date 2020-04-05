@@ -26,8 +26,12 @@ public class Nurse {
                     break;
                 case 3:
                     showNurseShifts(hospital);
+                    //remove
                     break;
                 case 4:
+                    //change
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println("Wrong input ");
@@ -37,10 +41,11 @@ public class Nurse {
 
     private void printMenu() {
         System.out.println("---------- NURSE ---------");
-        System.out.println("1 --> Add nurse");
-        System.out.println("2 --> Show nurse");
-        System.out.println("3 --> Show nurse shifts");
-        System.out.println("4 -- > Back to previous menu");
+        System.out.println("1 --> Add ");
+        System.out.println("2 --> Show ");//Show nurse shifts
+        System.out.println("3 --> Remove ");
+        System.out.println("4 --> Change ");
+        System.out.println("5 -- > Back to previous menu");
         System.out.println("---------------------------");
     }
 
@@ -77,7 +82,6 @@ public class Nurse {
     }
 
     public void showNurses(Hospital hospital) {
-        Nurse nurse;
         System.out.println("-------- SHOW NURSE --------");
         System.out.print("Enter the id : ");
         int inputId = scanner.nextInt();
@@ -85,17 +89,58 @@ public class Nurse {
             System.out.print("Enter the write id : ");
             inputId = scanner.nextInt();
         }
-        nurse = sameId(hospital, inputId);
+        Nurse nurse = sameId(hospital, inputId);
         System.out.println("ID : " + nurse.id + "\tName : " + nurse.name);
         if (nurse.isPartSource) {
-            System.out.println(name + " work in part source ");
+            System.out.println(nurse.name + " work in part source ");
             return;
         }
+        System.out.println("1 --> Doctors");
+        System.out.println("2 --> Patients");
+        System.out.println("3 --> Shifts");
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1:
+                showDoctors(nurse);
+                break;
+            case 2:
+                showPatient(nurse);
+                break;
+            case 3:
+                showShifts(nurse);
+                break;
+            default:
+                System.out.println("Wrong input");
+        }
+        System.out.println("--------------------------------");
+    }
+
+    private void showShifts(Nurse nurse) {
+        System.out.println("------- Shifts --------");
+        for (ShiftTimeClass shiftTimeClass : nurse.nurseShift) {
+            System.out.println(shiftTimeClass.shiftsTime + " ---> " + shiftTimeClass.week);
+        }
+    }
+
+    private void showPatient(Nurse nurse) {
+        if (nurse.patients.size() == 0) {
+            System.out.println("No patient is registered");
+            return;
+        }
+        System.out.println("------- Patients -------");
+        for (Patient patient : nurse.patients) {
+            System.out.println("ID : " + patient.getId() + "\tName : " + patient.getName());
+        }
+    }
+
+    private void showDoctors(Nurse nurse) {
+        if (nurse.doctors.size() == 0) {
+            System.out.println("No doctor is registered");
+            return;
+        }
+        System.out.println("------- Doctors --------");
         for (Doctor doctor : nurse.doctors) {
             System.out.println("ID : " + doctor.getId() + "\tName : " + doctor.getName());
-        }
-        for (Patient patient : patients) {
-            System.out.println("ID : " + patient.getId() + "\tName : " + patient.getName());
         }
     }
 
@@ -126,7 +171,7 @@ public class Nurse {
                 nurseShift.addAll(doctor.getDoctorShift());
                 patients.addAll(doctor.getPatients());
                 doctor.getNurses().add(this);
-                for(Patient patient:doctor.getPatients()){
+                for (Patient patient : doctor.getPatients()) {
                     patient.getNurses().add(this);
                 }
             }
@@ -162,3 +207,6 @@ public class Nurse {
         return patients;
     }
 }
+/*
+Make The show menu for nurse
+ */
