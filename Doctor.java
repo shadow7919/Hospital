@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Doctor {
+    private final static int MAX_NURSES = 2;
+    private final static int MAX_SHIFTS = 5;
     Scanner scanner = new Scanner(System.in);
     private String name;
     private int id;
@@ -49,7 +51,7 @@ public class Doctor {
                     showDoctor(hospital);
                     break;
                 case 4:
-                    change(hospital, weaklyShifts);
+                    change(hospital, weaklyShifts, patient, nurse);
                     break;
                 case 5:
                     scanner.nextLine();
@@ -60,7 +62,7 @@ public class Doctor {
         }
     }
 
-    public void change(Hospital hospital, WeaklyShifts weaklyShifts) {
+    public void change(Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse) {
         Doctor doctor;
         System.out.print("Enter the id : ");
         doctor = findDoctor(hospital, scanner.nextInt());
@@ -82,7 +84,7 @@ public class Doctor {
                     removeDoctorShift(doctor, weaklyShifts);
                     break;
                 case 3:
-                    remove(hospital, doctor);
+                    remove(hospital, doctor, patient, nurse);
                     break;
                 default:
                     System.out.println("Wrong input");
@@ -194,27 +196,24 @@ public class Doctor {
 
     private void addNurse(Hospital hospital, Nurse nurse) {
         for (Nurse myNurse : hospital.getAllNurses()) {
-            if (nurses.size() == 2) {
+            if (nurses.size() == MAX_NURSES) {
                 break;
             }
-            if (!myNurse.isPartSource() && myNurse.getDoctors().size() < 2) {
+            if (!myNurse.isPartSource() && myNurse.getDoctors().size() < MAX_NURSES) {
                 this.nurses.add(myNurse);
                 nurse.getDoctors().add(this);
             }
         }
     }
 
-    public void remove(Hospital hospital, Doctor doctor) {
+    public void remove(Hospital hospital, Doctor doctor, Patient patient, Nurse nurse) {
         if (doctor == null) {
             System.out.println("Cant find any doctor ");
             return;
         }
-        for (Doctor myDoctor : hospital.getDoctors()) {
-            if (doctor.equals(myDoctor)) {
-                System.out.println(myDoctor.name);
-                return;
-            }
-        }
+        hospital.getDoctors().remove(doctor);
+        nurse.getDoctors().remove(doctor);
+        patient.setDoctor(null);
         System.out.println("Can't find doctor with this Id");
     }
 
@@ -310,8 +309,8 @@ public class Doctor {
     }
 
     private boolean checkDoctorShiftsNumber(Doctor doctor) {
-        if (doctor.doctorShift.size() == 5) {
-            System.out.println(doctor.name + " already have 5 shifts");
+        if (doctor.doctorShift.size() == MAX_SHIFTS) {
+            System.out.println(doctor.name + " already have " + MAX_SHIFTS + " shifts");
             return false;
         } else {
             return true;
