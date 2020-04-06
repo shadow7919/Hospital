@@ -22,24 +22,27 @@ public class Patient {
     private Gender gender;
     private ArrayList<Nurse> nurses = new ArrayList<>();
 
-    public void printMenu() {
+    private void printMenu() {
+        System.out.println("----------- Patient Menu -----------");
+        System.out.println("1--> Add Patient");
+        System.out.println("2--> Patient information");
+        System.out.println("3--> Change information");
+        System.out.println("4--> Get a doctor");
+        System.out.println("5--> discharge Patient");
+        System.out.println("6--> Back to previous menu");
+    }
+
+    public void menu() {
         int option;
         while (true) {
-            System.out.println("----------- Patient Menu -----------");
-            System.out.println("1--> Add Patient");
-            System.out.println("2--> Patient information");
-            System.out.println("3--> Change information");
-            System.out.println("4--> Get a doctor");
-            System.out.println("5--> discharge Patient");
-            System.out.println("6--> Back to previous menu");
-            System.out.println("---------------------------------------");
+            printMenu();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
                     addPatient();
                     break;
                 case 2:
-                    patientShow();
+                    patientShow(null);
                     break;
                 case 3:
                     change();
@@ -55,11 +58,12 @@ public class Patient {
                 default:
                     System.out.println("Wrong input");
             }
+            System.out.println("--------------------------");
         }
     }
 
     public void chooseDoctor() {
-        Patient patient = findPatient();
+        Patient patient = checkId();
         if (patient == null) {
             return;
         }
@@ -74,51 +78,44 @@ public class Patient {
         }
     }
 
-    private Patient findPatient() {
-        System.out.print("enter the id : ");
-        int inputId = scanner.nextInt();
-        scanner.nextLine();
-        if (checkId(inputId) != null) {
-            return checkId(id);
-        } else {
-            System.out.println("id is not Registered");
-        }
-        return null;
-    }
-
     public void change() {
         System.out.println("-------- CHANGE --------");
-        Patient patient = findPatient();
-        patientShow();
-        changePrint();
+        Patient patient = checkId();
         if (patient == null) {
             return;
         }
-        int option = scanner.nextInt();
-        switch (option) {
-            case 1:
-                patient.name = scanner.nextLine();
-                break;
-            case 2:
-                setAge(patient);
-                break;
-            case 3:
-                chooseGender(patient);
-                break;
-            case 4:
-                entryDateSet(patient);
-                break;
-            case 5:
-                whichDisease(patient);
-                break;
-            case 6:
-                room.pickRoom(this);
-                break;
-            default:
-                System.out.println("out");
-                break;
+        int option;
+        while (true) {
+            patientShow(patient);
+            changePrint();
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    patient.name = scanner.nextLine();
+                    break;
+                case 2:
+                    setAge(patient);
+                    break;
+                case 3:
+                    chooseGender(patient);
+                    break;
+                case 4:
+                    entryDateSet(patient);
+                    break;
+                case 5:
+                    whichDisease(patient);
+                    break;
+                case 6:
+                    room.pickRoom(patient);
+                    break;
+                case 7:
+                    return;
+                default:
+                    System.out.println("Wrong input ");
+                    break;
+            }
+            System.out.println("------------------------");
         }
-        System.out.println("------------------------");
     }
 
     private void changePrint() {
@@ -129,55 +126,64 @@ public class Patient {
         System.out.println("4 --> entryDate");
         System.out.println("5 --> Disease");
         System.out.println("6 --> Room ");
-        System.out.println("Any thing else out ");
+        System.out.println("7 --> Back");
+    }
+
+    private boolean noSameId(int inputId) {
+        for (Patient patient1 : Hospital.getPatients()) {
+            if (patient1.id == inputId) {
+                System.out.println("patient Registered with this id");
+                return false;
+            }
+        }
+        return true;
     }
 
     public void addPatient() {
+        System.out.println("----------- Add Patient -----------");
         Random random = new Random();
         Patient patient = new Patient();
-        System.out.println("----------- Add Patient -----------");
-        System.out.print("enter the id : ");
+        System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
-        scanner.nextLine();
-        if (checkId(inputId) == null) {
-            patient.id = inputId;
-            chooseGender(patient);
-            System.out.print("enter " + patient.gender.getGender() + " name : ");
-            patient.name = scanner.nextLine();
-            setAge(patient);
-            entryDateSet(patient);
-            whichDisease(patient);
-            room.pickRoom(patient);
-            caseId = random.nextInt(100000) + patient.age + patient.id % 100000;
-            addDoctorNurse(patient);
-            Hospital.getPatients().add(patient);
-        } else {
-            System.out.println("id is already Registered");
+        while (!noSameId(inputId)) {
+            System.out.println("Same id registered");
+            inputId = scanner.nextInt();
         }
+        patient.id = inputId;
+        scanner.nextLine();
+        chooseGender(patient);
+        System.out.print("enter " + patient.gender.getGender() + " name : ");
+        patient.name = scanner.nextLine();
+        setAge(patient);
+        entryDateSet(patient);
+        whichDisease(patient);
+        room.pickRoom(patient);
+        patient.caseId = random.nextInt(100000) + patient.age + patient.id % 100000;
+        addDoctorNurse(patient);
+        Hospital.getPatients().add(patient);
     }
 
     public void addDoctorNurse(Patient patient) {
         Doctor doctor = whichDoctorHavePatient();
-        System.out.println(doctor);
         if (doctor == null) {
             return;
         }
         patient.doctor = doctor;
         doctor.getPatients().add(patient);
         for (Nurse nurse : doctor.getNurses()) {
-            nurse.getPatients().add(this);
+            nurse.getPatients().add(patient);
         }
     }
 
-    private void setAge(Patient patient) {
+    public void setAge(Patient patient) {
         while (true) {
-            System.out.print("Enter " + gender.getGender() + " age : ");
+            System.out.print("Enter " + patient.gender.getGender() + " age : ");
             int age = scanner.nextInt();
             if (age > 0 && age < 200) {
                 patient.age = age;
                 return;
             } else {
-                System.out.println("Wrong age ");
+                System.out.println("Age should be under 200");
             }
         }
     }
@@ -189,7 +195,7 @@ public class Patient {
             int entryMonth = scanner.nextInt();
             int entryYear = scanner.nextInt();
             patient.entry = new MyDate(entryYear, entryMonth, entryDay);
-            if (entry.getYear() != 0) {
+            if (patient.entry.getYear() != 0) {
                 break;
             }
             System.out.println("Wrong Date ");
@@ -225,32 +231,34 @@ public class Patient {
         }
     }
 
-    private void patientShow() {
-        Patient patient = null;
-        while (patient == null) {
-            System.out.println("Enter the id");
-            int inputId = scanner.nextInt();
-            for (int i = 0; i < Hospital.getPatients().size(); i++) {
-                if (inputId == Hospital.getPatients().get(i).id) {
-                    patient = Hospital.getPatients().get(i);
-                }
+    private void patientShow(Patient myPatient) {
+        Patient patient = myPatient;
+        if (myPatient == null) {
+            patient = checkId();
+            if (patient == null) {
+                System.out.println("No patient Registered with this id");
+                return;
             }
-            System.out.println("no one with this is Registered");
         }
         System.out.println("Name : " + patient.name + "\t age : " + patient.age);
         System.out.println(patient.gender.getGender() + " in " + patient.partKind + " PART");
-        System.out.println("entry date : " + entry.getDay() + " / " + entry.getMonth() + " / " + entry.getYear());
-        System.out.println("Room Number : " + room.getRoomNumber());
+        System.out.println("entry date : " + patient.entry.getDay() + " / " + patient.entry.getMonth() + " / " + patient.entry.getYear());
+        System.out.println("Room Number : " + patient.room.getRoomNumber());
         System.out.println("Disease : " + patient.disease);
         System.out.println("CaseId : " + patient.caseId);
         if (patient.doctor != null) {
-            System.out.println("Doctor of " + patient.name + " is " + patient.doctor.getName() + " ( doctors id : " + patient.doctor.getId() + " )");
+            System.out.println("Doctor,\tName : " + patient.doctor.getName() + ",\tId : " + patient.doctor.getId());
+            for (Nurse nurse : patient.nurses) {
+                System.out.println("Nurse,\tName : " + nurse.getName() + ",\tId : " + nurse.getId());
+            }
         }
     }
 
-    public Patient checkId(int id) {
+    public Patient checkId() {
+        System.out.print("Enter id : ");
+        int inputId = scanner.nextInt();
         for (Patient patient : Hospital.getPatients()) {
-            if (id == patient.id) {
+            if (inputId == patient.id) {
                 return patient;
             }
         }
@@ -274,12 +282,9 @@ public class Patient {
     }
 
     public void dischargePatient() {
-        Patient patient;
+        Patient patient = checkId();
         System.out.println("---------- DISCHARGE ----------");
-        System.out.println("enter the id");
-        int inputId = scanner.nextInt();
-        if (checkId(inputId) != null) {
-            patient = checkId(inputId);
+        if (patient != null) {
             departureDateSet(patient);
             patient.howManyDays = howLong(patient.entry, patient.departure);
             patient.room.discountForRoom(patient.room);
