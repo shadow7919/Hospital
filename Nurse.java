@@ -12,7 +12,7 @@ public class Nurse {
     private ArrayList<Patient> patients = new ArrayList<>();
     private ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
-    public void nurseMenu(Doctor doctor, Patient patient) {
+    public void nurseMenu() {
         int option;
         while (true) {
             printMenu();
@@ -25,7 +25,7 @@ public class Nurse {
                     showNurses();
                     break;
                 case 3:
-                    change(doctor, patient);
+                    change();
                     break;
                 case 4:
                     return;
@@ -44,7 +44,7 @@ public class Nurse {
         return sameId(inputId);
     }
 
-    private void change(Doctor doctor, Patient patient) {
+    private void change() {
         Nurse nurse = findNurse();
         if (nurse == null) {
             return;
@@ -53,25 +53,24 @@ public class Nurse {
         int option = scanner.nextInt();
         switch (option) {
             case 1:
+                scanner.nextLine();
+                System.out.println("Name : ");
                 nurse.name = scanner.nextLine();
                 break;
             case 2:
-                removeNurse(nurse, doctor, patient);
+                removeNurse(nurse);
+                Hospital.getAllNurses().remove(nurse);
                 break;
             case 3:
-                ChangeToPartSource(nurse, doctor, patient);
+                ChangeToPartSource(nurse);
                 break;
             default:
                 break;
         }
     }
 
-    private void ChangeToPartSource(Nurse nurse, Doctor doctor, Patient patient) {
-        doctor.getNurses().remove(nurse);
-        patient.getNurses().remove(nurse);
-        nurse.nurseShift = null;
-        nurse.doctors = null;
-        nurse.patients = null;
+    private void ChangeToPartSource(Nurse nurse) {
+        removeNurse(nurse);
         nurse.isPartSource = true;
     }
 
@@ -82,10 +81,13 @@ public class Nurse {
         System.out.println("3 --> Make partSource");
     }
 
-    private void removeNurse(Nurse nurse, Doctor doctor, Patient patient) {
-        Hospital.getAllNurses().remove(nurse);
-        doctor.getNurses().remove(nurse);
-        patient.getNurses().remove(nurse);
+    private void removeNurse(Nurse nurse) {
+        for (Doctor doctor : nurse.doctors) {
+            doctor.getNurses().remove(nurse);
+        }
+        for (Patient patient : nurse.patients) {
+            patient.getNurses().remove(nurse);
+        }
     }
 
     private void printMenu() {
@@ -127,41 +129,48 @@ public class Nurse {
         if (!nurse.isPartSource) {
             chooseNurseDoctor(nurse);
         }
-        Hospital.getAllNurses().add(this);
+        Hospital.getAllNurses().add(nurse);
+    }
+
+    private void showNursesMenu() {
+        System.out.println("1 --> Doctors");
+        System.out.println("2 --> Patients");
+        System.out.println("3 --> Shifts");
+        System.out.println("4 --> Back");
     }
 
     public void showNurses() {
         System.out.println("-------- SHOW NURSE --------");
-        System.out.print("Enter the id : ");
-        int inputId = scanner.nextInt();
-        if (sameId(inputId) == null) {
-            System.out.println("Wrong id ");
+        Nurse nurse = findNurse();
+        if (nurse == null) {
             return;
         }
-        Nurse nurse = sameId(inputId);
         System.out.println("ID : " + nurse.id + "\tName : " + nurse.name);
         if (nurse.isPartSource) {
-            System.out.println(nurse.name + " work in part source ");
+            System.out.println(" Part Source Nurse");
             return;
         }
-        System.out.println("1 --> Doctors");
-        System.out.println("2 --> Patients");
-        System.out.println("3 --> Shifts");
-        int option = scanner.nextInt();
-        switch (option) {
-            case 1:
-                showDoctors(nurse);
-                break;
-            case 2:
-                showPatient(nurse);
-                break;
-            case 3:
-                showShifts(nurse);
-                break;
-            default:
-                System.out.println("Wrong input");
+        int option;
+        while (true) {
+            showNursesMenu();
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    showDoctors(nurse);
+                    break;
+                case 2:
+                    showPatient(nurse);
+                    break;
+                case 3:
+                    showShifts(nurse);
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Wrong input");
+            }
+            System.out.println("--------------------------------");
         }
-        System.out.println("--------------------------------");
     }
 
     private void showShifts(Nurse nurse) {
@@ -228,6 +237,14 @@ public class Nurse {
 
     public ArrayList<Doctor> getDoctors() {
         return doctors;
+    }
+
+    public ArrayList<ShiftTimeClass> getNurseShift() {
+        return nurseShift;
+    }
+
+    public void setNurseShift(ArrayList<ShiftTimeClass> nurseShift) {
+        this.nurseShift = nurseShift;
     }
 
     public int getId() {
