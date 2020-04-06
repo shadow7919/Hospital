@@ -190,7 +190,7 @@ public class Room {
 
     public Room findRoom(Patient patient) {
         PartKind partKind = whichPart(patient);
-        Room foundRoom ;
+        Room foundRoom;
         if (partKind == PartKind.NORMAL) {
             foundRoom = findRoomHandle(partKind, Hospital.getNormalRooms());
         } else {
@@ -214,7 +214,7 @@ public class Room {
         return null;
     }
 
-    public void makeRooms(Hospital hospital, Room room) {
+    public void makeRooms(Room room) {
         System.out.println("Enter how many room do you need for " + PartKind.NORMAL + " Part ");
         int normalRoomsNumber = scanner.nextInt();
         System.out.println("And also " + PartKind.EMERGENCY + " Part rooms?");
