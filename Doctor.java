@@ -35,23 +35,23 @@ public class Doctor {
         System.out.println("---------------------------------------");
     }
 
-    public void doctorMenu(Hospital hospital, WeaklyShifts weaklyShifts, Nurse nurse, Patient patient) {
+    public void doctorMenu(WeaklyShifts weaklyShifts, Nurse nurse, Patient patient) {
         int option;
         while (true) {
             showMenu();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    addDoctor(hospital, patient, nurse);
+                    addDoctor(patient, nurse);
                     break;
                 case 2:
-                    addShift(hospital, weaklyShifts, nurse);
+                    addShift(weaklyShifts, nurse);
                     break;
                 case 3:
-                    showDoctor(hospital);
+                    showDoctor();
                     break;
                 case 4:
-                    change(hospital, weaklyShifts, patient, nurse);
+                    change(weaklyShifts, patient, nurse);
                     break;
                 case 5:
                     scanner.nextLine();
@@ -62,10 +62,10 @@ public class Doctor {
         }
     }
 
-    public void change(Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse) {
+    public void change(WeaklyShifts weaklyShifts, Patient patient, Nurse nurse) {
         Doctor doctor;
         System.out.print("Enter the id : ");
-        doctor = findDoctor(hospital, scanner.nextInt());
+        doctor = findDoctor(scanner.nextInt());
         if (doctor == null) {
             System.out.println("No doctor with this id");
         } else {
@@ -84,7 +84,7 @@ public class Doctor {
                     removeDoctorShift(doctor, weaklyShifts);
                     break;
                 case 3:
-                    remove(hospital, doctor, patient, nurse);
+                    remove(doctor, patient, nurse);
                     break;
                 default:
                     System.out.println("Wrong input");
@@ -163,10 +163,10 @@ public class Doctor {
         }
     }
 
-    public void addDoctor(Hospital hospital, Patient patient, Nurse nurse) {
+    public void addDoctor(Patient patient, Nurse nurse) {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
-        while (findDoctor(hospital, inputId) != null) {
+        while (findDoctor(inputId) != null) {
             inputId = scanner.nextInt();
             System.out.println("Same id registered");
         }
@@ -175,17 +175,13 @@ public class Doctor {
         System.out.print("Enter name : ");
         name = scanner.nextLine();
         System.out.println(this.getName());
-        if (hospital.sameId(this)) {
-            System.out.println("We have the same Id added");
-            return;
-        }
-        addNurse(hospital, nurse);
-        pickPatient(hospital, patient);
-        hospital.setDoctors(this);
+        addNurse(nurse);
+        pickPatient(patient);
+        Hospital.getDoctors().add(this);
     }
 
-    private void pickPatient(Hospital hospital, Patient patient) {
-        for (Patient myPatient : hospital.getPatients()) {
+    private void pickPatient(Patient patient) {
+        for (Patient myPatient : Hospital.getPatients()) {
             if (myPatient.getDoctor() == null) {
                 patient.setDoctor(this);
                 this.patients.add(myPatient);
@@ -194,8 +190,8 @@ public class Doctor {
         }
     }
 
-    private void addNurse(Hospital hospital, Nurse nurse) {
-        for (Nurse myNurse : hospital.getAllNurses()) {
+    private void addNurse(Nurse nurse) {
+        for (Nurse myNurse : Hospital.getAllNurses()) {
             if (nurses.size() == MAX_NURSES) {
                 break;
             }
@@ -206,21 +202,21 @@ public class Doctor {
         }
     }
 
-    public void remove(Hospital hospital, Doctor doctor, Patient patient, Nurse nurse) {
+    public void remove(Doctor doctor, Patient patient, Nurse nurse) {
         if (doctor == null) {
             System.out.println("Cant find any doctor ");
             return;
         }
-        hospital.getDoctors().remove(doctor);
+        Hospital.getDoctors().remove(doctor);
         nurse.getDoctors().remove(doctor);
         patient.setDoctor(null);
         System.out.println("Can't find doctor with this Id");
     }
 
-    public void showDoctor(Hospital hospital) {
+    public void showDoctor() {
         System.out.print("Enter the id : ");
         int inputId = scanner.nextInt();
-        Doctor doctor = findDoctor(hospital, inputId);
+        Doctor doctor = findDoctor(inputId);
         if (doctor != null) {
             System.out.println("Name : " + doctor.name + "   Id : " + doctor.id);
             doctorInfo(doctor);
@@ -281,8 +277,8 @@ public class Doctor {
         }
     }
 
-    private Doctor findDoctor(Hospital hospital, int inputId) {
-        for (Doctor doctor : hospital.getDoctors()) {
+    private Doctor findDoctor(int inputId) {
+        for (Doctor doctor : Hospital.getDoctors()) {
             if (inputId == doctor.id) {
                 return doctor;
             }
@@ -290,12 +286,12 @@ public class Doctor {
         return null;
     }
 
-    public void addShift(Hospital hospital, WeaklyShifts weaklyShifts, Nurse nurse) {
+    public void addShift(WeaklyShifts weaklyShifts, Nurse nurse) {
         int inputId;
         ArrayList<Doctor> chosenDay;
         System.out.print("Enter the ID : ");
         inputId = scanner.nextInt();
-        Doctor doctor = findDoctor(hospital, inputId);
+        Doctor doctor = findDoctor(inputId);
         if (doctor != null) {
             if (checkDoctorShiftsNumber(doctor)) {
                 System.out.println("Pick a day ");
