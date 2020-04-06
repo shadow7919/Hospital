@@ -98,6 +98,7 @@ public class Nurse {
     }
 
     public void addNurses() {
+        Nurse nurse = new Nurse();
         System.out.println("-------- Add Nurse --------");
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
@@ -106,11 +107,11 @@ public class Nurse {
             inputId = scanner.nextInt();
         }
         scanner.nextLine();
-        id = inputId;
+        nurse.id = inputId;
         System.out.print("Enter Name : ");
-        name = scanner.nextLine();
-        System.out.println(name + " serve in part source ?");
-        System.out.print(YesOrNo.YES + " OR " + YesOrNo.NO + "  ");
+        nurse.name = scanner.nextLine();
+        System.out.println(nurse.name + " serve in part source ?");
+        System.out.print(YesOrNo.YES + " OR " + YesOrNo.NO + " : ");
         String input = scanner.next();
         YesOrNo yesOrNo;
         while (true) {
@@ -122,9 +123,9 @@ public class Nurse {
             }
             input = scanner.next();
         }
-        isPartSource = yesOrNo.isInside();
-        if (!isPartSource) {
-            chooseNurseDoctor();
+        nurse.isPartSource = yesOrNo.isInside();
+        if (!nurse.isPartSource) {
+            chooseNurseDoctor(nurse);
         }
         Hospital.getAllNurses().add(this);
     }
@@ -195,18 +196,18 @@ public class Nurse {
         }
     }
 
-    private void chooseNurseDoctor() {
+    private void chooseNurseDoctor(Nurse nurse) {
         for (Doctor doctor : Hospital.getDoctors()) {
             if (doctors.size() == 2) {
                 break;
             }
             if (doctor.getNurses().size() < 2) {
-                doctors.add(doctor);
-                nurseShift.addAll(doctor.getDoctorShift());
-                patients.addAll(doctor.getPatients());
-                doctor.getNurses().add(this);
+                nurse.doctors.add(doctor);
+                nurse.nurseShift.addAll(doctor.getDoctorShift());
+                nurse.patients.addAll(doctor.getPatients());
+                doctor.getNurses().add(nurse);
                 for (Patient patient : doctor.getPatients()) {
-                    patient.getNurses().add(this);
+                    patient.getNurses().add(nurse);
                 }
             }
         }

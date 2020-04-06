@@ -134,22 +134,23 @@ public class Patient {
 
     public void addPatient() {
         Random random = new Random();
+        Patient patient = new Patient();
         System.out.println("----------- Add Patient -----------");
         System.out.print("enter the id : ");
         int inputId = scanner.nextInt();
         scanner.nextLine();
         if (checkId(inputId) == null) {
-            id = inputId;
-            chooseGender(this);
-            System.out.print("enter " + gender.getGender() + " name : ");
-            name = scanner.nextLine();
-            setAge(this);
-            entryDateSet(this);
-            whichDisease(this);
-            room.pickRoom(this);
-            caseId = random.nextInt(100000) + age + id % 100000;
-            addDoctorNurse(this);
-            Hospital.getPatients().add(this);
+            patient.id = inputId;
+            chooseGender(patient);
+            System.out.print("enter " + patient.gender.getGender() + " name : ");
+            patient.name = scanner.nextLine();
+            setAge(patient);
+            entryDateSet(patient);
+            whichDisease(patient);
+            room.pickRoom(patient);
+            caseId = random.nextInt(100000) + patient.age + patient.id % 100000;
+            addDoctorNurse(patient);
+            Hospital.getPatients().add(patient);
         } else {
             System.out.println("id is already Registered");
         }

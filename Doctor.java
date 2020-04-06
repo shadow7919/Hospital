@@ -167,17 +167,17 @@ public class Doctor {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
         while (findDoctor(inputId) != null) {
-            inputId = scanner.nextInt();
             System.out.println("Same id registered");
+            inputId = scanner.nextInt();
         }
         scanner.nextLine();
-        id = inputId;
+        Doctor doctor = new Doctor();
+        doctor.id = inputId;
         System.out.print("Enter name : ");
-        name = scanner.nextLine();
-        System.out.println(this.getName());
-        addNurse(nurse);
-        pickPatient(patient);
-        Hospital.getDoctors().add(this);
+        doctor.name = scanner.nextLine();
+        doctor.addNurse(nurse);
+        doctor.pickPatient(patient);
+        Hospital.getDoctors().add(doctor);
     }
 
     private void pickPatient(Patient patient) {
