@@ -12,7 +12,7 @@ public class Nurse {
     private ArrayList<Patient> patients = new ArrayList<>();
     private ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
-    public void nurseMenu(Hospital hospital) {
+    public void nurseMenu(Hospital hospital, Doctor doctor, Patient patient) {
         int option;
         while (true) {
             printMenu();
@@ -25,11 +25,10 @@ public class Nurse {
                     showNurses(hospital);
                     break;
                 case 3:
-                    showNurseShifts(hospital);
-                    //remove
+                    removeNurse(hospital, doctor, patient);
                     break;
                 case 4:
-                    //change
+//                    change();
                     break;
                 case 5:
                     return;
@@ -39,12 +38,46 @@ public class Nurse {
         }
     }
 
+    private Nurse findNurse(Hospital hospital) {
+        System.out.print("Enter id : ");
+        int inputId = scanner.nextInt();
+        if (sameId(hospital, inputId) == null) {
+            System.out.println("Wrong input");
+        }
+        return sameId(hospital, inputId);
+    }
+
+    private void change(Hospital hospital) {
+        Nurse nurse = findNurse(hospital);
+        if (nurse == null) {
+            return;
+        }
+        changeMenu();
+    }
+
+    private void changeMenu() {
+        System.out.println("------- CHANGE --------");
+        System.out.println("1 --> Change Name");
+        System.out.println("2 --> Remove Nurse");
+
+    }
+
+    private void removeNurse(Hospital hospital, Doctor doctor, Patient patient) {
+        Nurse nurse = findNurse(hospital);
+        if (nurse == null) {
+            return;
+        }
+        hospital.getAllNurses().remove(nurse);
+        doctor.getPatients().remove(nurse);
+        patient.getNurses().remove(nurse);
+    }
+
     private void printMenu() {
         System.out.println("---------- NURSE ---------");
         System.out.println("1 --> Add ");
-        System.out.println("2 --> Show ");//Show nurse shifts
+        System.out.println("2 --> Show ");
         System.out.println("3 --> Remove ");
-        System.out.println("4 --> Change ");
+        System.out.println("4 --> Change "); ///           --------------------------> do chage like remove doctor change one Make partSource < -------------------------------
         System.out.println("5 -- > Back to previous menu");
         System.out.println("---------------------------");
     }
@@ -85,9 +118,9 @@ public class Nurse {
         System.out.println("-------- SHOW NURSE --------");
         System.out.print("Enter the id : ");
         int inputId = scanner.nextInt();
-        while (sameId(hospital, inputId) == null) {
-            System.out.print("Enter the write id : ");
-            inputId = scanner.nextInt();
+        if (sameId(hospital, inputId) == null) {
+            System.out.println("Wrong id ");
+            return;
         }
         Nurse nurse = sameId(hospital, inputId);
         System.out.println("ID : " + nurse.id + "\tName : " + nurse.name);
@@ -116,6 +149,9 @@ public class Nurse {
     }
 
     private void showShifts(Nurse nurse) {
+        if (nurse.nurseShift.size() == 0) {
+            System.out.println("No shift is registered");
+        }
         System.out.println("------- Shifts --------");
         for (ShiftTimeClass shiftTimeClass : nurse.nurseShift) {
             System.out.println(shiftTimeClass.shiftsTime + " ---> " + shiftTimeClass.week);
@@ -141,23 +177,6 @@ public class Nurse {
         System.out.println("------- Doctors --------");
         for (Doctor doctor : nurse.doctors) {
             System.out.println("ID : " + doctor.getId() + "\tName : " + doctor.getName());
-        }
-    }
-
-    public void showNurseShifts(Hospital hospital) {
-        System.out.println("Enter id for Nurse");
-        int inputId = scanner.nextInt();
-        while (sameId(hospital, inputId) == null) {
-            System.out.println("we cant find someone with this id");
-            inputId = scanner.nextInt();
-        }
-        Nurse nurse = sameId(hospital, inputId);
-        if (nurse.nurseShift.size() != 0) {
-            for (ShiftTimeClass shiftTimeClass : nurse.nurseShift) {
-                System.out.println(shiftTimeClass.shiftsTime + " OF " + shiftTimeClass.week);
-            }
-        } else {
-            System.out.println("no shift is added for this nurse");
         }
     }
 
@@ -207,6 +226,3 @@ public class Nurse {
         return patients;
     }
 }
-/*
-Make The show menu for nurse
- */
