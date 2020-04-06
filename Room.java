@@ -190,17 +190,14 @@ public class Room {
 
     public Room findRoom(Patient patient) {
         PartKind partKind = whichPart(patient);
-        Room foundRoom = null;
+        Room foundRoom ;
         if (partKind == PartKind.NORMAL) {
             foundRoom = findRoomHandle(partKind, Hospital.getNormalRooms());
-            if (foundRoom == null) {
-                System.out.println("Can't find this room");
-            }
         } else {
             foundRoom = findRoomHandle(partKind, Hospital.getEmergencyRooms());
-            if (foundRoom == null) {
-                System.out.println("Cant find that Room");
-            }
+        }
+        if (foundRoom == null) {
+            System.out.println("Cant find that Room");
         }
         return foundRoom;
     }
