@@ -1,6 +1,5 @@
 package ir.ac.kntu;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -104,10 +103,8 @@ public class Doctor {
             return;
         }
         ShiftTimeClass chosenShiftTimeClass = new ShiftTimeClass(week, shiftsTime);
-        System.out.println(chosenShiftTimeClass.shiftsTime +"\t"+chosenShiftTimeClass.week);
         for (ShiftTimeClass shiftTimeClass1 : doctor.doctorShift) {
-            System.out.println(shiftTimeClass1.shiftsTime+"\t"+shiftTimeClass1.week);
-            if (chosenShiftTimeClass.shiftsTime == shiftTimeClass1.shiftsTime && chosenShiftTimeClass.week == shiftTimeClass1.week){
+            if (chosenShiftTimeClass.shiftsTime == shiftTimeClass1.shiftsTime && chosenShiftTimeClass.week == shiftTimeClass1.week) {
                 doctor.doctorShift.remove(shiftTimeClass1);
                 for (Nurse nurse : doctor.getNurses()) {
                     nurse.getNurseShift().remove(shiftTimeClass1);
@@ -178,10 +175,14 @@ public class Doctor {
         for (Nurse nurse : doctor.nurses) {
             nurse.getDoctors().remove(doctor);
         }
+        for (ShiftTimeClass shiftTimeClass1 : doctor.doctorShift) {
+            for (Nurse nurse : doctor.getNurses()) {
+                nurse.getNurseShift().remove(shiftTimeClass1);
+            }
+        }
         for (Patient patient : doctor.patients) {
             patient.setDoctor(null);
         }
-        System.out.println("Can't find doctor with this Id");
     }
 
     public void showDoctor() {
