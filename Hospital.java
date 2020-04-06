@@ -8,10 +8,15 @@ public class Hospital {
     private static ArrayList<Room> normalRooms = new ArrayList<>();
     private static ArrayList<Room> emergencyRooms = new ArrayList<>();
     private static ArrayList<Nurse> allNurses = new ArrayList<>();
+    private static ArrayList<ShiftTimeClass> shiftsTimes = new ArrayList<>();
     private String name;
 
     public static ArrayList<Doctor> getDoctors() {
         return doctors;
+    }
+
+    public static ArrayList<ShiftTimeClass> getShiftsTimes() {
+        return shiftsTimes;
     }
 
     public static ArrayList<Patient> getPatients() {

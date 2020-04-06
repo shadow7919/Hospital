@@ -1,6 +1,5 @@
 package ir.ac.kntu;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -45,7 +44,6 @@ public class WeaklyShifts {
                     printDayShift(fridayShift);
                     break;
                 default:
-                    break;
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Wrong day");
@@ -57,19 +55,6 @@ public class WeaklyShifts {
             System.out.print(doctor.getDoctorShift().iterator().next().shiftsTime + " of ");
             System.out.println(doctor.getDoctorShift().iterator().next().week);
         }
-    }
-
-    public boolean doctorHaveShiftThisDay(Doctor doctor, ShiftsTime shiftsTime, ArrayList<Doctor> dayShifts) {
-        for (Doctor myDoctor : dayShifts) {
-            if (doctor.getId() == myDoctor.getId()) {
-                for (ShiftTimeClass shiftTimeClass : doctor.getDoctorShift()) {
-                    if (shiftTimeClass.shiftsTime.equals(shiftsTime)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     public ArrayList<Doctor> getSaturdayShift() {
