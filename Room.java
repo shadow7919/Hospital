@@ -31,26 +31,26 @@ public class Room {
         System.out.println("-------------------------");
     }
 
-    public void menu(Hospital hospital) {
+    public void menu() {
         int option;
         while (true) {
             printMenu();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    showRoom(hospital, whichPart(null));
+                    showRoom(whichPart(null));
                     break;
                 case 2:
-                    changeRoomsBeds(hospital);
+                    changeRoomsBeds();
                     break;
                 case 3:
-                    roomUnavailable(hospital);
+                    roomUnavailable();
                     break;
                 case 4:
-                    patientsInRoom(hospital);
+                    patientsInRoom();
                     break;
                 case 5:
-                    addRoom(hospital);
+                    addRoom();
                     break;
                 case 6:
                     return;
@@ -60,10 +60,10 @@ public class Room {
         }
     }
 
-    public void roomUnavailable(Hospital hospital) {
-        Room room = new Room();
+    public void roomUnavailable() {
+        Room room;
         System.out.println("Make this Room unavailable ");
-        room = findRoom(hospital, null);
+        room = findRoom(null);
         room.isAvailable = false;
         System.out.println(room.roomNumber + " is unavailable now");
     }
@@ -97,13 +97,13 @@ public class Room {
         }
     }
 
-    public void addRoom(Hospital hospital) {
+    public void addRoom() {
         PartKind partKind = whichPart(null);
         int roomNumber;
         if (partKind == PartKind.NORMAL) {
-            roomNumber = hospital.getNormalRooms().get(hospital.getNormalRooms().size() - 1).roomNumber + 1;
+            roomNumber = Hospital.getNormalRooms().get(Hospital.getNormalRooms().size() - 1).roomNumber + 1;
         } else {
-            roomNumber = hospital.getEmergencyRooms().get(hospital.getEmergencyRooms().size() - 1).roomNumber + 1;
+            roomNumber = Hospital.getEmergencyRooms().get(Hospital.getEmergencyRooms().size() - 1).roomNumber + 1;
         }
         System.out.print("How many beds you want ?");
         int bedsNumber = scanner.nextInt();
@@ -113,7 +113,7 @@ public class Room {
         }
         Room room = new Room(roomNumber, bedsNumber, price);
         availableHandle(room);
-        hospital.getNormalRooms().add(room);
+        Hospital.getNormalRooms().add(room);
     }
 
     private void availableHandle(Room room) {
@@ -133,9 +133,9 @@ public class Room {
         }
     }
 
-    public void pickRoom(Hospital hospital, Patient patient) {
+    public void pickRoom(Patient patient) {
         Room room;
-        room = findRoom(hospital, patient);
+        room = findRoom(patient);
         if (room != null) {
             if (room.isAvailable) {
                 patient.setRoom(room);
@@ -144,11 +144,11 @@ public class Room {
         }
     }
 
-    public void showRoom(Hospital hospital, PartKind partKind) {
+    public void showRoom(PartKind partKind) {
         if (partKind == PartKind.NORMAL) {
-            showRoomHandle(hospital.getNormalRooms());
+            showRoomHandle(Hospital.getNormalRooms());
         } else {
-            showRoomHandle(hospital.getEmergencyRooms());
+            showRoomHandle(Hospital.getEmergencyRooms());
         }
     }
 
@@ -160,10 +160,10 @@ public class Room {
         }
     }
 
-    public void changeRoomsBeds(Hospital hospital) {
+    public void changeRoomsBeds() {
         Room room;
         System.out.println("Which room you want to change ");
-        room = findRoom(hospital, null);
+        room = findRoom(null);
         if (room != null) {
             changeRoomHandle(room);
         }
@@ -179,25 +179,25 @@ public class Room {
         room.setBedsNumber(bedsNumber);
     }
 
-    public void patientsInRoom(Hospital hospital) {
+    public void patientsInRoom() {
         Room room;
         System.out.println("Patient in Room : ");
-        room = findRoom(hospital, null);
+        room = findRoom(null);
         for (Patient patient : room.patients) {
             System.out.println("Name : " + patient.getName() + "\tId : " + patient.getId());
         }
     }
 
-    public Room findRoom(Hospital hospital, Patient patient) {
+    public Room findRoom(Patient patient) {
         PartKind partKind = whichPart(patient);
         Room foundRoom = null;
         if (partKind == PartKind.NORMAL) {
-            foundRoom = findRoomHandle(hospital, partKind, hospital.getNormalRooms());
+            foundRoom = findRoomHandle(partKind, Hospital.getNormalRooms());
             if (foundRoom == null) {
                 System.out.println("Can't find this room");
             }
         } else {
-            foundRoom = findRoomHandle(hospital, partKind, hospital.getEmergencyRooms());
+            foundRoom = findRoomHandle(partKind, Hospital.getEmergencyRooms());
             if (foundRoom == null) {
                 System.out.println("Cant find that Room");
             }
@@ -205,8 +205,8 @@ public class Room {
         return foundRoom;
     }
 
-    private Room findRoomHandle(Hospital hospital, PartKind partKind, ArrayList<Room> partRooms) {
-        showRoom(hospital, partKind);
+    private Room findRoomHandle(PartKind partKind, ArrayList<Room> partRooms) {
+        showRoom(partKind);
         System.out.print("Enter Room number :");
         int option = scanner.nextInt();
         for (Room room : partRooms) {
@@ -216,7 +216,8 @@ public class Room {
         }
         return null;
     }
-    public void makeRooms(Hospital hospital,Room room) {
+
+    public void makeRooms(Hospital hospital, Room room) {
         System.out.println("Enter how many room do you need for " + PartKind.NORMAL + " Part ");
         int normalRoomsNumber = scanner.nextInt();
         System.out.println("And also " + PartKind.EMERGENCY + " Part rooms?");
@@ -234,13 +235,14 @@ public class Room {
         int emergencyRoomPrice = scanner.nextInt();
         for (int i = 1; i <= normalRoomsNumber; i++) {
             Room myRoom = new Room(i, defaultBedNumber, normalRoomPrice);
-            hospital.getNormalRooms().add(myRoom);
+            Hospital.getNormalRooms().add(myRoom);
         }
         for (int i = 1; i <= emergencyRoomsNumber; i++) {
             Room myRoom = new Room(i, defaultBedNumber, emergencyRoomPrice);
-            hospital.getEmergencyRooms().add(myRoom);
+            Hospital.getEmergencyRooms().add(myRoom);
         }
     }
+
     public boolean check(int defaultBedNumber) {
         return defaultBedNumber <= 0 || defaultBedNumber > 6;
     }

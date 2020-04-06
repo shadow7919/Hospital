@@ -22,7 +22,7 @@ public class Patient {
     private Gender gender;
     private ArrayList<Nurse> nurses = new ArrayList<>();
 
-    public void printMenu(Hospital hospital) {
+    public void printMenu() {
         int option;
         while (true) {
             System.out.println("----------- Patient Menu -----------");
@@ -36,19 +36,19 @@ public class Patient {
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    addPatient(hospital);
+                    addPatient();
                     break;
                 case 2:
-                    patientShow(hospital);
+                    patientShow();
                     break;
                 case 3:
-                    change(hospital);
+                    change();
                     break;
                 case 4:
-                    chooseDoctor(hospital);
+                    chooseDoctor();
                     break;
                 case 5:
-                    dischargePatient(hospital);
+                    dischargePatient();
                     break;
                 case 6:
                     return;
@@ -58,38 +58,38 @@ public class Patient {
         }
     }
 
-    public void chooseDoctor(Hospital hospital) {
-        Patient patient = findPatient(hospital);
+    public void chooseDoctor() {
+        Patient patient = findPatient();
         if (patient == null) {
             return;
         }
         if (patient.doctor == null) {
-            if (whichDoctorHavePatient(hospital) == null) {
+            if (whichDoctorHavePatient() == null) {
                 System.out.println("There is no doctor");
             } else {
-                patient.doctor = whichDoctorHavePatient(hospital);
+                patient.doctor = whichDoctorHavePatient();
             }
         } else {
             System.out.println("this patient is already have " + patient.doctor.getName());
         }
     }
 
-    private Patient findPatient(Hospital hospital) {
+    private Patient findPatient() {
         System.out.print("enter the id : ");
         int inputId = scanner.nextInt();
         scanner.nextLine();
-        if (checkId(hospital, inputId) != null) {
-            return checkId(hospital, id);
+        if (checkId(inputId) != null) {
+            return checkId(id);
         } else {
             System.out.println("id is not Registered");
         }
         return null;
     }
 
-    public void change(Hospital hospital) {
+    public void change() {
         System.out.println("-------- CHANGE --------");
-        Patient patient = findPatient(hospital);
-        patientShow(hospital);
+        Patient patient = findPatient();
+        patientShow();
         changePrint();
         if (patient == null) {
             return;
@@ -112,7 +112,7 @@ public class Patient {
                 whichDisease(patient);
                 break;
             case 6:
-                room.pickRoom(hospital, this);
+                room.pickRoom(this);
                 break;
             default:
                 System.out.println("out");
@@ -132,13 +132,13 @@ public class Patient {
         System.out.println("Any thing else out ");
     }
 
-    public void addPatient(Hospital hospital) {
+    public void addPatient() {
         Random random = new Random();
         System.out.println("----------- Add Patient -----------");
         System.out.print("enter the id : ");
         int inputId = scanner.nextInt();
         scanner.nextLine();
-        if (checkId(hospital, inputId) == null) {
+        if (checkId(inputId) == null) {
             id = inputId;
             chooseGender(this);
             System.out.print("enter " + gender.getGender() + " name : ");
@@ -146,17 +146,18 @@ public class Patient {
             setAge(this);
             entryDateSet(this);
             whichDisease(this);
-            room.pickRoom(hospital, this);
+            room.pickRoom(this);
             caseId = random.nextInt(100000) + age + id % 100000;
-            addDoctorNurse(this, hospital);
-            hospital.getPatients().add(this);
+            addDoctorNurse(this);
+            Hospital.getPatients().add(this);
         } else {
             System.out.println("id is already Registered");
         }
     }
 
-    public void addDoctorNurse(Patient patient, Hospital hospital) {
-        Doctor doctor = whichDoctorHavePatient(hospital);
+    public void addDoctorNurse(Patient patient) {
+        Doctor doctor = whichDoctorHavePatient();
+        System.out.println(doctor);
         if (doctor == null) {
             return;
         }
@@ -165,7 +166,6 @@ public class Patient {
         for (Nurse nurse : doctor.getNurses()) {
             nurse.getPatients().add(this);
         }
-
     }
 
     private void setAge(Patient patient) {
@@ -224,14 +224,14 @@ public class Patient {
         }
     }
 
-    private void patientShow(Hospital hospital) {
+    private void patientShow() {
         Patient patient = null;
         while (patient == null) {
             System.out.println("Enter the id");
             int inputId = scanner.nextInt();
-            for (int i = 0; i < hospital.getPatients().size(); i++) {
-                if (inputId == hospital.getPatients().get(i).id) {
-                    patient = hospital.getPatients().get(i);
+            for (int i = 0; i < Hospital.getPatients().size(); i++) {
+                if (inputId == Hospital.getPatients().get(i).id) {
+                    patient = Hospital.getPatients().get(i);
                 }
             }
             System.out.println("no one with this is Registered");
@@ -247,8 +247,8 @@ public class Patient {
         }
     }
 
-    public Patient checkId(Hospital hospital, int id) {
-        for (Patient patient : hospital.getPatients()) {
+    public Patient checkId(int id) {
+        for (Patient patient : Hospital.getPatients()) {
             if (id == patient.id) {
                 return patient;
             }
@@ -256,29 +256,29 @@ public class Patient {
         return null;
     }
 
-    public Doctor whichDoctorHavePatient(Hospital hospital) {
+    public Doctor whichDoctorHavePatient() {
         int minPatientNumber = Integer.MAX_VALUE;
-        Doctor chosenDoctor = new Doctor();
-        for (Doctor doctor : hospital.getDoctors()) {
+        Doctor chosenDoctor = null;
+        for (Doctor doctor : Hospital.getDoctors()) {
             if (doctor.getPatients().size() < minPatientNumber) {
                 minPatientNumber = doctor.getPatients().size();
                 chosenDoctor = doctor;
             }
         }
-        if (chosenDoctor.getPatients().size() < 5) {
-            return doctor;
-        } else {
+
+        if (chosenDoctor == null || chosenDoctor.getPatients().size() == 5) {
             return null;
         }
+        return chosenDoctor;
     }
 
-    public void dischargePatient(Hospital hospital) {
+    public void dischargePatient() {
         Patient patient;
         System.out.println("---------- DISCHARGE ----------");
         System.out.println("enter the id");
         int inputId = scanner.nextInt();
-        if (checkId(hospital, inputId) != null) {
-            patient = checkId(hospital, inputId);
+        if (checkId(inputId) != null) {
+            patient = checkId(inputId);
             departureDateSet(patient);
             patient.howManyDays = howLong(patient.entry, patient.departure);
             patient.room.discountForRoom(patient.room);

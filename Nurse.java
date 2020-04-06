@@ -12,20 +12,20 @@ public class Nurse {
     private ArrayList<Patient> patients = new ArrayList<>();
     private ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
-    public void nurseMenu(Hospital hospital, Doctor doctor, Patient patient) {
+    public void nurseMenu(Doctor doctor, Patient patient) {
         int option;
         while (true) {
             printMenu();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    addNurses(hospital);
+                    addNurses();
                     break;
                 case 2:
-                    showNurses(hospital);
+                    showNurses();
                     break;
                 case 3:
-                    change(hospital, doctor, patient);
+                    change(doctor, patient);
                     break;
                 case 4:
                     return;
@@ -35,17 +35,17 @@ public class Nurse {
         }
     }
 
-    private Nurse findNurse(Hospital hospital) {
+    private Nurse findNurse() {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
-        if (sameId(hospital, inputId) == null) {
+        if (sameId(inputId) == null) {
             System.out.println("Wrong input");
         }
-        return sameId(hospital, inputId);
+        return sameId(inputId);
     }
 
-    private void change(Hospital hospital, Doctor doctor, Patient patient) {
-        Nurse nurse = findNurse(hospital);
+    private void change(Doctor doctor, Patient patient) {
+        Nurse nurse = findNurse();
         if (nurse == null) {
             return;
         }
@@ -56,7 +56,7 @@ public class Nurse {
                 nurse.name = scanner.nextLine();
                 break;
             case 2:
-                removeNurse(nurse, hospital, doctor, patient);
+                removeNurse(nurse, doctor, patient);
                 break;
             case 3:
                 ChangeToPartSource(nurse, doctor, patient);
@@ -82,8 +82,8 @@ public class Nurse {
         System.out.println("3 --> Make partSource");
     }
 
-    private void removeNurse(Nurse nurse, Hospital hospital, Doctor doctor, Patient patient) {
-        hospital.getAllNurses().remove(nurse);
+    private void removeNurse(Nurse nurse, Doctor doctor, Patient patient) {
+        Hospital.getAllNurses().remove(nurse);
         doctor.getNurses().remove(nurse);
         patient.getNurses().remove(nurse);
     }
@@ -97,11 +97,11 @@ public class Nurse {
         System.out.println("---------------------------");
     }
 
-    public void addNurses(Hospital hospital) {
+    public void addNurses() {
         System.out.println("-------- Add Nurse --------");
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
-        while (sameId(hospital, inputId) != null) {
+        while (sameId(inputId) != null) {
             System.out.println("we have same id Registered");
             inputId = scanner.nextInt();
         }
@@ -124,20 +124,20 @@ public class Nurse {
         }
         isPartSource = yesOrNo.isInside();
         if (!isPartSource) {
-            chooseNurseDoctor(hospital);
+            chooseNurseDoctor();
         }
-        hospital.getAllNurses().add(this);
+        Hospital.getAllNurses().add(this);
     }
 
-    public void showNurses(Hospital hospital) {
+    public void showNurses() {
         System.out.println("-------- SHOW NURSE --------");
         System.out.print("Enter the id : ");
         int inputId = scanner.nextInt();
-        if (sameId(hospital, inputId) == null) {
+        if (sameId(inputId) == null) {
             System.out.println("Wrong id ");
             return;
         }
-        Nurse nurse = sameId(hospital, inputId);
+        Nurse nurse = sameId(inputId);
         System.out.println("ID : " + nurse.id + "\tName : " + nurse.name);
         if (nurse.isPartSource) {
             System.out.println(nurse.name + " work in part source ");
@@ -195,8 +195,8 @@ public class Nurse {
         }
     }
 
-    private void chooseNurseDoctor(Hospital hospital) {
-        for (Doctor doctor : hospital.getDoctors()) {
+    private void chooseNurseDoctor() {
+        for (Doctor doctor : Hospital.getDoctors()) {
             if (doctors.size() == 2) {
                 break;
             }
@@ -212,8 +212,8 @@ public class Nurse {
         }
     }
 
-    public Nurse sameId(Hospital hospital, int inputId) {
-        for (Nurse nurse : hospital.getAllNurses()) {
+    public Nurse sameId(int inputId) {
+        for (Nurse nurse : Hospital.getAllNurses()) {
             if (inputId == nurse.id) {
                 return nurse;
             }

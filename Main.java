@@ -11,12 +11,13 @@ public class Main {
         WeaklyShifts weaklyShifts = new WeaklyShifts();
         Nurse nurse = new Nurse();
         Room room = new Room();
-        welcome(scanner, hospital, room);
-        chooseMenu(scanner, doctor, hospital, weaklyShifts, patient, nurse, room);
+//        welcome(scanner, hospital, room);
+        chooseMenu(scanner, doctor, weaklyShifts, patient, nurse, room);
     }
 
     public static void welcome(Scanner scanner, Hospital hospital, Room room) {
         System.out.println("------------ WELCOME ------------");
+        System.out.println("Go step by step First doctor then Nurse and at the end Patient");
         System.out.print("Hospital name :");
         hospital.setName(scanner.nextLine());
         System.out.println("--------- Rooms and Price ---------");
@@ -34,7 +35,7 @@ public class Main {
         System.out.println("---> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, Hospital hospital, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse, Room room) {
+    public static void chooseMenu(Scanner scanner, Doctor doctor, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse, Room room) {
         MenuOptions menuOptions = MenuOptions.DOCTOR;
         String choose;
         while (true) {
@@ -44,23 +45,22 @@ public class Main {
                 menuOptions = menuOptions.valueOf(choose);
                 switch (menuOptions) {
                     case DOCTOR:
-                        doctor.doctorMenu(doctor, hospital, weaklyShifts, nurse);
+                        doctor.doctorMenu(weaklyShifts, nurse, patient);
                         break;
                     case NURSE:
-                        nurse.nurseMenu(hospital);
+                        nurse.nurseMenu(doctor,patient);
                         break;
                     case PATIENT:
-                        patient.printMenu(hospital);
+                        patient.printMenu();
                         break;
                     case ROOM:
-                        room.menu(hospital);
+                        room.menu();
 //                        weaklyShifts.showShift();
                         break;
                     case HOSPITAL:
                         hospital.hospitalMenu();
                     case QUITE:
                         return;
-                    default:
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println("Wrong input");
