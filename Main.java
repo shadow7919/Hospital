@@ -8,11 +8,10 @@ public class Main {
         Hospital hospital = new Hospital();
         Doctor doctor = new Doctor();
         Patient patient = new Patient();
-        WeaklyShifts weaklyShifts = new WeaklyShifts();
         Nurse nurse = new Nurse();
         Room room = new Room();
-//        welcome(scanner, hospital, room);
-        chooseMenu(scanner, doctor, weaklyShifts, patient, nurse, room);
+        welcome(scanner, hospital, room);
+        chooseMenu(scanner, doctor, patient, nurse, room);
     }
 
     public static void welcome(Scanner scanner, Hospital hospital, Room room) {
@@ -35,30 +34,30 @@ public class Main {
         System.out.println("---> " + MenuOptions.QUITE);
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, WeaklyShifts weaklyShifts, Patient patient, Nurse nurse, Room room) {
-        MenuOptions menuOptions = MenuOptions.DOCTOR;
+    public static void chooseMenu(Scanner scanner, Doctor doctor, Patient patient, Nurse nurse, Room room) {
+        MenuOptions menuOptions;
         String choose;
         while (true) {
             menu();
             choose = scanner.nextLine();
             try {
-                menuOptions = menuOptions.valueOf(choose);
+                menuOptions = MenuOptions.valueOf(choose);
                 switch (menuOptions) {
                     case DOCTOR:
-                        doctor.doctorMenu(weaklyShifts, nurse, patient);
+                        doctor.doctorMenu();
                         break;
                     case NURSE:
-                        nurse.nurseMenu(doctor,patient);
+                        nurse.nurseMenu();
                         break;
                     case PATIENT:
-                        patient.printMenu();
+                        patient.menu();
                         break;
                     case ROOM:
                         room.menu();
 //                        weaklyShifts.showShift();
                         break;
                     case HOSPITAL:
-                        hospital.hospitalMenu();
+//                        Hospital.hospitalMenu();
                     case QUITE:
                         return;
                 }
