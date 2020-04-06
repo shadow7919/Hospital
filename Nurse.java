@@ -15,7 +15,7 @@ public class Nurse {
     public void nurseMenu() {
         int option;
         while (true) {
-            printMenu();
+            printChangeMenu();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
@@ -39,7 +39,7 @@ public class Nurse {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
         if (sameId(inputId) == null) {
-            System.out.println("Wrong input");
+            System.out.println("No Nurse");
         }
         return sameId(inputId);
     }
@@ -90,7 +90,7 @@ public class Nurse {
         }
     }
 
-    private void printMenu() {
+    private void printChangeMenu() {
         System.out.println("---------- NURSE ---------");
         System.out.println("1 --> Add ");
         System.out.println("2 --> Show ");
@@ -132,7 +132,7 @@ public class Nurse {
         Hospital.getAllNurses().add(nurse);
     }
 
-    private void showNursesMenu() {
+    private void nursesMenu() {
         System.out.println("1 --> Doctors");
         System.out.println("2 --> Patients");
         System.out.println("3 --> Shifts");
@@ -152,7 +152,7 @@ public class Nurse {
         }
         int option;
         while (true) {
-            showNursesMenu();
+            nursesMenu();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
@@ -243,9 +243,6 @@ public class Nurse {
         return nurseShift;
     }
 
-    public void setNurseShift(ArrayList<ShiftTimeClass> nurseShift) {
-        this.nurseShift = nurseShift;
-    }
 
     public int getId() {
         return id;
