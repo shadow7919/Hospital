@@ -25,12 +25,9 @@ public class Nurse {
                     showNurses(hospital);
                     break;
                 case 3:
-                    removeNurse(hospital, doctor, patient);
+                    change(hospital, doctor, patient);
                     break;
                 case 4:
-//                    change();
-                    break;
-                case 5:
                     return;
                 default:
                     System.out.println("Wrong input ");
@@ -47,28 +44,47 @@ public class Nurse {
         return sameId(hospital, inputId);
     }
 
-    private void change(Hospital hospital) {
+    private void change(Hospital hospital, Doctor doctor, Patient patient) {
         Nurse nurse = findNurse(hospital);
         if (nurse == null) {
             return;
         }
         changeMenu();
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1:
+                nurse.name = scanner.nextLine();
+                break;
+            case 2:
+                removeNurse(nurse, hospital, doctor, patient);
+                break;
+            case 3:
+                ChangeToPartSource(nurse, doctor, patient);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void ChangeToPartSource(Nurse nurse, Doctor doctor, Patient patient) {
+        doctor.getNurses().remove(nurse);
+        patient.getNurses().remove(nurse);
+        nurse.nurseShift = null;
+        nurse.doctors = null;
+        nurse.patients = null;
+        nurse.isPartSource = true;
     }
 
     private void changeMenu() {
         System.out.println("------- CHANGE --------");
         System.out.println("1 --> Change Name");
         System.out.println("2 --> Remove Nurse");
-
+        System.out.println("3 --> Make partSource");
     }
 
-    private void removeNurse(Hospital hospital, Doctor doctor, Patient patient) {
-        Nurse nurse = findNurse(hospital);
-        if (nurse == null) {
-            return;
-        }
+    private void removeNurse(Nurse nurse, Hospital hospital, Doctor doctor, Patient patient) {
         hospital.getAllNurses().remove(nurse);
-        doctor.getPatients().remove(nurse);
+        doctor.getNurses().remove(nurse);
         patient.getNurses().remove(nurse);
     }
 
@@ -76,9 +92,8 @@ public class Nurse {
         System.out.println("---------- NURSE ---------");
         System.out.println("1 --> Add ");
         System.out.println("2 --> Show ");
-        System.out.println("3 --> Remove ");
-        System.out.println("4 --> Change "); ///           --------------------------> do chage like remove doctor change one Make partSource < -------------------------------
-        System.out.println("5 -- > Back to previous menu");
+        System.out.println("3 --> Change ");
+        System.out.println("4 -- > Back to previous menu");
         System.out.println("---------------------------");
     }
 
