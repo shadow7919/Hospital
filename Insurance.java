@@ -1,9 +1,11 @@
 package ir.ac.kntu;
 
 public enum Insurance {
-    socialInsurance(.9),
-    armedForces(.5),
-    healthService(.75);
+    SOCIAL_INSURANCE(.9),
+    ARMED_FORCES(.5),
+    HEALTH_SERVICES(.75),
+    NON(1);
+
     private double discount;
 
     Insurance(double num) {
