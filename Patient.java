@@ -63,6 +63,7 @@ public class Patient {
         System.out.println("-------- CHANGE --------");
         Patient patient = checkId();
         if (patient == null) {
+            System.out.println("No patient Registered with this id");
             return;
         }
         int option;
@@ -81,7 +82,7 @@ public class Patient {
                     chooseGender(patient);
                     break;
                 case 4:
-                    entryDateSet(patient);
+                    patient.entry = MyDate.dateSet();
                     break;
                 case 5:
                     whichDisease(patient);
@@ -136,9 +137,9 @@ public class Patient {
         System.out.print("enter " + patient.gender.getGender() + " name : ");
         patient.name = scanner.nextLine();
         setAge(patient);
-        entryDateSet(patient);
+        patient.entry = MyDate.dateSet();
         whichDisease(patient);
-        patient.partKind = room.whichPart();
+        patient.partKind = Room.whichPart();
         room.pickRoom(patient);
         patient.caseId = random.nextInt(100000) + patient.age + patient.id % 100000;
         addDoctorNurse(patient);
@@ -170,20 +171,6 @@ public class Patient {
         }
     }
 
-    private void entryDateSet(Patient patient) {
-        while (true) {
-            System.out.print("Enter entry date ( day / month / year ) :");
-            int entryDay = scanner.nextInt();
-            int entryMonth = scanner.nextInt();
-            int entryYear = scanner.nextInt();
-            patient.entry = new MyDate(entryYear, entryMonth, entryDay);
-            if (patient.entry.getYear() != 0) {
-                break;
-            }
-            System.out.println("Wrong Date ");
-        }
-    }
-
     private void chooseGender(Patient patient) {
         System.out.print("Gender\tM or F : ");
         while (true) {
@@ -198,18 +185,18 @@ public class Patient {
     }
 
     private void whichDisease(Patient patient) {
+        Disease[] diseases = Disease.values();
         while (true) {
-            System.out.println("---> " + Disease.ACCIDENT);
-            System.out.println("---> " + Disease.BURN);
-            System.out.println("---> " + Disease.STRIKE);
-            System.out.println("---> " + Disease.SOMETHING_ELSE);
-            String choose = scanner.next();
-            try {
-                patient.disease = Disease.valueOf(choose);
-                break;
-            } catch (IllegalArgumentException e) {
-                System.out.println("Wrong input");
+            System.out.println("1--> " + Disease.ACCIDENT);
+            System.out.println("2--> " + Disease.BURN);
+            System.out.println("3--> " + Disease.STRIKE);
+            System.out.println("4--> " + Disease.SOMETHING_ELSE);
+            int choose = scanner.nextInt();
+            if (choose <= diseases.length) {
+                patient.disease = diseases[choose - 1];
+                return;
             }
+            System.out.println("Wrong input");
         }
     }
 
@@ -225,7 +212,7 @@ public class Patient {
         System.out.println("Name : " + patient.name + "\t age : " + patient.age);
         System.out.println(patient.gender.getGender() + " in " + patient.partKind + " PART");
         System.out.println("entry date : " + patient.entry.getDay() + " / " + patient.entry.getMonth() + " / " + patient.entry.getYear());
-        if(patient.isDischarge){
+        if (patient.isDischarge) {
             System.out.println("departure date : " + patient.departure.getDay() + " / " + patient.departure.getMonth() + " / " + patient.departure.getYear());
         }
         System.out.println("Room Number : " + patient.room.getRoomNumber());
@@ -278,7 +265,7 @@ public class Patient {
             return;
         }
         departureDateSet(patient);
-        patient.howManyDays = howLong(patient.entry, patient.departure);
+        patient.howManyDays = MyDate.howLong(patient.entry, patient.departure);
         patient.room.discountForRoom(patient.room);
         patient.totalPrice = patient.room.getPrice() * patient.howManyDays;
         haveInsurance(patient);
@@ -294,67 +281,48 @@ public class Patient {
 
     private void departureDateSet(Patient patient) {
         while (true) {
-            System.out.print("Enter departure date ( day / month / year ) :");
-            int day = scanner.nextInt();
-            int month = scanner.nextInt();
-            int year = scanner.nextInt();
-            patient.departure = new MyDate(year, month, day);
-            if (patient.departure.getYear() == 0) {
-                System.out.println("Wrong Date ");
-                continue;
+            patient.departure = MyDate.dateSet();
+            if (0 < MyDate.howLong(patient.entry, patient.departure)) {
+                return;
             }
-            if (howLong(patient.entry, patient.departure) <= 0) {
-                System.out.println("departure should be bigger than entry");
-                continue;
-            }
-            return;
+            System.out.println("departure should be bigger than entry");
         }
     }
 
-    private void haveInsuranceMenu() {
+    private Insurance haveInsuranceMenu() {
+        int option;
+        Insurance[] insurance = Insurance.values();
         System.out.println("-------- Insurance -------");
-        System.out.println("1 --> " + Insurance.armedForces);
-        System.out.println("2 --> " + Insurance.socialInsurance);
-        System.out.println("3 --> " + Insurance.healthService);
-        System.out.println("4 --> No Insurance");
-
+        while (true) {
+            System.out.println("1 --> " + Insurance.ARMED_FORCES);
+            System.out.println("2 --> " + Insurance.SOCIAL_INSURANCE);
+            System.out.println("3 --> " + Insurance.HEALTH_SERVICES);
+            System.out.println("4 --> " + Insurance.NON);
+            option = scanner.nextInt();
+            if (option <= insurance.length) {
+                return insurance[option];
+            }
+            System.out.println("Wrong input");
+        }
     }
 
     private void haveInsurance(Patient patient) {
-        int option;
         while (true) {
-            haveInsuranceMenu();
-            option = scanner.nextInt();
-            switch (option) {
-                case 1:
-                    patient.totalPrice *= Insurance.armedForces.getDiscount();
+            switch (haveInsuranceMenu()) {
+                case ARMED_FORCES:
+                    patient.totalPrice *= Insurance.ARMED_FORCES.getDiscount();
                     return;
-                case 2:
-                    patient.totalPrice *= Insurance.socialInsurance.getDiscount();
+                case SOCIAL_INSURANCE:
+                    patient.totalPrice *= Insurance.SOCIAL_INSURANCE.getDiscount();
                     return;
-                case 3:
-                    patient.totalPrice *= Insurance.healthService.getDiscount();
+                case HEALTH_SERVICES:
+                    patient.totalPrice *= Insurance.HEALTH_SERVICES.getDiscount();
                     return;
-                case 4:
+                case NON:
                     return;
                 default:
                     System.out.println("Wrong input ");
             }
-        }
-    }
-
-    public int howLong(MyDate entry, MyDate departure) {
-        int differenceYear = departure.getYear() - entry.getYear();
-        int differenceMonthToDay = monthToDay(departure.getMonth()) - monthToDay(entry.getMonth());
-        int differenceDay = departure.getDay() - entry.getDay();
-        return differenceYear * 365 + differenceMonthToDay + differenceDay;
-    }
-
-    private int monthToDay(int month) {
-        if (month < 7) {
-            return month * 31;
-        } else {
-            return 6 * 31 + (month - 6) * 30;
         }
     }
 
