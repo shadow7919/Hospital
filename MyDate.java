@@ -1,8 +1,8 @@
 package ir.ac.kntu;
 
-public class MyDate {
-    public enum Separator {DASH, COLON}
+import java.util.Scanner;
 
+public class MyDate {
     private int year;
     private int month;
     private int day;
@@ -19,6 +19,36 @@ public class MyDate {
     }
 
     public MyDate() {
+    }
+
+    public static MyDate dateSet() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print("Enter entry date ( day / month / year ) :");
+            int entryDay = scanner.nextInt();
+            int entryMonth = scanner.nextInt();
+            int entryYear = scanner.nextInt();
+            MyDate date = new MyDate(entryYear, entryMonth, entryDay);
+            if (date.year != 0) {
+                return date;
+            }
+            System.out.println("Wrong Date ");
+        }
+    }
+
+    public static int howLong(MyDate before, MyDate after) {
+        int differenceYear = after.year - before.year;
+        int differenceMonthToDay = monthToDay(after.month) - monthToDay(before.month);
+        int differenceDay = after.day - before.day;
+        return differenceYear * 365 + differenceMonthToDay + differenceDay;
+    }
+
+    private static int monthToDay(int month) {
+        if (month < 7) {
+            return month * 31;
+        } else {
+            return 6 * 31 + (month - 6) * 30;
+        }
     }
 
     private void checkAndSetDate(int year, int month, int day) {
@@ -49,37 +79,20 @@ public class MyDate {
         return true;
     }
 
-    public void setDate(int year, int month, int day) {
-        checkAndSetDate(year, month, day);
-    }
-
-    public void setSeparator(Separator separator) {
-        this.separator = separator;
-    }
-
-    public void setYear(int year) {
-        checkAndSetDate(year, this.month, this.day);
-    }
-
     public int getYear() {
         return year;
     }
 
-    public void setMonth(int month) {
-        checkAndSetDate(this.year, month, this.day);
-    }
 
     public int getMonth() {
         return month;
     }
 
-    public void setDay(int day) {
-        checkAndSetDate(this.year, this.month, day);
-    }
 
     public int getDay() {
         return day;
     }
+
 
     public String toString() {
         switch (separator) {
@@ -89,22 +102,6 @@ public class MyDate {
                 return year + ":" + month + ":" + day;
         }
         return year + "-" + month + "-" + day;
-    }
-
-    public MyDate nextDay() {
-        MyDate curDate = new MyDate(this);
-        MyDate nextDate = new MyDate(this);
-        if (curDate.month == 12) {
-            handleEsfand(curDate, nextDate);
-        } else if (curDate.day < 30) {
-            curDate.day++;
-        } else if (curDate.day == 30 && curDate.month < 7) {
-            nextDate.day++;
-        } else {
-            nextDate.day = 1;
-            nextDate.month++;
-        }
-        return nextDate;
     }
 
     private void handleEsfand(MyDate curDate, MyDate nextDate) {
@@ -178,4 +175,6 @@ public class MyDate {
         }
         return true;
     }
+
+    public enum Separator {DASH, COLON}
 }
