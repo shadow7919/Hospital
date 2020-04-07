@@ -17,9 +17,10 @@ public class Patient {
     private MyDate entry;
     private MyDate departure;
     private int howManyDays;
-    private int totalPrice;
+    private double totalPrice;
     private int age;
     private Gender gender;
+    private boolean isDischarge = false;
     private ArrayList<Nurse> nurses = new ArrayList<>();
 
     private void printMenu() {
@@ -137,6 +138,7 @@ public class Patient {
         setAge(patient);
         entryDateSet(patient);
         whichDisease(patient);
+        patient.partKind = room.whichPart();
         room.pickRoom(patient);
         patient.caseId = random.nextInt(100000) + patient.age + patient.id % 100000;
         addDoctorNurse(patient);
@@ -223,6 +225,9 @@ public class Patient {
         System.out.println("Name : " + patient.name + "\t age : " + patient.age);
         System.out.println(patient.gender.getGender() + " in " + patient.partKind + " PART");
         System.out.println("entry date : " + patient.entry.getDay() + " / " + patient.entry.getMonth() + " / " + patient.entry.getYear());
+        if(patient.isDischarge){
+            System.out.println("departure date : " + patient.departure.getDay() + " / " + patient.departure.getMonth() + " / " + patient.departure.getYear());
+        }
         System.out.println("Room Number : " + patient.room.getRoomNumber());
         System.out.println("Disease : " + patient.disease);
         System.out.println("CaseId : " + patient.caseId);
@@ -268,12 +273,22 @@ public class Patient {
             System.out.println("No patient Registered with this id ");
             return;
         }
+        if (patient.isDischarge) {
+            System.out.println("Already discharged ");
+            return;
+        }
         departureDateSet(patient);
         patient.howManyDays = howLong(patient.entry, patient.departure);
         patient.room.discountForRoom(patient.room);
         patient.totalPrice = patient.room.getPrice() * patient.howManyDays;
         haveInsurance(patient);
+        patient.isDischarge = true;
         System.out.println(patient.totalPrice);
+        patient.doctor.getPatients().remove(patient);
+        for (Nurse nurse : patient.nurses) {
+            nurse.getPatients().remove(patient);
+        }
+        patient.room.getPatients().remove(patient);
         System.out.println("-----------------------------------");
     }
 
@@ -288,7 +303,7 @@ public class Patient {
                 System.out.println("Wrong Date ");
                 continue;
             }
-            if (howLong(patient.entry, patient.departure) < 0) {
+            if (howLong(patient.entry, patient.departure) <= 0) {
                 System.out.println("departure should be bigger than entry");
                 continue;
             }
@@ -296,24 +311,35 @@ public class Patient {
         }
     }
 
-    private void haveInsurance(Patient patient) {
-        System.out.println(patient.name + " Insurance :");
+    private void haveInsuranceMenu() {
+        System.out.println("-------- Insurance -------");
         System.out.println("1 --> " + Insurance.armedForces);
         System.out.println("2 --> " + Insurance.socialInsurance);
         System.out.println("3 --> " + Insurance.healthService);
-        System.out.println("if you don't have Insurance enter another Integer ");
-        int option = scanner.nextInt();
-        switch (option) {
-            case 1:
-                patient.totalPrice *= Insurance.armedForces.getDiscount();
-                break;
-            case 2:
-                patient.totalPrice *= Insurance.socialInsurance.getDiscount();
-                break;
-            case 3:
-                patient.totalPrice *= Insurance.healthService.getDiscount();
-                break;
-            default:
+        System.out.println("4 --> No Insurance");
+
+    }
+
+    private void haveInsurance(Patient patient) {
+        int option;
+        while (true) {
+            haveInsuranceMenu();
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    patient.totalPrice *= Insurance.armedForces.getDiscount();
+                    return;
+                case 2:
+                    patient.totalPrice *= Insurance.socialInsurance.getDiscount();
+                    return;
+                case 3:
+                    patient.totalPrice *= Insurance.healthService.getDiscount();
+                    return;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Wrong input ");
+            }
         }
     }
 
