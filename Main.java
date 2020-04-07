@@ -17,10 +17,10 @@ public class Main {
     public static void welcome(Scanner scanner, Hospital hospital, Room room) {
         System.out.println("------------ WELCOME ------------");
         System.out.println("Go step by step First doctor then Nurse and at the end Patient");
-        System.out.print("Hospital name :");
+        System.out.print("Hospital name : ");
         hospital.setName(scanner.nextLine());
         System.out.println("--------- Rooms and Price ---------");
-        room.makeRooms(hospital, room);
+        room.makeRooms();
         System.out.println("------------------------------------");
     }
 
