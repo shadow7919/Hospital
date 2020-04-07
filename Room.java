@@ -43,7 +43,7 @@ public class Room {
                     change();
                     break;
                 case 3:
-                    addRoom();
+                    addRoom(null);
                     break;
                 case 4:
                     return;
@@ -67,7 +67,7 @@ public class Room {
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    showRoom(whichPart(null));
+                    showRoom(whichPart());
                     break;
                 case 2:
                     patientsInRoom();
@@ -117,7 +117,7 @@ public class Room {
         System.out.println(room.roomNumber + " is unavailable now");
     }
 
-    private PartKind whichPart(Patient patient) {
+    private PartKind whichPart() {
         System.out.println("Pick which part ");
         System.out.println(PartKind.NORMAL + " OR " + PartKind.EMERGENCY);
         String choose;
@@ -131,9 +131,6 @@ public class Room {
                 System.out.println("Wrong input ");
             }
         }
-        if (patient != null) {
-            patient.setPartKind(partKind);
-        }
         return partKind;
     }
 
@@ -146,8 +143,11 @@ public class Room {
         }
     }
 
-    public void addRoom() {
-        PartKind partKind = whichPart(null);
+    public void addRoom(PartKind chosenPartKind) {
+        PartKind partKind = chosenPartKind;
+        if (partKind == null) {
+            partKind = whichPart();
+        }
         int roomNumber;
         if (partKind == PartKind.NORMAL) {
             roomNumber = Hospital.getNormalRooms().get(Hospital.getNormalRooms().size() - 1).roomNumber + 1;
@@ -185,9 +185,13 @@ public class Room {
         while (true) {
             room = findRoom(patient);
             if (room.isAvailable) {
-                patient.setRoom(room);
-                room.patients.add(patient);
-                return;
+                if (room.bedsNumber > room.patients.size()) {
+                    patient.setRoom(room);
+                    room.patients.add(patient);
+                    return;
+                } else {
+                    System.out.println("Room is Full");
+                }
             } else {
                 System.out.println("Unavailable ! ");
             }
@@ -234,7 +238,11 @@ public class Room {
     }
 
     public Room findRoom(Patient patient) {
-        PartKind partKind = whichPart(patient);
+        PartKind partKind = patient.getPartKind();
+        if (partKind == null) {
+            partKind = whichPart();
+            patient.setPartKind(partKind);
+        }
         Room foundRoom;
         if (partKind == PartKind.NORMAL) {
             foundRoom = findRoomHandle(partKind, Hospital.getNormalRooms());
@@ -255,7 +263,10 @@ public class Room {
                     return room;
                 }
             }
-            System.out.println("Cant find room");
+            System.out.println("Cant find room ---> Add Room by 0");
+            if (option == 0) {
+                addRoom(partKind);
+            }
         }
     }
 
@@ -269,11 +280,19 @@ public class Room {
         return defaultBedNumberRoom;
     }
 
+    private int checkRoomNumberValue(PartKind partKind) {
+        System.out.print("Room Number for " + partKind + " Part : ");
+        int RoomsNumbers = scanner.nextInt();
+        while (RoomsNumbers <= 0) {
+            System.out.println("Enter a correct value");
+            RoomsNumbers = scanner.nextInt();
+        }
+        return RoomsNumbers;
+    }
+
     public void makeRooms() {
-        System.out.print("Room Number for " + PartKind.NORMAL + " Part : ");
-        int normalRoomsNumber = scanner.nextInt();
-        System.out.print("Room Number for " + PartKind.EMERGENCY + " Part : ");
-        int emergencyRoomsNumber = scanner.nextInt();
+        int normalRoomsNumber = checkRoomNumberValue(PartKind.NORMAL);
+        int emergencyRoomsNumber = checkRoomNumberValue(PartKind.EMERGENCY);
         int defaultNormalBedNumber = defaultBedNumber(PartKind.NORMAL);
         int defaultEmergencyBedNumber = defaultBedNumber(PartKind.EMERGENCY);
         System.out.print("Price for " + PartKind.NORMAL + " : ");

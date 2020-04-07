@@ -24,12 +24,11 @@ public class Patient {
 
     private void printMenu() {
         System.out.println("----------- Patient Menu -----------");
-        System.out.println("1--> Add Patient");
-        System.out.println("2--> Patient information");
-        System.out.println("3--> Change information");
-        System.out.println("4--> Get a doctor");
-        System.out.println("5--> discharge Patient");
-        System.out.println("6--> Back to previous menu");
+        System.out.println("1--> Add");
+        System.out.println("2--> Information");
+        System.out.println("3--> Change");
+        System.out.println("4--> discharge");
+        System.out.println("5--> Back");
     }
 
     public void menu() {
@@ -48,33 +47,14 @@ public class Patient {
                     change();
                     break;
                 case 4:
-                    chooseDoctor();
-                    break;
-                case 5:
                     dischargePatient();
                     break;
-                case 6:
+                case 5:
                     return;
                 default:
                     System.out.println("Wrong input");
             }
             System.out.println("--------------------------");
-        }
-    }
-
-    public void chooseDoctor() {
-        Patient patient = checkId();
-        if (patient == null) {
-            return;
-        }
-        if (patient.doctor == null) {
-            if (whichDoctorHavePatient() == null) {
-                System.out.println("There is no doctor");
-            } else {
-                patient.doctor = whichDoctorHavePatient();
-            }
-        } else {
-            System.out.println("this patient is already have " + patient.doctor.getName());
         }
     }
 
@@ -203,7 +183,7 @@ public class Patient {
     }
 
     private void chooseGender(Patient patient) {
-        System.out.println("What is the gender of patient M or F");
+        System.out.print("Gender\tM or F : ");
         while (true) {
             String chooseGender = scanner.nextLine();
             try {
@@ -282,18 +262,18 @@ public class Patient {
     }
 
     public void dischargePatient() {
-        Patient patient = checkId();
         System.out.println("---------- DISCHARGE ----------");
-        if (patient != null) {
-            departureDateSet(patient);
-            patient.howManyDays = howLong(patient.entry, patient.departure);
-            patient.room.discountForRoom(patient.room);
-            patient.totalPrice = patient.room.getPrice() * patient.howManyDays;
-            haveInsurance(patient);
-            System.out.println(patient.totalPrice);
-        } else {
+        Patient patient = checkId();
+        if (patient == null) {
             System.out.println("No patient Registered with this id ");
+            return;
         }
+        departureDateSet(patient);
+        patient.howManyDays = howLong(patient.entry, patient.departure);
+        patient.room.discountForRoom(patient.room);
+        patient.totalPrice = patient.room.getPrice() * patient.howManyDays;
+        haveInsurance(patient);
+        System.out.println(patient.totalPrice);
         System.out.println("-----------------------------------");
     }
 
@@ -304,10 +284,15 @@ public class Patient {
             int month = scanner.nextInt();
             int year = scanner.nextInt();
             patient.departure = new MyDate(year, month, day);
-            if (patient.departure.getYear() != 0) {
-                break;
+            if (patient.departure.getYear() == 0) {
+                System.out.println("Wrong Date ");
+                continue;
             }
-            System.out.println("Wrong Date ");
+            if (howLong(patient.entry, patient.departure) < 0) {
+                System.out.println("departure should be bigger than entry");
+                continue;
+            }
+            return;
         }
     }
 
@@ -355,10 +340,6 @@ public class Patient {
         this.room = room;
     }
 
-    public void setPartKind(PartKind partKind) {
-        this.partKind = partKind;
-    }
-
     public String getName() {
         return name;
     }
@@ -373,6 +354,14 @@ public class Patient {
 
     public ArrayList<Nurse> getNurses() {
         return nurses;
+    }
+
+    public PartKind getPartKind() {
+        return partKind;
+    }
+
+    public void setPartKind(PartKind partKind) {
+        this.partKind = partKind;
     }
 
     private enum Gender {
