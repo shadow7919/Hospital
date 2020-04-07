@@ -22,12 +22,10 @@ public class Room {
 
     private void printMenu() {
         System.out.println("-------- ROOM ---------");
-        System.out.println("1 --> Show rooms ");
-        System.out.println("2 --> Change rooms");
-        System.out.println("3 --> Make room unavailable");
-        System.out.println("4 --> Patient in rooms");
-        System.out.println("5 --> Add Room");
-        System.out.println("6 --> Back to previous menu");
+        System.out.println("1 --> Show ");
+        System.out.println("2 --> Change");
+        System.out.println("3 --> Add ");
+        System.out.println("4 --> Back ");
         System.out.println("-------------------------");
     }
 
@@ -38,21 +36,15 @@ public class Room {
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    showRoom(whichPart(null));
+                    RoomMenu();
                     break;
                 case 2:
-                    changeRoomsBeds();
+                    change();
                     break;
                 case 3:
-                    roomUnavailable();
-                    break;
-                case 4:
-                    patientsInRoom();
-                    break;
-                case 5:
                     addRoom();
                     break;
-                case 6:
+                case 4:
                     return;
                 default:
                     System.out.println("Wrong input");
@@ -60,10 +52,65 @@ public class Room {
         }
     }
 
-    public void roomUnavailable() {
-        Room room;
-        System.out.println("Make this Room unavailable ");
-        room = findRoom(null);
+    private void showRoomMenu() {
+        System.out.println("------- Show -------");
+        System.out.println("1 --> All Room");
+        System.out.println("2 --> Patient");
+        System.out.println("3 --> Back ");
+    }
+
+    private void RoomMenu() {
+        showRoomMenu();
+        int option;
+        while (true) {
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    showRoom(whichPart(null));
+                    break;
+                case 2:
+                    patientsInRoom();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Wrong input ");
+            }
+        }
+    }
+
+    private void showChange() {
+        System.out.println("------- CHANGE ------");
+        System.out.println("1 --> Change Beds Number");
+        System.out.println("2 --> Make unavailable");
+        System.out.println("3 --> Back ");
+    }
+
+    public void change() {
+        Room room = findRoom(null);
+        if (room == null) {
+            return;
+        }
+        showChange();
+        int option;
+        while (true) {
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    changeBeds(room);
+                    break;
+                case 2:
+                    roomUnavailable(room);
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Wrong input");
+            }
+        }
+    }
+
+    public void roomUnavailable(Room room) {
         room.isAvailable = false;
         System.out.println(room.roomNumber + " is unavailable now");
     }
@@ -118,7 +165,7 @@ public class Room {
 
     private void availableHandle(Room room) {
         YesOrNo yesOrNo;
-        System.out.println("Is this room available ?\t" + YesOrNo.YES + " OR " + YesOrNo.NO);
+        System.out.println("Available ?\t" + YesOrNo.YES + " OR " + YesOrNo.NO);
         String choose = scanner.next();
         while (true) {
             try {
@@ -160,16 +207,8 @@ public class Room {
         }
     }
 
-    public void changeRoomsBeds() {
-        Room room;
-        System.out.println("Which room you want to change ");
-        room = findRoom(null);
-        if (room != null) {
-            changeRoomHandle(room);
-        }
-    }
 
-    private void changeRoomHandle(Room room) {
+    private void changeBeds(Room room) {
         System.out.println("how many beds you want ?");
         int bedsNumber = scanner.nextInt();
         while (check(bedsNumber)) {
@@ -214,28 +253,33 @@ public class Room {
         return null;
     }
 
-    public void makeRooms(Room room) {
-        System.out.println("Enter how many room do you need for " + PartKind.NORMAL + " Part ");
-        int normalRoomsNumber = scanner.nextInt();
-        System.out.println("And also " + PartKind.EMERGENCY + " Part rooms?");
-        int emergencyRoomsNumber = scanner.nextInt();
-        System.out.println("enter the default number of beds for all rooms");
-        int defaultBedNumber = scanner.nextInt();
-        while (room.check(defaultBedNumber)) {
+    private int defaultBedNumber(PartKind partKind) {
+        System.out.print("Default Bed number for" + partKind + " Part ");
+        int defaultBedNumberRoom = scanner.nextInt();
+        while (check(defaultBedNumberRoom)) {
             System.out.println("The Max bed each room can have is 6");
-            defaultBedNumber = scanner.nextInt();
+            defaultBedNumberRoom = scanner.nextInt();
         }
-        System.out.println("and the price for the parts");
-        System.out.print(PartKind.NORMAL + " :");
+        return defaultBedNumberRoom;
+    }
+
+    public void makeRooms() {
+        System.out.print("Room Number for " + PartKind.NORMAL + " Part ");
+        int normalRoomsNumber = scanner.nextInt();
+        System.out.print("Room Number for " + PartKind.EMERGENCY + " Part ");
+        int emergencyRoomsNumber = scanner.nextInt();
+        int defaultNormalBedNumber = defaultBedNumber(PartKind.NORMAL);
+        int defaultEmergencyBedNumber = defaultBedNumber(PartKind.EMERGENCY);
+        System.out.println("Price for " + PartKind.NORMAL + " : ");
         int normalRoomPrice = scanner.nextInt();
-        System.out.print(PartKind.EMERGENCY + " :");
+        System.out.println("Price for " + PartKind.EMERGENCY + " : ");
         int emergencyRoomPrice = scanner.nextInt();
         for (int i = 1; i <= normalRoomsNumber; i++) {
-            Room myRoom = new Room(i, defaultBedNumber, normalRoomPrice);
+            Room myRoom = new Room(i, defaultNormalBedNumber, normalRoomPrice);
             Hospital.getNormalRooms().add(myRoom);
         }
         for (int i = 1; i <= emergencyRoomsNumber; i++) {
-            Room myRoom = new Room(i, defaultBedNumber, emergencyRoomPrice);
+            Room myRoom = new Room(i, defaultEmergencyBedNumber, emergencyRoomPrice);
             Hospital.getEmergencyRooms().add(myRoom);
         }
     }
