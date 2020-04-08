@@ -1,10 +1,12 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Patient {
+    private final ArrayList<Nurse> nurses = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     int caseId;
     private String name;
@@ -21,7 +23,6 @@ public class Patient {
     private int age;
     private Gender gender;
     private boolean isDischarge = false;
-    private ArrayList<Nurse> nurses = new ArrayList<>();
 
     private void printMenu() {
         System.out.println("----------- Patient Menu -----------");
@@ -82,7 +83,7 @@ public class Patient {
                     chooseGender(patient);
                     break;
                 case 4:
-                    patient.entry = MyDate.dateSet();
+                    patient.entry = MyDate.dateSet(true);
                     break;
                 case 5:
                     whichDisease(patient);
@@ -137,7 +138,7 @@ public class Patient {
         System.out.print("enter " + patient.gender.getGender() + " name : ");
         patient.name = scanner.nextLine();
         setAge(patient);
-        patient.entry = MyDate.dateSet();
+        patient.entry = MyDate.dateSet(true);
         whichDisease(patient);
         patient.partKind = Room.whichPart();
         room.pickRoom(patient);
@@ -187,9 +188,9 @@ public class Patient {
     private void whichDisease(Patient patient) {
         Disease[] diseases = Disease.values();
         while (true) {
-            System.out.println("1--> " + Disease.ACCIDENT);
-            System.out.println("2--> " + Disease.BURN);
-            System.out.println("3--> " + Disease.STRIKE);
+            System.out.println("1--> " + Disease.BURN);
+            System.out.println("2--> " + Disease.STRIKE);
+            System.out.println("3--> " + Disease.ACCIDENT);
             System.out.println("4--> " + Disease.SOMETHING_ELSE);
             int choose = scanner.nextInt();
             if (choose <= diseases.length) {
@@ -211,9 +212,11 @@ public class Patient {
         }
         System.out.println("Name : " + patient.name + "\t age : " + patient.age);
         System.out.println(patient.gender.getGender() + " in " + patient.partKind + " PART");
-        System.out.println("entry date : " + patient.entry.getDay() + " / " + patient.entry.getMonth() + " / " + patient.entry.getYear());
+        System.out.println("entry date : ");
+        MyDate.showDate(patient.entry);
         if (patient.isDischarge) {
-            System.out.println("departure date : " + patient.departure.getDay() + " / " + patient.departure.getMonth() + " / " + patient.departure.getYear());
+            System.out.println("departure date : ");
+            MyDate.showDate(patient.getDeparture());
         }
         System.out.println("Room Number : " + patient.room.getRoomNumber());
         System.out.println("Disease : " + patient.disease);
@@ -281,7 +284,7 @@ public class Patient {
 
     private void departureDateSet(Patient patient) {
         while (true) {
-            patient.departure = MyDate.dateSet();
+            patient.departure = MyDate.dateSet(true);
             if (0 < MyDate.howLong(patient.entry, patient.departure)) {
                 return;
             }
@@ -294,8 +297,8 @@ public class Patient {
         Insurance[] insurance = Insurance.values();
         System.out.println("-------- Insurance -------");
         while (true) {
-            System.out.println("1 --> " + Insurance.ARMED_FORCES);
-            System.out.println("2 --> " + Insurance.SOCIAL_INSURANCE);
+            System.out.println("1 --> " + Insurance.SOCIAL_INSURANCE);
+            System.out.println("2 --> " + Insurance.ARMED_FORCES);
             System.out.println("3 --> " + Insurance.HEALTH_SERVICES);
             System.out.println("4 --> " + Insurance.NON);
             option = scanner.nextInt();
@@ -330,10 +333,6 @@ public class Patient {
         return id;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
     public String getName() {
         return name;
     }
@@ -354,13 +353,40 @@ public class Patient {
         return partKind;
     }
 
-    public void setPartKind(PartKind partKind) {
-        this.partKind = partKind;
+    public MyDate getEntry() {
+        return entry;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public boolean isDischarge() {
+        return isDischarge;
+    }
+
+    public MyDate getDeparture() {
+        return departure;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Patient patient = (Patient) o;
+        return caseId == patient.caseId;
+    }
+
+    public int hashCode() {
+        return Objects.hash(caseId);
     }
 
     private enum Gender {
         M("his"), F("her");
-        private String gender;
+        private final String gender;
 
         Gender(String gender) {
             this.gender = gender;
