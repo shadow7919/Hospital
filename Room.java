@@ -21,6 +21,26 @@ public class Room {
     public Room() {
     }
 
+    public static PartKind whichPart() {
+        Scanner scanner = new Scanner(System.in);
+        PartKind[] partKinds = PartKind.values();
+        int option = Integer.MAX_VALUE;
+        while (option > partKinds.length) {
+            System.out.println("1 --> " + PartKind.NORMAL);
+            System.out.println("2 --> " + PartKind.EMERGENCY);
+            option = scanner.nextInt();
+        }
+        PartKind partKind = partKinds[option - 1];
+        switch (partKind) {
+            case NORMAL:
+                return PartKind.NORMAL;
+            case EMERGENCY:
+                return PartKind.EMERGENCY;
+            default:
+                return null;
+        }
+    }
+
     private void printMenu() {
         System.out.println("-------- ROOM ---------");
         System.out.println("1 --> Show ");
@@ -37,7 +57,7 @@ public class Room {
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    RoomMenu();
+                    show();
                     break;
                 case 2:
                     change();
@@ -53,17 +73,17 @@ public class Room {
         }
     }
 
-    private void showRoomMenu() {
+    private void showshow() {
         System.out.println("------- Show -------");
         System.out.println("1 --> All Room");
         System.out.println("2 --> Patient");
         System.out.println("3 --> Back ");
     }
 
-    private void RoomMenu() {
+    private void show() {
         int option;
         while (true) {
-            showRoomMenu();
+            showshow();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
@@ -117,23 +137,6 @@ public class Room {
         System.out.println(room.roomNumber + " is unavailable now");
     }
 
-    private PartKind whichPart() {
-        System.out.println("Pick which part ");
-        System.out.println(PartKind.NORMAL + " OR " + PartKind.EMERGENCY);
-        String choose;
-        PartKind partKind;
-        while (true) {
-            choose = scanner.next();
-            try {
-                partKind = PartKind.valueOf(choose);
-                break;
-            } catch (IllegalArgumentException e) {
-                System.out.println("Wrong input ");
-            }
-        }
-        return partKind;
-    }
-
     public void discountForRoom(Room room) {
         int extraBeds = room.bedsNumber - 1;
         double discount = ((double) (extraBeds * 10)) / 100;
@@ -162,7 +165,11 @@ public class Room {
         }
         Room room = new Room(roomNumber, bedsNumber, price);
         availableHandle(room);
-        Hospital.getNormalRooms().add(room);
+        if (partKind == PartKind.NORMAL) {
+            Hospital.getNormalRooms().add(room);
+        } else {
+            Hospital.getEmergencyRooms().add(room);
+        }
     }
 
     private void availableHandle(Room room) {
@@ -183,7 +190,7 @@ public class Room {
     public void pickRoom(Patient patient) {
         Room room;
         while (true) {
-            room = findRoom(patient);
+            room = findRoom(patient.getPartKind());
             if (room.isAvailable) {
                 if (room.bedsNumber > room.patients.size()) {
                     patient.setRoom(room);
@@ -237,11 +244,9 @@ public class Room {
         }
     }
 
-    public Room findRoom(Patient patient) {
-        PartKind partKind = patient.getPartKind();
+    public Room findRoom(PartKind partKind) {
         if (partKind == null) {
             partKind = whichPart();
-            patient.setPartKind(partKind);
         }
         Room foundRoom;
         if (partKind == PartKind.NORMAL) {
@@ -274,7 +279,7 @@ public class Room {
         System.out.print("Default Bed number for " + partKind + " Part : ");
         int defaultBedNumberRoom = scanner.nextInt();
         while (check(defaultBedNumberRoom, 0, MAX_BED_NUMBER)) {
-            System.out.println("The Max bed each room can have is" + MAX_BED_NUMBER);
+            System.out.println("The Max bed each room can have is " + MAX_BED_NUMBER);
             defaultBedNumberRoom = scanner.nextInt();
         }
         return defaultBedNumberRoom;
@@ -319,6 +324,10 @@ public class Room {
 
     public int getRoomNumber() {
         return roomNumber;
+    }
+
+    public ArrayList<Patient> getPatients() {
+        return patients;
     }
 
     public int getPrice() {
