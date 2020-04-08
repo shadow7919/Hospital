@@ -1,5 +1,5 @@
 package ir.ac.kntu;
 
 enum MenuOptions {
-    DOCTOR, PATIENT, NURSE, ROOM, HOSPITAL, QUITE;
+    DOCTOR, NURSE, PATIENT, ROOM, HOSPITAL, QUITE;
 }
