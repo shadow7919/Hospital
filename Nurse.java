@@ -7,10 +7,10 @@ public class Nurse {
     Scanner scanner = new Scanner(System.in);
     private String name;
     private int id;
-    private ArrayList<Doctor> doctors = new ArrayList<>();
+    private final ArrayList<Doctor> doctors = new ArrayList<>();
     private boolean isPartSource;
-    private ArrayList<Patient> patients = new ArrayList<>();
-    private ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
+    private final ArrayList<Patient> patients = new ArrayList<>();
+    private final ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
     public void nurseMenu() {
         int option;
@@ -59,7 +59,7 @@ public class Nurse {
                 break;
             case 2:
                 removeNurse(nurse);
-                Hospital.getAllNurses().remove(nurse);
+                Hospital.getNurses().remove(nurse);
                 break;
             case 3:
                 ChangeToPartSource(nurse);
@@ -129,7 +129,7 @@ public class Nurse {
         if (!nurse.isPartSource) {
             chooseNurseDoctor(nurse);
         }
-        Hospital.getAllNurses().add(nurse);
+        Hospital.getNurses().add(nurse);
     }
 
     private void nursesMenu() {
@@ -223,7 +223,7 @@ public class Nurse {
     }
 
     public Nurse sameId(int inputId) {
-        for (Nurse nurse : Hospital.getAllNurses()) {
+        for (Nurse nurse : Hospital.getNurses()) {
             if (inputId == nurse.id) {
                 return nurse;
             }
