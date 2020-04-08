@@ -11,7 +11,6 @@ public class Hospital {
     private static final ArrayList<Nurse> nurses = new ArrayList<>();
     private static final ArrayList<ShiftTimeClass> shiftsTimes = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
-    boolean entered = false;
     private String name;
 
     public static ArrayList<Doctor> getDoctors() {
@@ -48,6 +47,7 @@ public class Hospital {
                     patientShow();
                     break;
                 case 2:
+                    doctorShow();
                     break;
                 case 6:
                     return;
@@ -55,6 +55,14 @@ public class Hospital {
                     System.out.println("Wrong input ");
             }
         }
+    }
+
+    public void printDoctorMenu() {
+
+    }
+
+    public void doctorShow() {
+    
     }
 
     public void notUse() {
@@ -69,6 +77,7 @@ public class Hospital {
     public void printMenu() {
         System.out.println("---------- Hospital ----------");
         System.out.println("1 --> Patient");
+        System.out.println("2 --> Doctor");
     }
 
     public void printPatientMenu() {
@@ -102,6 +111,7 @@ public class Hospital {
                     break;
                 case 5:
                     showDischargedPatients();
+                    break;
                 case 6:
                     return;
                 default:
@@ -111,6 +121,7 @@ public class Hospital {
     }
 
     public void showDischargedPatients() {
+        boolean entered = false;
         for (Patient patient : Hospital.getPatients()) {
             if (patient.isDischarge()) {
                 entered = true;
@@ -127,6 +138,7 @@ public class Hospital {
     }
 
     public void hospitalizedPatient() {
+        boolean entered = false;
         MyDate first;
         MyDate second;
         while (true) {
@@ -187,15 +199,13 @@ public class Hospital {
     }
 
     public void showPatientsPart() {
+        boolean entered = false;
         PartKind partKind = Room.whichPart();
         for (Patient patient : Hospital.getPatients()) {
             if (patient.getPartKind() == partKind) {
                 entered = true;
                 showPatientMainProperty(patient);
             }
-        }
-        if (Hospital.getPatients().size() == 0) {
-            System.out.println("No patient is registered");
         }
         if (!entered) {
             System.out.println("No patient in this part ");
