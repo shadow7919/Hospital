@@ -5,14 +5,14 @@ import java.util.Scanner;
 
 public class Doctor {
     private final static int MAX_NURSES = 2;
-    private final static int MAX_SHIFTS = 5;
+    private final static int MAX_SHIFTS = 3;
+    private final ArrayList<Nurse> nurses = new ArrayList<>();
+    private final ArrayList<ShiftTimeClass> doctorShift = new ArrayList<>();
+    private final ArrayList<Patient> patients = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     private String name;
     private int id;
-    private ArrayList<Nurse> nurses = new ArrayList<>();
-    private ArrayList<ShiftTimeClass> doctorShift = new ArrayList<>();
     private Week daysShift;
-    private ArrayList<Patient> patients = new ArrayList<>();
 
     public static void showDay() {
         System.out.println("1 --> " + Week.SATURDAY);
@@ -47,7 +47,7 @@ public class Doctor {
                     addShift();
                     break;
                 case 3:
-                    showDoctor();
+                    showDoctor(null);
                     break;
                 case 4:
                     change();
@@ -102,14 +102,15 @@ public class Doctor {
         if (shiftsTime == null) {
             return;
         }
-        ShiftTimeClass chosenShiftTimeClass = new ShiftTimeClass(week, shiftsTime);
-        for (ShiftTimeClass shiftTimeClass1 : doctor.doctorShift) {
-            if (chosenShiftTimeClass.shiftsTime == shiftTimeClass1.shiftsTime && chosenShiftTimeClass.week == shiftTimeClass1.week) {
-                doctor.doctorShift.remove(shiftTimeClass1);
+        PartKind partKind = Room.whichPart();
+        ShiftTimeClass chosenShiftTimeClass = new ShiftTimeClass(week, shiftsTime, partKind);
+        for (ShiftTimeClass shiftTimeClass : doctor.doctorShift) {
+            if (chosenShiftTimeClass.equals(shiftTimeClass)) {
+                doctor.doctorShift.remove(shiftTimeClass);
                 for (Nurse nurse : doctor.getNurses()) {
-                    nurse.getNurseShift().remove(shiftTimeClass1);
+                    nurse.getNurseShift().remove(shiftTimeClass);
                 }
-                Hospital.getShiftsTimes().remove(shiftTimeClass1);
+                Hospital.getShiftsTimes().remove(shiftTimeClass);
                 return;
             }
         }
@@ -159,7 +160,7 @@ public class Doctor {
     }
 
     private void addNurse(Doctor doctor) {
-        for (Nurse myNurse : Hospital.getAllNurses()) {
+        for (Nurse myNurse : Hospital.getNurses()) {
             if (nurses.size() == MAX_NURSES) {
                 break;
             }
@@ -185,10 +186,12 @@ public class Doctor {
         }
     }
 
-    public void showDoctor() {
-        System.out.print("Enter the id : ");
-        int inputId = scanner.nextInt();
-        Doctor doctor = findDoctor(inputId);
+    public void showDoctor(Doctor doctor) {
+        if (doctor == null) {
+            System.out.print("Enter the id : ");
+            int inputId = scanner.nextInt();
+            doctor = findDoctor(inputId);
+        }
         if (doctor != null) {
             System.out.println("Name : " + doctor.name + "   Id : " + doctor.id);
             doctorInfo(doctor);
@@ -250,8 +253,11 @@ public class Doctor {
             System.out.println("No shift is added ");
             return;
         }
+        PartKind partKind = Room.whichPart();
         for (ShiftTimeClass shift : doctor.doctorShift) {
-            System.out.println(shift.shiftsTime + " of " + shift.week);
+            if (shift.partKind.equals(partKind)) {
+                System.out.println(shift.shiftsTime + " of " + shift.week);
+            }
         }
     }
 
@@ -269,11 +275,13 @@ public class Doctor {
         System.out.print("Enter the ID : ");
         inputId = scanner.nextInt();
         Doctor doctor = findDoctor(inputId);
+        PartKind partKind;
         if (doctor != null) {
+            partKind = Room.whichPart();
             if (checkDoctorShiftsNumber(doctor)) {
                 System.out.println("Pick a day ");
                 doctor.daysShift = whichDay();
-                handleShift(doctor);
+                handleShift(doctor, partKind);
             }
         } else {
             System.out.println("can't find this ID");
@@ -305,29 +313,30 @@ public class Doctor {
         }
     }
 
-    private void handleShift(Doctor doctor) {
+    private void handleShift(Doctor doctor, PartKind partKind) {
+        ShiftTimeClass shiftTimeClass;
         showShift();
         int choose = scanner.nextInt();
         switch (choose) {
             case 1:
-                if (isNotTaken(ShiftsTime.MORNING, doctor)) {
-                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.MORNING);
+                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.MORNING, partKind);
+                if (isNotTaken(shiftTimeClass)) {
                     addShiftsToEveryWhere(doctor, shiftTimeClass);
                 } else {
                     System.out.println("This shift is already taken ");
                 }
                 break;
             case 2:
-                if (isNotTaken(ShiftsTime.AFTER_NOON, doctor)) {
-                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.AFTER_NOON);
+                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.AFTER_NOON, partKind);
+                if (isNotTaken(shiftTimeClass)) {
                     addShiftsToEveryWhere(doctor, shiftTimeClass);
                 } else {
                     System.out.println("This shift is already taken");
                 }
                 break;
             case 3:
-                if (isNotTaken(ShiftsTime.NIGHT, doctor)) {
-                    ShiftTimeClass shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.NIGHT);
+                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.NIGHT, partKind);
+                if (isNotTaken(shiftTimeClass)) {
                     addShiftsToEveryWhere(doctor, shiftTimeClass);
                 } else {
                     System.out.println("This shift is already taken ");
@@ -364,9 +373,9 @@ public class Doctor {
         }
     }
 
-    private boolean isNotTaken(ShiftsTime shiftsTime, Doctor doctor) {
-        for (ShiftTimeClass shiftTimeClass : Hospital.getShiftsTimes()) {
-            if (shiftsTime == shiftTimeClass.shiftsTime && shiftTimeClass.week == doctor.daysShift) {
+    private boolean isNotTaken(ShiftTimeClass shiftTimeClass) {
+        for (ShiftTimeClass registeredTimeClass : Hospital.getShiftsTimes()) {
+            if (shiftTimeClass.equals(registeredTimeClass)) {
                 return false;
             }
         }
