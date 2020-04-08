@@ -6,34 +6,41 @@ public class MyDate {
     private int year;
     private int month;
     private int day;
+    private int hour;
     private Separator separator = Separator.DASH;
 
-    public MyDate(int year, int month, int day) {
-        checkAndSetDate(year, month, day);
-    }
-
-    public MyDate(MyDate date) {
-        this.year = date.year;
-        this.month = date.month;
-        this.day = date.day;
+    public MyDate(int year, int month, int day, int hour) {
+        checkAndSetDate(year, month, day, hour);
     }
 
     public MyDate() {
     }
 
-    public static MyDate dateSet() {
+    public static MyDate dateSet(boolean isHours) {
         Scanner scanner = new Scanner(System.in);
+        int entryHour = 24;
         while (true) {
-            System.out.print("Enter entry date ( day / month / year ) :");
+            System.out.println("Enter date ");
+            if (isHours) {
+                System.out.print("hour / ");
+            }
+            System.out.print("day / month / year : ");
+            if (isHours) {
+                entryHour = scanner.nextInt();
+            }
             int entryDay = scanner.nextInt();
             int entryMonth = scanner.nextInt();
             int entryYear = scanner.nextInt();
-            MyDate date = new MyDate(entryYear, entryMonth, entryDay);
+            MyDate date = new MyDate(entryYear, entryMonth, entryDay, entryHour);
             if (date.year != 0) {
                 return date;
             }
             System.out.println("Wrong Date ");
         }
+    }
+
+    public static void showDate(MyDate date) {
+        System.out.println(date.hour + " / " + date.day + " / " + date.month + " / " + date.year);
     }
 
     public static int howLong(MyDate before, MyDate after) {
@@ -51,19 +58,21 @@ public class MyDate {
         }
     }
 
-    private void checkAndSetDate(int year, int month, int day) {
-        if (checkInputs(year, month, day)) {
+    private void checkAndSetDate(int year, int month, int day, int hour) {
+        if (checkInputs(year, month, day, hour)) {
             this.year = year;
             this.month = month;
             this.day = day;
+            this.hour = hour;
         } else {
+            this.hour = 0;
             this.year = 0;
             this.month = 1;
             this.day = 1;
         }
     }
 
-    private boolean checkInputs(int year, int month, int day) {
+    private boolean checkInputs(int year, int month, int day, int hour) {
         if (month < 1 || month > 12) {
             return false;
         }
@@ -74,6 +83,9 @@ public class MyDate {
             return false;
         }
         if (month == 12 && day == 30 && !isLeapYear(year)) {
+            return false;
+        }
+        if (hour <= 0 || hour > 24) {
             return false;
         }
         return true;
@@ -147,6 +159,7 @@ public class MyDate {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + hour;
         result = prime * result + day;
         result = prime * result + month;
         result = prime * result + year;
@@ -173,7 +186,18 @@ public class MyDate {
         if (year != other.year) {
             return false;
         }
+        if (hour != other.hour) {
+            return false;
+        }
         return true;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
     }
 
     public enum Separator {DASH, COLON}
