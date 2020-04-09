@@ -26,11 +26,11 @@ public class Patient {
 
     private void printMenu() {
         System.out.println("----------- Patient Menu -----------");
-        System.out.println("1--> Add");
-        System.out.println("2--> Information");
-        System.out.println("3--> Change");
-        System.out.println("4--> discharge");
-        System.out.println("5--> Back");
+        System.out.println("1 --> Add");
+        System.out.println("2 --> Information");
+        System.out.println("3 --> Change");
+        System.out.println("4 --> discharge");
+        System.out.println("5 --> Back");
     }
 
     public void menu() {
@@ -156,6 +156,7 @@ public class Patient {
         doctor.getPatients().add(patient);
         for (Nurse nurse : doctor.getNurses()) {
             nurse.getPatients().add(patient);
+            patient.nurses.add(nurse);
         }
     }
 
@@ -188,10 +189,10 @@ public class Patient {
     private void whichDisease(Patient patient) {
         Disease[] diseases = Disease.values();
         while (true) {
-            System.out.println("1--> " + Disease.BURN);
-            System.out.println("2--> " + Disease.STRIKE);
-            System.out.println("3--> " + Disease.ACCIDENT);
-            System.out.println("4--> " + Disease.SOMETHING_ELSE);
+            System.out.println("1 --> " + Disease.BURN);
+            System.out.println("2 --> " + Disease.STRIKE);
+            System.out.println("3 --> " + Disease.ACCIDENT);
+            System.out.println("4 --> " + Disease.SOMETHING_ELSE);
             int choose = scanner.nextInt();
             if (choose <= diseases.length) {
                 patient.disease = diseases[choose - 1];
@@ -303,7 +304,7 @@ public class Patient {
             System.out.println("4 --> " + Insurance.NON);
             option = scanner.nextInt();
             if (option <= insurance.length) {
-                return insurance[option];
+                return insurance[option - 1];
             }
             System.out.println("Wrong input");
         }
@@ -371,6 +372,10 @@ public class Patient {
 
     public MyDate getDeparture() {
         return departure;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
     public boolean equals(Object o) {
