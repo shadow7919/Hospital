@@ -6,12 +6,13 @@ public class ShiftTimeClass {
     public Week week;
     public ShiftsTime shiftsTime;
     public PartKind partKind;
+    public Doctor doctor;
 
-
-    public ShiftTimeClass(Week week, ShiftsTime shiftsTime, PartKind partKind) {
+    public ShiftTimeClass(Week week, ShiftsTime shiftsTime, PartKind partKind, Doctor doctor) {
         this.week = week;
         this.shiftsTime = shiftsTime;
         this.partKind = partKind;
+        this.doctor = doctor;
     }
 
     public boolean equals(Object o) {
