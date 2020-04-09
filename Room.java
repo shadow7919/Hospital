@@ -210,9 +210,11 @@ public class Room {
         int max = Integer.MIN_VALUE;
         Room foundRoom = null;
         for (Room room : rooms) {
-            if (room.getPatients().size() > max && room.getPatients().size() < room.bedsNumber) {
-                max = room.getPatients().size();
-                foundRoom = room;
+            if (room.isAvailable) {
+                if (room.getPatients().size() > max && room.getPatients().size() < room.bedsNumber) {
+                    max = room.getPatients().size();
+                    foundRoom = room;
+                }
             }
         }
         return foundRoom;
@@ -222,9 +224,11 @@ public class Room {
         int min = Integer.MAX_VALUE;
         Room foundRoom = null;
         for (Room room : rooms) {
-            if (room.getPatients().size() < min && room.getPatients().size() < room.bedsNumber) {
-                min = room.getPatients().size();
-                foundRoom = room;
+            if (room.isAvailable) {
+                if (room.getPatients().size() < min && room.getPatients().size() < room.bedsNumber) {
+                    min = room.getPatients().size();
+                    foundRoom = room;
+                }
             }
         }
         return foundRoom;
@@ -239,19 +243,25 @@ public class Room {
             int option = scanner.nextInt();
             if (option == 1) {
                 room = findRoom(partKind);
+                if (room.isAvailable) {
+                    if (room.bedsNumber > room.patients.size()) {
+                        patient.setRoom(room);
+                        room.patients.add(patient);
+                        return;
+                    } else {
+                        System.out.println("Room is Full");
+                    }
+                } else {
+                    System.out.println("Unavailable ! ");
+                }
             } else {
                 room = pickAuto(partKind);
-            }
-            if (room.isAvailable) {
-                if (room.bedsNumber > room.patients.size()) {
+                if (room != null) {
                     patient.setRoom(room);
                     room.patients.add(patient);
                     return;
-                } else {
-                    System.out.println("Room is Full");
                 }
-            } else {
-                System.out.println("Unavailable ! ");
+                System.out.println("Can't find room");
             }
         }
     }
