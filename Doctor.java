@@ -104,18 +104,13 @@ public class Doctor {
 
     public void removeDoctorShift(Doctor doctor) {
         showDoctorShifts(doctor);
-        Week week = whichDay();
-        if (week == null) {
-            return;
-        }
-        ShiftsTime shiftsTime = chooseShift();
-        if (shiftsTime == null) {
-            return;
-        }
+        System.out.println("------- CHOOSE ------");
         PartKind partKind = Room.whichPart();
-        ShiftTimeClass chosenShiftTimeClass = new ShiftTimeClass(week, shiftsTime, partKind);
+        Week week = whichDay();
+        ShiftsTime shiftsTime = chooseShift();
+        ShiftTimeClass chosenShiftTimeClass = new ShiftTimeClass(week, shiftsTime, partKind, doctor);
         for (ShiftTimeClass shiftTimeClass : doctor.doctorShift) {
-            if (chosenShiftTimeClass.equals(shiftTimeClass)) {
+            if (chosenShiftTimeClass.equals(shiftTimeClass) && chosenShiftTimeClass.doctor.id == shiftTimeClass.doctor.id) {
                 doctor.doctorShift.remove(shiftTimeClass);
                 for (Nurse nurse : doctor.getNurses()) {
                     nurse.getNurseShift().remove(shiftTimeClass);
@@ -126,19 +121,21 @@ public class Doctor {
         }
     }
 
-    private ShiftsTime chooseShift() {
-        showShift();
-        int option = scanner.nextInt();
-        switch (option) {
-            case 1:
-                return ShiftsTime.MORNING;
-            case 2:
-                return ShiftsTime.AFTER_NOON;
-            case 3:
-                return ShiftsTime.NIGHT;
-            default:
-                System.out.println("Wrong input ");
-                return null;
+    public ShiftsTime chooseShift() {
+        int option;
+        while (true) {
+            showShift();
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    return ShiftsTime.MORNING;
+                case 2:
+                    return ShiftsTime.AFTER_NOON;
+                case 3:
+                    return ShiftsTime.NIGHT;
+                default:
+                    System.out.println("Wrong input ");
+            }
         }
     }
 
@@ -270,7 +267,7 @@ public class Doctor {
         }
         PartKind partKind = Room.whichPart();
         for (ShiftTimeClass shift : doctor.doctorShift) {
-            if (shift.partKind.equals(partKind)) {
+            if (shift.partKind.equals(partKind) && shift.doctor.id == doctor.id) {
                 System.out.println(shift.shiftsTime + " --> " + shift.week);
             }
         }
@@ -320,7 +317,7 @@ public class Doctor {
         int choose = scanner.nextInt();
         switch (choose) {
             case 1:
-                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.MORNING, partKind);
+                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.MORNING, partKind, doctor);
                 if (isNotTaken(shiftTimeClass)) {
                     addShiftsToEveryWhere(doctor, shiftTimeClass);
                 } else {
@@ -328,7 +325,7 @@ public class Doctor {
                 }
                 break;
             case 2:
-                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.AFTER_NOON, partKind);
+                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.AFTER_NOON, partKind, doctor);
                 if (isNotTaken(shiftTimeClass)) {
                     addShiftsToEveryWhere(doctor, shiftTimeClass);
                 } else {
@@ -336,7 +333,7 @@ public class Doctor {
                 }
                 break;
             case 3:
-                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.NIGHT, partKind);
+                shiftTimeClass = new ShiftTimeClass(doctor.daysShift, ShiftsTime.NIGHT, partKind, doctor);
                 if (isNotTaken(shiftTimeClass)) {
                     addShiftsToEveryWhere(doctor, shiftTimeClass);
                 } else {
@@ -348,7 +345,7 @@ public class Doctor {
         }
     }
 
-    private Week whichDay() {
+    public Week whichDay() {
         showDay();
         int choose;
         while (true) {
@@ -376,7 +373,7 @@ public class Doctor {
 
     private boolean isNotTaken(ShiftTimeClass shiftTimeClass) {
         for (ShiftTimeClass registeredTimeClass : Hospital.getShiftsTimes()) {
-            if (shiftTimeClass.equals(registeredTimeClass)) {
+            if (shiftTimeClass.equals(registeredTimeClass) && registeredTimeClass.doctor.id == shiftTimeClass.doctor.id) {
                 return false;
             }
         }
