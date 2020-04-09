@@ -73,7 +73,7 @@ public class Room {
         }
     }
 
-    private void showshow() {
+    private void printShow() {
         System.out.println("------- Show -------");
         System.out.println("1 --> All Room");
         System.out.println("2 --> Patient");
@@ -83,7 +83,7 @@ public class Room {
     private void show() {
         int option;
         while (true) {
-            showshow();
+            printShow();
             option = scanner.nextInt();
             switch (option) {
                 case 1:
@@ -187,10 +187,61 @@ public class Room {
         room.isAvailable = yesOrNo.inside;
     }
 
+    private Room pickAuto(PartKind partKind) {
+        System.out.println("1 --> Empty room");
+        System.out.println("2 --> Nonempty ROom");
+        int option = scanner.nextInt();
+        if (option == 1) {
+            if (partKind == PartKind.NORMAL) {
+                return findMinPatient(Hospital.getNormalRooms());
+            } else {
+                return findMinPatient(Hospital.getEmergencyRooms());
+            }
+        } else {
+            if (partKind == PartKind.NORMAL) {
+                return findMaxPatient(Hospital.getNormalRooms());
+            } else {
+                return findMaxPatient(Hospital.getEmergencyRooms());
+            }
+        }
+    }
+
+    private Room findMaxPatient(ArrayList<Room> rooms) {
+        int max = Integer.MIN_VALUE;
+        Room foundRoom = null;
+        for (Room room : rooms) {
+            if (room.getPatients().size() > max && room.getPatients().size() < room.bedsNumber) {
+                max = room.getPatients().size();
+                foundRoom = room;
+            }
+        }
+        return foundRoom;
+    }
+
+    private Room findMinPatient(ArrayList<Room> rooms) {
+        int min = Integer.MAX_VALUE;
+        Room foundRoom = null;
+        for (Room room : rooms) {
+            if (room.getPatients().size() < min && room.getPatients().size() < room.bedsNumber) {
+                min = room.getPatients().size();
+                foundRoom = room;
+            }
+        }
+        return foundRoom;
+    }
+
     public void pickRoom(Patient patient) {
+        PartKind partKind = patient.getPartKind();
         Room room;
         while (true) {
-            room = findRoom(patient.getPartKind());
+            System.out.println("1 --> Pick by your self ");
+            System.out.println("2 --> Pick automatic");
+            int option = scanner.nextInt();
+            if (option == 1) {
+                room = findRoom(partKind);
+            } else {
+                room = pickAuto(partKind);
+            }
             if (room.isAvailable) {
                 if (room.bedsNumber > room.patients.size()) {
                     patient.setRoom(room);
@@ -223,7 +274,7 @@ public class Room {
 
 
     private void changeBeds(Room room) {
-        System.out.println("Beds Number :");
+        System.out.print("Beds Number : ");
         int bedsNumber = scanner.nextInt();
         while (check(bedsNumber, room.patients.size(), MAX_BED_NUMBER)) {
             System.out.println("Max Bed Number this room is" + MAX_BED_NUMBER + "and Min is " + room.patients.size());
