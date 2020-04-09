@@ -10,7 +10,7 @@ public class Main {
         Patient patient = new Patient();
         Nurse nurse = new Nurse();
         Room room = new Room();
-//        welcome(scanner, hospital, room);
+        welcome(scanner, hospital, room);
         chooseMenu(scanner, doctor, patient, nurse, room, hospital);
     }
 
@@ -26,12 +26,13 @@ public class Main {
 
     public static void menu() {
         System.out.println("choose what to do");
-        System.out.println("1--> " + MenuOptions.DOCTOR);
-        System.out.println("2--> " + MenuOptions.NURSE);
-        System.out.println("3--> " + MenuOptions.PATIENT);
-        System.out.println("4--> " + MenuOptions.ROOM);
-        System.out.println("5--> " + MenuOptions.HOSPITAL);
-        System.out.println("6--> " + MenuOptions.QUITE);
+        System.out.println("1 --> " + MenuOptions.DOCTOR);
+        System.out.println("2 --> " + MenuOptions.NURSE);
+        System.out.println("3 --> " + MenuOptions.PATIENT);
+        System.out.println("4 --> " + MenuOptions.ROOM);
+        System.out.println("5 --> " + MenuOptions.HOSPITAL);
+        System.out.println("6 --> " + MenuOptions.SEARCH);
+        System.out.println("7 --> " + MenuOptions.QUITE);
     }
 
     public static MenuOptions choose(Scanner scanner) {
@@ -63,7 +64,11 @@ public class Main {
                     room.menu();
                     break;
                 case HOSPITAL:
-//                        hospital.menu();
+                    hospital.showMenu();
+                    break;
+                case SEARCH:
+                    hospital.searchMenu();
+                    break;
                 case QUITE:
                     return;
             }
