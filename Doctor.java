@@ -24,6 +24,19 @@ public class Doctor {
         System.out.println("7 --> " + Week.FRIDAY);
     }
 
+    public static Doctor findDoctor() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter id : ");
+        int inputId = scanner.nextInt();
+        for (Doctor doctor : Hospital.getDoctors()) {
+            if (inputId == doctor.id) {
+                return doctor;
+            }
+        }
+        System.out.println("Can't find ");
+        return null;
+    }
+
     private void showMenu() {
         System.out.println("----------- Doctor's Menu -----------");
         System.out.println("1--> Add doctor");
@@ -63,11 +76,8 @@ public class Doctor {
 
     public void change() {
         Doctor doctor;
-        System.out.print("Enter the id : ");
-        doctor = findDoctor(scanner.nextInt());
-        if (doctor == null) {
-            System.out.println("No doctor with this id");
-        } else {
+        doctor = findDoctor();
+        if (doctor != null) {
             System.out.println("------- CHANGE --------");
             System.out.println("1 --> Change Name");
             System.out.println("2 --> remove Shift ");
@@ -88,8 +98,8 @@ public class Doctor {
                 default:
                     System.out.println("Wrong input");
             }
-            System.out.println("-----------------------");
         }
+        System.out.println("-----------------------");
     }
 
     public void removeDoctorShift(Doctor doctor) {
@@ -132,10 +142,19 @@ public class Doctor {
         }
     }
 
+    public boolean sameId(int inputId) {
+        for (Doctor doctor : Hospital.getDoctors()) {
+            if (doctor.id == inputId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addDoctor() {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
-        while (findDoctor(inputId) != null) {
+        while (sameId(inputId)) {
             System.out.println("Same id registered");
             inputId = scanner.nextInt();
         }
@@ -161,7 +180,7 @@ public class Doctor {
 
     private void addNurse(Doctor doctor) {
         for (Nurse myNurse : Hospital.getNurses()) {
-            if (nurses.size() == MAX_NURSES) {
+            if (doctor.nurses.size() == MAX_NURSES) {
                 break;
             }
             if (!myNurse.isPartSource() && myNurse.getDoctors().size() < MAX_NURSES) {
@@ -188,15 +207,11 @@ public class Doctor {
 
     public void showDoctor(Doctor doctor) {
         if (doctor == null) {
-            System.out.print("Enter the id : ");
-            int inputId = scanner.nextInt();
-            doctor = findDoctor(inputId);
+            doctor = findDoctor();
         }
         if (doctor != null) {
             System.out.println("Name : " + doctor.name + "   Id : " + doctor.id);
             doctorInfo(doctor);
-        } else {
-            System.out.println("Can't find doctor with this Id");
         }
     }
 
@@ -248,7 +263,7 @@ public class Doctor {
         }
     }
 
-    private void showDoctorShifts(Doctor doctor) {
+    public void showDoctorShifts(Doctor doctor) {
         if (doctor.doctorShift.size() == 0) {
             System.out.println("No shift is added ");
             return;
@@ -256,25 +271,13 @@ public class Doctor {
         PartKind partKind = Room.whichPart();
         for (ShiftTimeClass shift : doctor.doctorShift) {
             if (shift.partKind.equals(partKind)) {
-                System.out.println(shift.shiftsTime + " of " + shift.week);
+                System.out.println(shift.shiftsTime + " --> " + shift.week);
             }
         }
-    }
-
-    private Doctor findDoctor(int inputId) {
-        for (Doctor doctor : Hospital.getDoctors()) {
-            if (inputId == doctor.id) {
-                return doctor;
-            }
-        }
-        return null;
     }
 
     public void addShift() {
-        int inputId;
-        System.out.print("Enter the ID : ");
-        inputId = scanner.nextInt();
-        Doctor doctor = findDoctor(inputId);
+        Doctor doctor = findDoctor();
         PartKind partKind;
         if (doctor != null) {
             partKind = Room.whichPart();
@@ -283,8 +286,6 @@ public class Doctor {
                 doctor.daysShift = whichDay();
                 handleShift(doctor, partKind);
             }
-        } else {
-            System.out.println("can't find this ID");
         }
         System.out.println("--------------------------------------");
     }
