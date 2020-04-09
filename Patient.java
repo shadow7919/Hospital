@@ -89,6 +89,8 @@ public class Patient {
                     whichDisease(patient);
                     break;
                 case 6:
+                    patient.room = null;
+                    room.getPatients().remove(patient);
                     room.pickRoom(patient);
                     break;
                 case 7:
@@ -275,7 +277,9 @@ public class Patient {
         haveInsurance(patient);
         patient.isDischarge = true;
         System.out.println(patient.totalPrice);
-        patient.doctor.getPatients().remove(patient);
+        if (patient.doctor != null) {
+            patient.doctor.getPatients().remove(patient);
+        }
         for (Nurse nurse : patient.nurses) {
             nurse.getPatients().remove(patient);
         }
