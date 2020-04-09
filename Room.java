@@ -5,12 +5,14 @@ import java.util.Scanner;
 
 public class Room {
     private static final int MAX_BED_NUMBER = 6;
+    private final ArrayList<Patient> patients = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     private int roomNumber;
     private int bedsNumber;
-    private boolean isAvailable = true;
+    //    private boolean isAvailable = true;
+    private MyDate unAvailableStart = new MyDate(0, 0, 0, 0);
+    private MyDate unAvailableFinsh = new MyDate(0, 0, 0, 0);
     private int price;
-    private ArrayList<Patient> patients = new ArrayList<>();
 
     public Room(int roomNumber, int bedsNumber, int price) {
         this.roomNumber = roomNumber;
@@ -133,8 +135,10 @@ public class Room {
             System.out.println("Can't make unavailable");
             return;
         }
-        room.isAvailable = false;
-        System.out.println(room.roomNumber + " is unavailable now");
+        System.out.println("first Date");
+        room.unAvailableStart = MyDate.dateSet(false);
+        System.out.println("second Date : ");
+        room.unAvailableFinsh = MyDate.dateSet(false);
     }
 
     public void discountForRoom(Room room) {
@@ -164,27 +168,11 @@ public class Room {
             bedsNumber = scanner.nextInt();
         }
         Room room = new Room(roomNumber, bedsNumber, price);
-        availableHandle(room);
         if (partKind == PartKind.NORMAL) {
             Hospital.getNormalRooms().add(room);
         } else {
             Hospital.getEmergencyRooms().add(room);
         }
-    }
-
-    private void availableHandle(Room room) {
-        YesOrNo yesOrNo;
-        System.out.print("Available ?\t" + YesOrNo.YES + " OR " + YesOrNo.NO + " : ");
-        String choose = scanner.next();
-        while (true) {
-            try {
-                yesOrNo = YesOrNo.valueOf(choose);
-                break;
-            } catch (IllegalArgumentException e) {
-                System.out.println("Wrong input ");
-            }
-        }
-        room.isAvailable = yesOrNo.inside;
     }
 
     private Room pickAuto(PartKind partKind) {
@@ -210,7 +198,7 @@ public class Room {
         int max = Integer.MIN_VALUE;
         Room foundRoom = null;
         for (Room room : rooms) {
-            if (room.isAvailable) {
+            if (room.unAvailableStart.getYear() == 0) {
                 if (room.getPatients().size() > max && room.getPatients().size() < room.bedsNumber) {
                     max = room.getPatients().size();
                     foundRoom = room;
@@ -224,7 +212,7 @@ public class Room {
         int min = Integer.MAX_VALUE;
         Room foundRoom = null;
         for (Room room : rooms) {
-            if (room.isAvailable) {
+            if (room.unAvailableStart.getYear() == 0) {
                 if (room.getPatients().size() < min && room.getPatients().size() < room.bedsNumber) {
                     min = room.getPatients().size();
                     foundRoom = room;
@@ -243,7 +231,7 @@ public class Room {
             int option = scanner.nextInt();
             if (option == 1) {
                 room = findRoom(partKind);
-                if (room.isAvailable) {
+                if (room.unAvailableStart.getYear() == 0 || MyDate.howLong(room.unAvailableFinsh, patient.getEntry()) > 0) {
                     if (room.bedsNumber > room.patients.size()) {
                         patient.setRoom(room);
                         room.patients.add(patient);
@@ -379,16 +367,28 @@ public class Room {
         return defaultBedNumber <= min || defaultBedNumber > max;
     }
 
-    public void setBedsNumber(int bedsNumber) {
-        this.bedsNumber = bedsNumber;
-    }
-
     public int getRoomNumber() {
         return roomNumber;
     }
 
     public ArrayList<Patient> getPatients() {
         return patients;
+    }
+
+    public int getBedsNumber() {
+        return bedsNumber;
+    }
+
+    public void setBedsNumber(int bedsNumber) {
+        this.bedsNumber = bedsNumber;
+    }
+
+    public MyDate getUnAvailableStart() {
+        return unAvailableStart;
+    }
+
+    public MyDate getUnAvailableFinsh() {
+        return unAvailableFinsh;
     }
 
     public int getPrice() {
