@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Nurse {
+    private final static int MAX_DOCTOR = 2;
+    private final ArrayList<Doctor> doctors = new ArrayList<>();
+    private final ArrayList<Patient> patients = new ArrayList<>();
+    private final ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     private String name;
     private int id;
-    private final ArrayList<Doctor> doctors = new ArrayList<>();
     private boolean isPartSource;
-    private final ArrayList<Patient> patients = new ArrayList<>();
-    private final ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
 
     public void nurseMenu() {
         int option;
@@ -35,7 +36,7 @@ public class Nurse {
         }
     }
 
-    private Nurse findNurse() {
+    public Nurse findNurse() {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
         if (sameId(inputId) == null) {
@@ -173,13 +174,13 @@ public class Nurse {
         }
     }
 
-    private void showShifts(Nurse nurse) {
+    public void showShifts(Nurse nurse) {
         if (nurse.nurseShift.size() == 0) {
             System.out.println("No shift is registered");
         }
         System.out.println("------- Shifts --------");
         for (ShiftTimeClass shiftTimeClass : nurse.nurseShift) {
-            System.out.println(shiftTimeClass.shiftsTime + " ---> " + shiftTimeClass.week);
+            System.out.println(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week + " --> " + shiftTimeClass.partKind);
         }
     }
 
@@ -207,10 +208,10 @@ public class Nurse {
 
     private void chooseNurseDoctor(Nurse nurse) {
         for (Doctor doctor : Hospital.getDoctors()) {
-            if (doctors.size() == 2) {
+            if (nurse.doctors.size() == MAX_DOCTOR) {
                 break;
             }
-            if (doctor.getNurses().size() < 2) {
+            if (doctor.getNurses().size() < MAX_DOCTOR) {
                 nurse.doctors.add(doctor);
                 nurse.nurseShift.addAll(doctor.getDoctorShift());
                 nurse.patients.addAll(doctor.getPatients());
