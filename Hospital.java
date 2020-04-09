@@ -101,12 +101,36 @@ public class Hospital {
                     shiftSearchBetweenTimes();
                     break;
                 case 6:
+                    nurseOfDoctor();
                     break;
                 case 7:
+                    nurseOfPatient();
                     return;
                 default:
                     System.out.println("Wrong input ");
             }
+        }
+    }
+
+    private void nurseOfPatient() {
+        Patient patient = new Patient();
+        patient = patient.checkId();
+        if (patient == null) {
+            System.out.println("No patient Registered with this id");
+            return;
+        }
+        for (Nurse nurse : patient.getNurses()) {
+            System.out.println("Nurse : " + nurse.getName() + " --> " + nurse.getId());
+        }
+    }
+
+    private void nurseOfDoctor() {
+        Doctor doctor = Doctor.findDoctor();
+        if (doctor == null) {
+            return;
+        }
+        for (Nurse nurse : doctor.getNurses()) {
+            System.out.println("Nurse : " + nurse.getName() + " --> " + nurse.getId());
         }
     }
 
@@ -121,6 +145,15 @@ public class Hospital {
         ShiftsTime shiftsTime2 = doctor.chooseShift();
         ShiftTimeClass shiftTimeClass1 = new ShiftTimeClass(week1, shiftsTime1, partKind, doctor);
         ShiftTimeClass shiftTimeClass2 = new ShiftTimeClass(week2, shiftsTime2, partKind, doctor);
+        int first = makeShiftToNumber(shiftTimeClass1);
+        int second = makeShiftToNumber(shiftTimeClass2);
+        for (ShiftTimeClass shiftTimeClass : Hospital.getShiftsTimes()) {
+            if (shiftTimeClass.partKind == partKind) {
+                if (first <= makeShiftToNumber(shiftTimeClass) && makeShiftToNumber(shiftTimeClass) <= second) {
+                    showShift(shiftTimeClass);
+                }
+            }
+        }
     }
 
     private int makeShiftToNumber(ShiftTimeClass shiftTimeClass) {
@@ -160,14 +193,16 @@ public class Hospital {
         ShiftTimeClass shiftTimeClass = new ShiftTimeClass(week, shiftsTime, partKind, doctor);
         for (ShiftTimeClass registeredShiftTimeClass : Hospital.getShiftsTimes()) {
             if (shiftTimeClass.equals(registeredShiftTimeClass)) {
-                System.out.print(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week + " --> " + shiftTimeClass.partKind + " DOCTOR : ");
-                System.out.println(registeredShiftTimeClass.doctor.getName() + " --> " + registeredShiftTimeClass.doctor.getId());
-                for (Nurse nurse : registeredShiftTimeClass.doctor.getNurses()) {
-                    System.out.println("----- Nurses ----- ");
-                    System.out.println(nurse.getName() + " --> " + nurse.getId());
-                    System.out.println("--------------------");
-                }
+                showShift(registeredShiftTimeClass);
             }
+        }
+    }
+
+    private void showShift(ShiftTimeClass shiftTimeClass) {
+        System.out.print(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week + " --> " + shiftTimeClass.partKind + " DOCTOR : ");
+        System.out.println(shiftTimeClass.doctor.getName() + " --> " + shiftTimeClass.doctor.getId());
+        for (Nurse nurse : shiftTimeClass.doctor.getNurses()) {
+            System.out.println("Nurse : " + nurse.getName() + " --> " + nurse.getId());
         }
     }
 
@@ -438,7 +473,7 @@ public class Hospital {
             return;
         }
         for (Nurse nurse : patient.getNurses()) {
-            System.out.println("ID : " + nurse.getId() + "Name " + nurse.getName());
+            System.out.println("Nurse : " + nurse.getName() + " --> " + nurse.getId());
         }
     }
 
