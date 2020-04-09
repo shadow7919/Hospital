@@ -12,6 +12,7 @@ public class Hospital {
     private static final ArrayList<ShiftTimeClass> shiftsTimes = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     private String name;
+    private ArrayList<MyDate> period = new ArrayList<>();
 
     public static ArrayList<Doctor> getDoctors() {
         return doctors;
@@ -47,7 +48,16 @@ public class Hospital {
                     patientShow();
                     break;
                 case 2:
-                    doctorShow();
+                    doctorPatients();
+                    break;
+                case 3:
+                    income();
+                    break;
+                case 4:
+                    shiftOfWorker();
+                    break;
+                case 5:
+                    ShiftsOfPart();
                     break;
                 case 6:
                     return;
@@ -57,37 +67,108 @@ public class Hospital {
         }
     }
 
-    public void printDoctorMenu() {
-
-    }
-
-    public void doctorShow() {
-    
-    }
-
-    public void notUse() {
-        System.out.println("1 --> All Doctors");
-        System.out.println("2 --> All Shifts");
-        System.out.println("5 --> All Nurses");// in partSource
-        System.out.println("6 --> Show Rooms ");// available , part
-        System.out.println("9 --> All hospital income");
-        System.out.println("11 --> tarikhche patient bastry");
-    }
-
     public void printMenu() {
         System.out.println("---------- Hospital ----------");
         System.out.println("1 --> Patient");
-        System.out.println("2 --> Doctor");
+        System.out.println("2 --> Doctor Patients");
+        System.out.println("3 --> Hospital income ");
+        System.out.println("4 --> Shifts Workers");
+        System.out.println("5 --> Shifts Part");
+        System.out.println("6 --> Back");
+    }
+
+    public void ShiftsOfPart() {
+        boolean entered = false;
+        PartKind partKind = Room.whichPart();
+        for (ShiftTimeClass shiftTimeClass : Hospital.getShiftsTimes()) {
+            if (shiftTimeClass.partKind == partKind) {
+                entered = true;
+                System.out.println(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week);
+            }
+        }
+        if (Hospital.getShiftsTimes().size() == 0) {
+            System.out.println("No shift registered");
+            return;
+        }
+        if (!entered) {
+            System.out.println("No shift registered in part");
+        }
+    }
+
+    public void shiftOfWorker() {
+        int option;
+        while (true) {
+            System.out.println("1 --> Doctor");
+            System.out.println("2 --> Nurse");
+            System.out.println("3 --> Back");
+            option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    Doctor doctor = Doctor.findDoctor();
+                    if (doctor != null) {
+                        doctor.showDoctorShifts(doctor);
+                    }
+                    break;
+                case 2:
+                    Nurse nurse = new Nurse();
+                    nurse = nurse.findNurse();
+                    if (nurse != null) {
+                        nurse.showShifts(nurse);
+                    }
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Wrong input");
+            }
+        }
+    }
+
+    public void income() {
+        int totalIncome = 0;
+        inputPeriod();
+        for (Patient patient : Hospital.getPatients()) {
+            if (MyDate.howLong(period.get(0), patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), period.get(1)) >= 0) {
+                System.out.println(patient.getTotalPrice() + " from " + patient.getId());
+                totalIncome += patient.getTotalPrice();
+            }
+        }
+        period.clear();
+        if (totalIncome == 0) {
+            System.out.println("No income yet");
+        } else {
+            System.out.println(totalIncome);
+        }
+    }
+
+    public void doctorPatients() {
+        boolean entered = false;
+        System.out.println("Enter id ");
+        Doctor doctor = Doctor.findDoctor();
+        if (doctor != null) {
+            inputPeriod();
+            for (Patient patient : doctor.getPatients()) {
+                if (MyDate.howLong(period.get(0), patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), period.get(1)) >= 0) {
+                    showPatientMainProperty(patient);
+                    entered = true;
+                }
+            }
+            period.clear();
+            if (!entered) {
+                System.out.println("No patient in period");
+            }
+        }
     }
 
     public void printPatientMenu() {
         System.out.println("-------  Patients -------");
         System.out.println("1 --> Patient in Part ");
-        System.out.println("2 --> Get Id of Patient doctor");
-        System.out.println("3 --> Patients hospitalized period");
-        System.out.println("4 --> Patients in room");
-        System.out.println("5 --> Discharged Patients");
-        System.out.println("6 --> Back");
+        System.out.println("2 --> Patient Doctor");
+        System.out.println("3 --> Patient Nurse ");
+        System.out.println("4 --> Patients Hospitalized Period");
+        System.out.println("5 --> Patients In Room");
+        System.out.println("6 --> Discharged Patients");
+        System.out.println("7 --> Back");
     }
 
     public void patientShow() {
@@ -104,15 +185,18 @@ public class Hospital {
                     showPatientDoctor();
                     break;
                 case 3:
-                    hospitalizedPatient();
+                    showPatientNurse();
                     break;
                 case 4:
-                    showPatientRoom(room);
+                    hospitalizedPatient();
                     break;
                 case 5:
-                    showDischargedPatients();
+                    showPatientRoom(room);
                     break;
                 case 6:
+                    showDischargedPatients();
+                    break;
+                case 7:
                     return;
                 default:
                     System.out.println("Wrong input");
@@ -137,22 +221,24 @@ public class Hospital {
         }
     }
 
-    public void hospitalizedPatient() {
-        boolean entered = false;
-        MyDate first;
-        MyDate second;
+    public void inputPeriod() {
         while (true) {
             System.out.println("Enter first period : ");
-            first = MyDate.dateSet(false);
+            period.add(MyDate.dateSet(false));
             System.out.println("Enter second period : ");
-            second = MyDate.dateSet(false);
-            if (MyDate.howLong(first, second) > 0) {
+            period.add(MyDate.dateSet(false));
+            if (MyDate.howLong(period.get(0), period.get(1)) > 0) {
                 break;
             }
             System.out.println("wrong Dates");
         }
+    }
+
+    public void hospitalizedPatient() {
+        boolean entered = false;
+        inputPeriod();
         for (Patient patient : patients) {
-            if (MyDate.howLong(first, patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), second) >= 0) {
+            if (MyDate.howLong(period.get(0), patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), period.get(1)) >= 0) {
                 entered = true;
                 showPatientMainProperty(patient);
                 System.out.print("From : ");
@@ -163,6 +249,7 @@ public class Hospital {
                 }
             }
         }
+        period.clear();
         if (!entered) {
             System.out.println("No Patient in period");
         }
@@ -195,6 +282,22 @@ public class Hospital {
             patient.getDoctor().showDoctor(patient.getDoctor());
         } else {
             System.out.println("No doctor registered for this patient ");
+        }
+    }
+
+    public void showPatientNurse() {
+        Patient patient = new Patient();
+        patient = patient.checkId();
+        if (patient == null) {
+            System.out.println("No patient Registered with this id");
+            return;
+        }
+        if (patient.getNurses().size() == 0) {
+            System.out.println("No Nurse registered for this patient ");
+            return;
+        }
+        for (Nurse nurse : patient.getNurses()) {
+            System.out.println("ID : " + nurse.getId() + "Name " + nurse.getName());
         }
     }
 
