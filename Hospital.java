@@ -98,6 +98,7 @@ public class Hospital {
                     shiftSearch();
                     break;
                 case 5:
+                    shiftSearchBetweenTimes();
                     break;
                 case 6:
                     break;
@@ -107,6 +108,26 @@ public class Hospital {
                     System.out.println("Wrong input ");
             }
         }
+    }
+
+    private void shiftSearchBetweenTimes() {
+        Doctor doctor = new Doctor();
+        PartKind partKind = Room.whichPart();
+        System.out.println("First time ");
+        Week week1 = doctor.whichDay();
+        ShiftsTime shiftsTime1 = doctor.chooseShift();
+        System.out.println("Second time ");
+        Week week2 = doctor.whichDay();
+        ShiftsTime shiftsTime2 = doctor.chooseShift();
+        ShiftTimeClass shiftTimeClass1 = new ShiftTimeClass(week1, shiftsTime1, partKind, doctor);
+        ShiftTimeClass shiftTimeClass2 = new ShiftTimeClass(week2, shiftsTime2, partKind, doctor);
+    }
+
+    private int makeShiftToNumber(ShiftTimeClass shiftTimeClass) {
+        int number;
+        number = shiftTimeClass.week.getNumber();
+        number = number * 10 + shiftTimeClass.shiftsTime.getNumber();
+        return number;
     }
 
     private void unAvailableRooms() {
