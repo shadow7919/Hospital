@@ -3,14 +3,12 @@ package ir.ac.kntu;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Nurse {
+public class Nurse extends Person {
     private final static int MAX_DOCTOR = 2;
     private final ArrayList<Doctor> doctors = new ArrayList<>();
     private final ArrayList<Patient> patients = new ArrayList<>();
     private final ArrayList<ShiftTimeClass> nurseShift = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
-    private String name;
-    private int id;
     private boolean isPartSource;
 
     public void nurseMenu(Hospital hospital) {
@@ -56,7 +54,7 @@ public class Nurse {
             case 1:
                 scanner.nextLine();
                 System.out.println("Name : ");
-                nurse.name = scanner.nextLine();
+                nurse.setName(scanner.nextLine());
                 break;
             case 2:
                 removeNurse(nurse);
@@ -110,10 +108,10 @@ public class Nurse {
             inputId = scanner.nextInt();
         }
         scanner.nextLine();
-        nurse.id = inputId;
+        nurse.setId(inputId);
         System.out.print("Enter Name : ");
-        nurse.name = scanner.nextLine();
-        System.out.println(nurse.name + " serve in part source ?");
+        nurse.setName(scanner.nextLine());
+        System.out.println(nurse.getName() + " serve in part source ?");
         System.out.print(YesOrNo.YES + " OR " + YesOrNo.NO + " : ");
         String input = scanner.next();
         YesOrNo yesOrNo;
@@ -146,7 +144,7 @@ public class Nurse {
         if (nurse == null) {
             return;
         }
-        System.out.println("ID : " + nurse.id + "\tName : " + nurse.name);
+        System.out.println("ID : " + nurse.getId() + "\tName : " + nurse.getName());
         if (nurse.isPartSource) {
             System.out.println(" Part Source Nurse");
             return;
@@ -225,7 +223,7 @@ public class Nurse {
 
     public Nurse sameId(int inputId, Hospital hospital) {
         for (Nurse nurse : hospital.getNurses()) {
-            if (inputId == nurse.id) {
+            if (inputId == nurse.getId()) {
                 return nurse;
             }
         }
@@ -242,15 +240,6 @@ public class Nurse {
 
     public ArrayList<ShiftTimeClass> getNurseShift() {
         return nurseShift;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public ArrayList<Patient> getPatients() {

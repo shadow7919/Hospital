@@ -5,12 +5,10 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Patient {
+public class Patient extends Person {
     private final ArrayList<Nurse> nurses = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     int caseId;
-    private String name;
-    private int id;
     private PartKind partKind;
     private Room room = new Room();
     private Doctor doctor;
@@ -73,7 +71,7 @@ public class Patient {
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    patient.name = scanner.nextLine();
+                    patient.setName(scanner.nextLine());
                     break;
                 case 2:
                     setAge(patient);
@@ -114,7 +112,7 @@ public class Patient {
 
     private boolean noSameId(int inputId, Hospital hospital) {
         for (Patient patient1 : hospital.getPatients()) {
-            if (patient1.id == inputId) {
+            if (patient1.getId() == inputId) {
                 System.out.println("patient Registered with this id");
                 return false;
             }
@@ -132,17 +130,17 @@ public class Patient {
             System.out.println("Same id registered");
             inputId = scanner.nextInt();
         }
-        patient.id = inputId;
+        patient.setId(inputId);
         scanner.nextLine();
         chooseGender(patient);
         System.out.print("enter " + patient.gender.getGender() + " name : ");
-        patient.name = scanner.nextLine();
+        patient.setName(scanner.nextLine());
         setAge(patient);
         patient.entry = MyDate.dateSet(true);
         whichDisease(patient);
         patient.partKind = room.whichPart();
         room.pickRoom(patient, hospital);
-        patient.caseId = random.nextInt(100000) + patient.age + patient.id % 100000;
+        patient.caseId = random.nextInt(100000) + patient.age + patient.getId() % 100000;
         addDoctorNurse(patient, hospital);
         hospital.getPatients().add(patient);
     }
@@ -212,7 +210,7 @@ public class Patient {
                 return;
             }
         }
-        System.out.println("Name : " + patient.name + "\t age : " + patient.age);
+        System.out.println("Name : " + patient.getName() + "\t age : " + patient.age);
         System.out.println(patient.gender.getGender() + " in " + patient.partKind + " PART");
         System.out.println("entry date : ");
         MyDate.showDate(patient.entry);
@@ -235,7 +233,7 @@ public class Patient {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
         for (Patient patient : hospital.getPatients()) {
-            if (inputId == patient.id) {
+            if (inputId == patient.getId()) {
                 return patient;
             }
         }
@@ -333,14 +331,6 @@ public class Patient {
                     System.out.println("Wrong input ");
             }
         }
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Doctor getDoctor() {

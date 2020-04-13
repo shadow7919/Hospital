@@ -3,7 +3,7 @@ package ir.ac.kntu;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Doctor {
+public class Doctor extends Person {
     private final static int MAX_NURSES = 2;
     private final static int MAX_SHIFTS = 3;
     private final ArrayList<Nurse> nurses = new ArrayList<>();
@@ -12,8 +12,6 @@ public class Doctor {
     private final ArrayList<Patient> dischargedPatients = new ArrayList<>();
     private final Room room = new Room();
     Scanner scanner = new Scanner(System.in);
-    private String name;
-    private int id;
     private Week daysShift;
 
 
@@ -22,7 +20,7 @@ public class Doctor {
         System.out.print("Enter id : ");
         int inputId = scanner.nextInt();
         for (Doctor doctor : hospital.getDoctors()) {
-            if (inputId == doctor.id) {
+            if (inputId == doctor.getId()) {
                 return doctor;
             }
         }
@@ -85,7 +83,7 @@ public class Doctor {
                 case 1:
                     scanner.nextLine();
                     System.out.print("Enter name : ");
-                    doctor.name = scanner.nextLine();
+                    doctor.setName(scanner.nextLine());
                     break;
                 case 2:
                     removeDoctorShift(doctor, hospital);
@@ -129,7 +127,7 @@ public class Doctor {
         ShiftsTime shiftsTime = chosenShiftTimeClass.chooseShift();
         chosenShiftTimeClass = new ShiftTimeClass(week, shiftsTime, partKind, doctor);
         for (ShiftTimeClass shiftTimeClass : doctor.doctorShift) {
-            if (chosenShiftTimeClass.equals(shiftTimeClass) && chosenShiftTimeClass.doctor.id == shiftTimeClass.doctor.id) {
+            if (chosenShiftTimeClass.equals(shiftTimeClass) && chosenShiftTimeClass.doctor.getId() == shiftTimeClass.doctor.getId()) {
                 doctor.doctorShift.remove(shiftTimeClass);
                 for (Nurse nurse : doctor.getNurses()) {
                     nurse.getNurseShift().remove(shiftTimeClass);
@@ -177,7 +175,7 @@ public class Doctor {
 
     public boolean sameId(int inputId, Hospital hospital) {
         for (Doctor doctor : hospital.getDoctors()) {
-            if (doctor.id == inputId) {
+            if (doctor.getId() == inputId) {
                 return true;
             }
         }
@@ -193,9 +191,9 @@ public class Doctor {
         }
         scanner.nextLine();
         Doctor doctor = new Doctor();
-        doctor.id = inputId;
+        doctor.setId(inputId);
         System.out.print("Enter name : ");
-        doctor.name = scanner.nextLine();
+        doctor.setName(scanner.nextLine());
         doctor.addNurse(doctor, hospital);
         doctor.pickPatient(doctor, hospital);
         hospital.getDoctors().add(doctor);
@@ -243,7 +241,7 @@ public class Doctor {
             doctor = findDoctor(hospital);
         }
         if (doctor != null) {
-            System.out.println("Name : " + doctor.name + "   Id : " + doctor.id);
+            System.out.println("Name : " + doctor.getName() + "   Id : " + doctor.getId());
             doctorInfo(doctor);
         }
     }
@@ -305,7 +303,7 @@ public class Doctor {
         }
         PartKind partKind = room.whichPart();
         for (ShiftTimeClass shift : doctor.doctorShift) {
-            if (shift.partKind.equals(partKind) && shift.doctor.id == doctor.id) {
+            if (shift.partKind.equals(partKind) && shift.doctor.getId() == doctor.getId()) {
                 System.out.println(shift.shiftsTime + " --> " + shift.week);
             }
         }
@@ -328,7 +326,7 @@ public class Doctor {
 
     private boolean checkDoctorShiftsNumber(Doctor doctor) {
         if (doctor.doctorShift.size() == MAX_SHIFTS) {
-            System.out.println(doctor.name + " already have " + MAX_SHIFTS + " shifts");
+            System.out.println(doctor.getName() + " already have " + MAX_SHIFTS + " shifts");
             return false;
         } else {
             return true;
@@ -379,7 +377,7 @@ public class Doctor {
 
     private boolean isNotTaken(ShiftTimeClass shiftTimeClass, Hospital hospital) {
         for (ShiftTimeClass registeredTimeClass : hospital.getShiftsTimes()) {
-            if (shiftTimeClass.equals(registeredTimeClass) && registeredTimeClass.doctor.id == shiftTimeClass.doctor.id) {
+            if (shiftTimeClass.equals(registeredTimeClass) && registeredTimeClass.doctor.getId() == shiftTimeClass.doctor.getId()) {
                 return false;
             }
         }
@@ -396,14 +394,6 @@ public class Doctor {
 
     public ArrayList<ShiftTimeClass> getDoctorShift() {
         return doctorShift;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public ArrayList<Nurse> getNurses() {
