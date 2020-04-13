@@ -1,12 +1,14 @@
 package ir.ac.kntu;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MyDate {
-    private int year;
-    private int month;
-    private int day;
-    private int hour;
+    private static final ArrayList<MyDate> period = new ArrayList<>();
+    private int year = 0;
+    private int month = 1;
+    private int day = 1;
+    private int hour = 0;
     private Separator separator = Separator.DASH;
 
     public MyDate(int year, int month, int day, int hour) {
@@ -40,7 +42,7 @@ public class MyDate {
     }
 
     public static void showDate(MyDate date) {
-        System.out.println(date.hour + " / " + date.day + " / " + date.month + " / " + date.year);
+        System.out.print(date.hour + " / " + date.day + " / " + date.month + " / " + date.year);
     }
 
     public static int howLong(MyDate before, MyDate after) {
@@ -56,6 +58,23 @@ public class MyDate {
         } else {
             return 6 * 31 + (month - 6) * 30;
         }
+    }
+
+    public static void inputPeriod() {
+        while (true) {
+            System.out.println("Enter first date");
+            MyDate.getPeriod().add(MyDate.dateSet(false));
+            System.out.println("Enter second date");
+            MyDate.getPeriod().add(MyDate.dateSet(false));
+            if (MyDate.howLong(MyDate.getPeriod().get(0), MyDate.getPeriod().get(1)) > 0) {
+                break;
+            }
+            System.out.println("wrong Dates");
+        }
+    }
+
+    public static ArrayList<MyDate> getPeriod() {
+        return period;
     }
 
     private void checkAndSetDate(int year, int month, int day, int hour) {
@@ -94,17 +113,6 @@ public class MyDate {
     public int getYear() {
         return year;
     }
-
-
-    public int getMonth() {
-        return month;
-    }
-
-
-    public int getDay() {
-        return day;
-    }
-
 
     public String toString() {
         switch (separator) {
@@ -190,14 +198,6 @@ public class MyDate {
             return false;
         }
         return true;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
-    public void setHour(int hour) {
-        this.hour = hour;
     }
 
     public enum Separator {DASH, COLON}

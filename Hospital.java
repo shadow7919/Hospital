@@ -3,39 +3,42 @@ package ir.ac.kntu;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static ir.ac.kntu.MyDate.howLong;
+
 public class Hospital {
-    private static final ArrayList<Doctor> doctors = new ArrayList<>();
-    private static final ArrayList<Patient> patients = new ArrayList<>();
-    private static final ArrayList<Room> normalRooms = new ArrayList<>();
-    private static final ArrayList<Room> emergencyRooms = new ArrayList<>();
-    private static final ArrayList<Nurse> nurses = new ArrayList<>();
-    private static final ArrayList<ShiftTimeClass> shiftsTimes = new ArrayList<>();
-    private final ArrayList<MyDate> period = new ArrayList<>();
+    private final ArrayList<Doctor> doctors = new ArrayList<>();
+    private final ArrayList<Patient> patients = new ArrayList<>();
+    private final ArrayList<Room> normalRooms = new ArrayList<>();
+    private final ArrayList<Room> emergencyRooms = new ArrayList<>();
+    private final ArrayList<Nurse> nurses = new ArrayList<>();
+    private final ArrayList<ShiftTimeClass> shiftsTimes = new ArrayList<>();
+    private final Room room = new Room();
+    private final Doctor tempDoctor = new Doctor();
     Scanner scanner = new Scanner(System.in);
     private String name;
 
-    public static ArrayList<Doctor> getDoctors() {
+    public ArrayList<Doctor> getDoctors() {
         return doctors;
     }
 
-    public static ArrayList<ShiftTimeClass> getShiftsTimes() {
-        return shiftsTimes;
-    }
-
-    public static ArrayList<Patient> getPatients() {
+    public ArrayList<Patient> getPatients() {
         return patients;
     }
 
-    public static ArrayList<Room> getNormalRooms() {
+    public ArrayList<Room> getNormalRooms() {
         return normalRooms;
     }
 
-    public static ArrayList<Room> getEmergencyRooms() {
+    public ArrayList<Room> getEmergencyRooms() {
         return emergencyRooms;
     }
 
-    public static ArrayList<Nurse> getNurses() {
+    public ArrayList<Nurse> getNurses() {
         return nurses;
+    }
+
+    public ArrayList<ShiftTimeClass> getShiftsTimes() {
+        return shiftsTimes;
     }
 
     public void showMenu() {
@@ -48,7 +51,7 @@ public class Hospital {
                     patientShow();
                     break;
                 case 2:
-                    doctorPatients();
+                    tempDoctor.doctorPatients(this);
                     break;
                 case 3:
                     income();
@@ -69,14 +72,15 @@ public class Hospital {
 
     private void printSearchMenu() {
         System.out.println("---------- SEARCH ----------");
-        System.out.println("1 --> Room can get patient ");
-        System.out.println("2 --> Room with empty beds number");
+        System.out.println("1 --> Room have empty beds ");
+        System.out.println("2 --> Room have empty beds number");
         System.out.println("3 --> Room were unavailable ");
         System.out.println("4 --> Doctor or nurse in shift ");
         System.out.println("5 --> Doctor or nurse between times");
         System.out.println("6 --> Nurses work for doctor");
         System.out.println("7 --> Nurses care patient ");
         System.out.println("8 --> Back");
+        System.out.println("--------------------------");
     }
 
     public void searchMenu() {
@@ -101,10 +105,12 @@ public class Hospital {
                     shiftSearchBetweenTimes();
                     break;
                 case 6:
-                    nurseOfDoctor();
+                    tempDoctor.nurseOfDoctor(this);
                     break;
                 case 7:
                     nurseOfPatient();
+                    break;
+                case 8:
                     return;
                 default:
                     System.out.println("Wrong input ");
@@ -114,7 +120,7 @@ public class Hospital {
 
     private void nurseOfPatient() {
         Patient patient = new Patient();
-        patient = patient.checkId();
+        patient = patient.checkId(this);
         if (patient == null) {
             System.out.println("No patient Registered with this id");
             return;
@@ -124,74 +130,44 @@ public class Hospital {
         }
     }
 
-    private void nurseOfDoctor() {
-        Doctor doctor = Doctor.findDoctor();
-        if (doctor == null) {
-            return;
-        }
-        for (Nurse nurse : doctor.getNurses()) {
-            System.out.println("Nurse : " + nurse.getName() + " --> " + nurse.getId());
-        }
-    }
-
     private void shiftSearchBetweenTimes() {
-        Doctor doctor = new Doctor();
-        PartKind partKind = Room.whichPart();
+        ShiftTimeClass tempShiftTimeClass = new ShiftTimeClass();
+        PartKind partKind = room.whichPart();
         System.out.println("First time ");
-        Week week1 = doctor.whichDay();
-        ShiftsTime shiftsTime1 = doctor.chooseShift();
+        Week week1 = tempShiftTimeClass.whichDay();
+        ShiftsTime shiftsTime1 = tempShiftTimeClass.chooseShift();
         System.out.println("Second time ");
-        Week week2 = doctor.whichDay();
-        ShiftsTime shiftsTime2 = doctor.chooseShift();
-        ShiftTimeClass shiftTimeClass1 = new ShiftTimeClass(week1, shiftsTime1, partKind, doctor);
-        ShiftTimeClass shiftTimeClass2 = new ShiftTimeClass(week2, shiftsTime2, partKind, doctor);
-        int first = makeShiftToNumber(shiftTimeClass1);
-        int second = makeShiftToNumber(shiftTimeClass2);
-        for (ShiftTimeClass shiftTimeClass : Hospital.getShiftsTimes()) {
+        Week week2 = tempShiftTimeClass.whichDay();
+        ShiftsTime shiftsTime2 = tempShiftTimeClass.chooseShift();
+        int first = week1.getNumber() * 10 + shiftsTime1.getNumber();
+        int second = week2.getNumber() * 10 + shiftsTime2.getNumber();
+        int middle;
+        for (ShiftTimeClass shiftTimeClass : shiftsTimes) {
+            middle = shiftTimeClass.week.getNumber() * 10 + shiftTimeClass.shiftsTime.getNumber();
             if (shiftTimeClass.partKind == partKind) {
-                if (first <= makeShiftToNumber(shiftTimeClass) && makeShiftToNumber(shiftTimeClass) <= second) {
+                if (first <= middle && middle <= second) {
                     showShift(shiftTimeClass);
                 }
             }
         }
     }
 
-    private int makeShiftToNumber(ShiftTimeClass shiftTimeClass) {
-        int number;
-        number = shiftTimeClass.week.getNumber();
-        number = number * 10 + shiftTimeClass.shiftsTime.getNumber();
-        return number;
-    }
-
     private void unAvailableRooms() {
-        PartKind partKind = Room.whichPart();
-        inputPeriod();
-        if (partKind == PartKind.NORMAL) {
-            unAvailableRoomsHandle(Hospital.getNormalRooms());
+        if (room.whichPart() == PartKind.NORMAL) {
+            room.unAvailableRoomsHandle(normalRooms);
         } else {
-            unAvailableRoomsHandle(Hospital.getEmergencyRooms());
+            room.unAvailableRoomsHandle(emergencyRooms);
         }
-        period.clear();
-    }
-
-    private void unAvailableRoomsHandle(ArrayList<Room> rooms) {
-        for (Room room : rooms) {
-            if (room.getUnAvailableStart().getYear() != 0) {
-                if (MyDate.howLong(room.getUnAvailableFinsh(), period.get(1)) >= 0 && MyDate.howLong(period.get(0), room.getUnAvailableStart()) >= 0) {
-                    System.out.println("Number : " + room.getRoomNumber() + "\tPart : " + PartKind.NORMAL);
-
-                }
-            }
-        }
+        MyDate.getPeriod().clear();
     }
 
     private void shiftSearch() {
-        Doctor doctor = new Doctor();
-        Week week = doctor.whichDay();
-        ShiftsTime shiftsTime = doctor.chooseShift();
-        PartKind partKind = Room.whichPart();
-        ShiftTimeClass shiftTimeClass = new ShiftTimeClass(week, shiftsTime, partKind, doctor);
-        for (ShiftTimeClass registeredShiftTimeClass : Hospital.getShiftsTimes()) {
+        ShiftTimeClass shiftTimeClass = new ShiftTimeClass();
+        Week week = shiftTimeClass.whichDay();
+        ShiftsTime shiftsTime = shiftTimeClass.chooseShift();
+        PartKind partKind = room.whichPart();
+        shiftTimeClass = new ShiftTimeClass(week, shiftsTime, partKind, null);
+        for (ShiftTimeClass registeredShiftTimeClass : shiftsTimes) {
             if (shiftTimeClass.equals(registeredShiftTimeClass)) {
                 showShift(registeredShiftTimeClass);
             }
@@ -199,48 +175,27 @@ public class Hospital {
     }
 
     private void showShift(ShiftTimeClass shiftTimeClass) {
-        System.out.print(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week + " --> " + shiftTimeClass.partKind + " DOCTOR : ");
+        System.out.println("--------------------------");
+        System.out.print(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week + " --> " + shiftTimeClass.partKind + ", DOCTOR : ");
         System.out.println(shiftTimeClass.doctor.getName() + " --> " + shiftTimeClass.doctor.getId());
         for (Nurse nurse : shiftTimeClass.doctor.getNurses()) {
-            System.out.println("Nurse : " + nurse.getName() + " --> " + nurse.getId());
+            System.out.print(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week + " --> " + shiftTimeClass.partKind);
+            System.out.println(", Nurse : " + nurse.getName() + " --> " + nurse.getId());
         }
     }
 
     private void emptyRoom(boolean valuableNumber) {
         int number = 0;
-        PartKind partKind = Room.whichPart();
-        inputPeriod();
+        MyDate.inputPeriod();
         if (valuableNumber) {
             System.out.print("Enter Empty beds number : ");
             number = scanner.nextInt();
         }
-        if (partKind == PartKind.NORMAL) {
-            emptyRoomHandle(valuableNumber, Hospital.getNormalRooms(), number);
-        } else {
-            emptyRoomHandle(valuableNumber, Hospital.getEmergencyRooms(), number);
+        if (room.whichPart() == PartKind.NORMAL) {
+            room.emptyRoomHandle(normalRooms, number);
+            return;
         }
-        period.clear();
-    }
-
-    private void emptyRoomHandle(boolean valuableNumber, ArrayList<Room> rooms, int number) {
-        int patientInRoom;
-        for (Room room : rooms) {
-            patientInRoom = 0;
-            for (Patient patient : room.getPatients()) {
-                if (MyDate.howLong(period.get(0), patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), period.get(1)) >= 0) {
-                    patientInRoom++;
-                }
-            }
-            if (valuableNumber) {
-                if (room.getBedsNumber() - patientInRoom == number) {
-                    System.out.println("Number : " + room.getRoomNumber() + "\t Empty beds : " + number);
-                }
-            } else {
-                if (room.getBedsNumber() - patientInRoom > number) {
-                    System.out.println("Number : " + room.getRoomNumber() + "\t Empty beds : " + (room.getBedsNumber() - patientInRoom));
-                }
-            }
-        }
+        room.emptyRoomHandle(emergencyRooms, number);
     }
 
     public void printShowMenu() {
@@ -251,20 +206,17 @@ public class Hospital {
         System.out.println("4 --> Shifts Workers");
         System.out.println("5 --> Shifts Part");
         System.out.println("6 --> Back");
+        System.out.println("-------------------------");
     }
 
     public void ShiftsOfPart() {
         boolean entered = false;
-        PartKind partKind = Room.whichPart();
-        for (ShiftTimeClass shiftTimeClass : Hospital.getShiftsTimes()) {
+        PartKind partKind = room.whichPart();
+        for (ShiftTimeClass shiftTimeClass : shiftsTimes) {
             if (shiftTimeClass.partKind == partKind) {
                 entered = true;
                 System.out.println(shiftTimeClass.shiftsTime + " --> " + shiftTimeClass.week);
             }
-        }
-        if (Hospital.getShiftsTimes().size() == 0) {
-            System.out.println("No shift registered");
-            return;
         }
         if (!entered) {
             System.out.println("No shift registered in part");
@@ -273,71 +225,44 @@ public class Hospital {
 
     public void shiftOfWorker() {
         int option;
-        while (true) {
-            System.out.println("1 --> Doctor");
-            System.out.println("2 --> Nurse");
-            System.out.println("3 --> Back");
-            option = scanner.nextInt();
-            switch (option) {
-                case 1:
-                    Doctor doctor = Doctor.findDoctor();
-                    if (doctor != null) {
-                        doctor.showDoctorShifts(doctor);
-                    }
-                    break;
-                case 2:
-                    Nurse nurse = new Nurse();
-                    nurse = nurse.findNurse();
-                    if (nurse != null) {
-                        nurse.showShifts(nurse);
-                    }
-                    break;
-                case 3:
-                    return;
-                default:
-                    System.out.println("Wrong input");
-            }
+        System.out.println("1 --> Doctor");
+        System.out.println("2 --> Nurse");
+        option = scanner.nextInt();
+        switch (option) {
+            case 1:
+                Doctor doctor = tempDoctor.findDoctor(this);
+                if (doctor != null) {
+                    doctor.showDoctorShifts(doctor);
+                }
+                break;
+            case 2:
+                Nurse nurse = new Nurse();
+                nurse = nurse.findNurse(this);
+                if (nurse != null) {
+                    nurse.showShifts(nurse);
+                }
+                break;
+            default:
+                System.out.println("Wrong input");
         }
     }
 
     public void income() {
         int totalIncome = 0;
-        inputPeriod();
-        for (Patient patient : Hospital.getPatients()) {
-            if (MyDate.howLong(period.get(0), patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), period.get(1)) >= 0) {
-                System.out.println(patient.getTotalPrice() + " from " + patient.getId());
-                totalIncome += patient.getTotalPrice();
-            }
-        }
-        period.clear();
-        if (totalIncome == 0) {
-            System.out.println("No income yet");
-        } else {
-            System.out.println(totalIncome);
-        }
-    }
-
-    public void doctorPatients() {
-        boolean entered = false;
-        System.out.println("Enter id ");
-        Doctor doctor = Doctor.findDoctor();
-        if (doctor != null) {
-            inputPeriod();
-            for (Patient patient : doctor.getPatients()) {
-                if (MyDate.howLong(period.get(0), patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), period.get(1)) >= 0) {
-                    showPatientMainProperty(patient);
-                    entered = true;
+        MyDate.inputPeriod();
+        for (Patient patient : patients) {
+            if (patient.isDischarge()) {
+                if (howLong(MyDate.getPeriod().get(0), patient.getDeparture()) >= 0 && howLong(patient.getDeparture(), MyDate.getPeriod().get(1)) >= 0) {
+                    System.out.println(patient.getTotalPrice() + " from " + patient.getId());
+                    totalIncome += patient.getTotalPrice();
                 }
             }
-            period.clear();
-            if (!entered) {
-                System.out.println("No patient in period");
-            }
         }
+        MyDate.getPeriod().clear();
+        System.out.println("Income of hospital is " + totalIncome);
     }
 
     public void printPatientMenu() {
-        System.out.println("-------  Patients -------");
         System.out.println("1 --> Patient in Part ");
         System.out.println("2 --> Patient Doctor");
         System.out.println("3 --> Patient Nurse ");
@@ -345,6 +270,7 @@ public class Hospital {
         System.out.println("5 --> Patients In Room");
         System.out.println("6 --> Discharged Patients");
         System.out.println("7 --> Back");
+        System.out.println("-----------------------");
     }
 
     public void patientShow() {
@@ -382,52 +308,44 @@ public class Hospital {
 
     public void showDischargedPatients() {
         boolean entered = false;
-        for (Patient patient : Hospital.getPatients()) {
+        for (Patient patient : patients) {
             if (patient.isDischarge()) {
                 entered = true;
                 showPatientMainProperty(patient);
             }
         }
-        if (Hospital.getPatients().size() == 0) {
-            System.out.println("No Patient is registered");
-            return;
-        }
         if (!entered) {
             System.out.println("No patient is discharged");
         }
-    }
-
-    public void inputPeriod() {
-        while (true) {
-            System.out.println("Enter first period : ");
-            period.add(MyDate.dateSet(false));
-            System.out.println("Enter second period : ");
-            period.add(MyDate.dateSet(false));
-            if (MyDate.howLong(period.get(0), period.get(1)) > 0) {
-                break;
-            }
-            System.out.println("wrong Dates");
-        }
+        System.out.println(" -------------- ");
     }
 
     public void hospitalizedPatient() {
         boolean entered = false;
-        inputPeriod();
+        MyDate.inputPeriod();
         for (Patient patient : patients) {
-            if (MyDate.howLong(period.get(0), patient.getEntry()) >= 0 && MyDate.howLong(patient.getEntry(), period.get(1)) >= 0) {
-                entered = true;
-                showPatientMainProperty(patient);
-                System.out.print("From : ");
-                MyDate.showDate(patient.getEntry());
-                if (patient.isDischarge()) {
-                    System.out.println("To :");
-                    MyDate.showDate(patient.getDeparture());
+            if (!patient.isDischarge()) {
+                if ((howLong(MyDate.getPeriod().get(0), patient.getEntry()) >= 0 && howLong(patient.getEntry(), MyDate.getPeriod().get(1)) >= 0)) {
+                    showPatientMainProperty(patient);
+                    entered = true;
+                }
+            } else {
+                if (room.checkBetweenDate(patient.getEntry(), patient.getDeparture())) {
+                    entered = true;
+                    showPatientMainProperty(patient);
+                    MyDate.showDate(patient.getEntry());
+                    if (patient.isDischarge()) {
+                        System.out.print("\t ---> ");
+                        MyDate.showDate(patient.getDeparture());
+                        System.out.println();
+                    }
                 }
             }
         }
-        period.clear();
+        System.out.println(" ------------ ");
+        MyDate.getPeriod().clear();
         if (!entered) {
-            System.out.println("No Patient in period");
+            System.out.println("No Patient in date period");
         }
     }
 
@@ -437,33 +355,34 @@ public class Hospital {
     }
 
     public void showPatientRoom(Room room) {
-        PartKind partKind = Room.whichPart();
-        Room myRoom = room.findRoom(partKind);
+        Room myRoom = room.findRoom(room.whichPart(), this);
         for (Patient patient : myRoom.getPatients()) {
             showPatientMainProperty(patient);
         }
         if (myRoom.getPatients().size() == 0) {
             System.out.println("No patient in room");
         }
+        System.out.println("-----------------------");
     }
 
     public void showPatientDoctor() {
         Patient patient = new Patient();
-        patient = patient.checkId();
+        patient = patient.checkId(this);
         if (patient == null) {
             System.out.println("No patient Registered with this id");
             return;
         }
         if (patient.getDoctor() != null) {
-            patient.getDoctor().showDoctor(patient.getDoctor());
+            patient.getDoctor().showDoctor(patient.getDoctor(), this);
         } else {
             System.out.println("No doctor registered for this patient ");
         }
+        System.out.println("-----------------------");
     }
 
     public void showPatientNurse() {
         Patient patient = new Patient();
-        patient = patient.checkId();
+        patient = patient.checkId(this);
         if (patient == null) {
             System.out.println("No patient Registered with this id");
             return;
@@ -475,12 +394,13 @@ public class Hospital {
         for (Nurse nurse : patient.getNurses()) {
             System.out.println("Nurse : " + nurse.getName() + " --> " + nurse.getId());
         }
+        System.out.println(" ----------------------");
     }
 
     public void showPatientsPart() {
         boolean entered = false;
-        PartKind partKind = Room.whichPart();
-        for (Patient patient : Hospital.getPatients()) {
+        PartKind partKind = room.whichPart();
+        for (Patient patient : patients) {
             if (patient.getPartKind() == partKind) {
                 entered = true;
                 showPatientMainProperty(patient);
@@ -489,6 +409,11 @@ public class Hospital {
         if (!entered) {
             System.out.println("No patient in this part ");
         }
+        System.out.println(" -------------- ");
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {

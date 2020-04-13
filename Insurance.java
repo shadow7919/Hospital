@@ -6,7 +6,7 @@ public enum Insurance {
     HEALTH_SERVICES(.75),
     NON(1);
 
-    private double discount;
+    private final double discount;
 
     Insurance(double num) {
         discount = num;

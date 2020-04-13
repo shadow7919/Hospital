@@ -3,29 +3,28 @@ package ir.ac.kntu;
 import java.util.Scanner;
 
 public class Main {
+    static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Hospital hospital = new Hospital();
         Doctor doctor = new Doctor();
         Patient patient = new Patient();
         Nurse nurse = new Nurse();
         Room room = new Room();
-        welcome(scanner, hospital, room);
-        chooseMenu(scanner, doctor, patient, nurse, room, hospital);
+        welcome(hospital);
+        chooseMenu(doctor, patient, nurse, room, hospital);
     }
 
-    public static void welcome(Scanner scanner, Hospital hospital, Room room) {
+    public static void welcome(Hospital hospital) {
         System.out.println("------------ WELCOME ------------");
-        System.out.println("Go step by step First doctor then Nurse and at the end Patient");
         System.out.print("Hospital name : ");
         hospital.setName(scanner.nextLine());
-        System.out.println("--------- Rooms and Price ---------");
-        room.makeRooms();
-        System.out.println("------------------------------------");
+        Room room = new Room();
+        room.makeRooms(hospital);
+        System.out.println(" ----------------- ");
     }
 
     public static void menu() {
-        System.out.println("choose what to do");
         System.out.println("1 --> " + MenuOptions.DOCTOR);
         System.out.println("2 --> " + MenuOptions.NURSE);
         System.out.println("3 --> " + MenuOptions.PATIENT);
@@ -33,6 +32,7 @@ public class Main {
         System.out.println("5 --> " + MenuOptions.HOSPITAL);
         System.out.println("6 --> " + MenuOptions.SEARCH);
         System.out.println("7 --> " + MenuOptions.QUITE);
+        System.out.println(" ----------------- ");
     }
 
     public static MenuOptions choose(Scanner scanner) {
@@ -48,20 +48,20 @@ public class Main {
         }
     }
 
-    public static void chooseMenu(Scanner scanner, Doctor doctor, Patient patient, Nurse nurse, Room room, Hospital hospital) {
+    public static void chooseMenu(Doctor doctor, Patient patient, Nurse nurse, Room room, Hospital hospital) {
         while (true) {
             switch (choose(scanner)) {
                 case DOCTOR:
-                    doctor.doctorMenu();
+                    doctor.doctorMenu(hospital);
                     break;
                 case NURSE:
-                    nurse.nurseMenu();
+                    nurse.nurseMenu(hospital);
                     break;
                 case PATIENT:
-                    patient.menu();
+                    patient.menu(hospital);
                     break;
                 case ROOM:
-                    room.menu();
+                    room.menu(hospital);
                     break;
                 case HOSPITAL:
                     hospital.showMenu();
@@ -70,6 +70,7 @@ public class Main {
                     hospital.searchMenu();
                     break;
                 case QUITE:
+                    System.out.println("Hope Never see you in " + hospital.getName());
                     return;
             }
         }
